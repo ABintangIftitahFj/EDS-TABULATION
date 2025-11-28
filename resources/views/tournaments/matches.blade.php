@@ -1,130 +1,189 @@
 @extends('layouts.user')
 
+@section('title', 'Matches - ' . $tournament->name)
+
 @section('content')
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-<div class="flex items-center gap-2 mb-2">
-    <a href="/tournaments/{{ $tournament->id }}" class="text-sm text-slate-500 hover:text-slate-700">
-        &larr; Back to Dashboard
-    </a>
-</div>
-<h1 class="text-3xl font-bold leading-tight bg-gradient-to-r from-rose-600 to-orange-600 bg-clip-text text-transparent">
-    ⚔️ Matches: {{ $tournament->name }}
-</h1>
-
-<!-- Tabs -->
-<div class="mt-8 border-b border-slate-200">
-    <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-        <a href="/tournaments/{{ $tournament->id }}"
-            class="border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700 whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-            Overview
-        </a>
-        <a href="/tournaments/{{ $tournament->id }}/standings"
-            class="border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700 whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-            Standings
-        </a>
-        <a href="/tournaments/{{ $tournament->id }}/matches"
-            class="border-indigo-500 text-indigo-600 whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium"
-            aria-current="page">
-            ⚔️ Matches &amp; Draw
-        </a>
-        <a href="/tournaments/{{ $tournament->id }}/motions"
-            class="border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700 whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-            Motions
-        </a>
-    </nav>
-</div>
-
-<!-- Rounds and Matches -->
-<div class="mt-8">
-    @forelse($tournament->rounds as $round)
+        {{-- Tournament Header --}}
         <div class="mb-8">
-            <h3 class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-4">
-                📢 {{ $round->name }}
-            </h3>
+            <h1 class="text-4xl font-bold leading-tight text-purple-700">
+                ⚔️ {{ $tournament->name }}
+            </h1>
+        </div>
 
-            <!-- Motion Display -->
-            @if($round->motions && $round->motions->count() > 0)
-                @foreach($round->motions as $motion)
-                    @if($motion->is_released)
-                        <div class="mb-6">
-                            @include('components.motion-card', ['motion' => $motion])
-                        </div>
+        {{-- Tabs Navigation --}}
+        <div class="border-b border-slate-200 mb-8">
+            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                <a href="/tournaments"
+                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
+                    ← All Tournaments
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}"
+                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
+                    🏠 Overview
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/standings"
+                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
+                    🏆 Standings
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/matches"
+                    class="border-indigo-500 text-indigo-600 whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium"
+                    aria-current="page">
+                    ⚔️ Matches & Draw
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/results"
+                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
+                    📊 Results
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/speakers"
+                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
+                    🎤 Speakers
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/motions"
+                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
+                    💡 Motions
+                </a>
+            </nav>
+        </div>
+
+        <div class="space-y-6"
+            x-data="{ selectedRound: '{{ $tournament->rounds->sortBy('created_at')->first()->id ?? '' }}' }">
+
+            {{-- Header & Dropdown Selection --}}
+            <div
+                class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                <div>
+                    <h3 class="text-lg font-medium text-black">Match List</h3>
+                    <p class="text-sm text-black">Pilih ronde untuk melihat jadwal pertandingan.</p>
+                </div>
+
+                <div class="w-full sm:w-64">
+                    @if($tournament->rounds->count() > 0)
+                        <select x-model="selectedRound"
+                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            @foreach($tournament->rounds->sortBy('created_at') as $round)
+                                <option value="{{ $round->id }}">
+                                    {{ $round->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    @else
+                        <span class="text-sm text-red-500">Belum ada ronde dibuat.</span>
                     @endif
-                @endforeach
-            @endif
+                </div>
+            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach($round->matches as $match)
-                    <div class="bg-white shadow-sm ring-1 ring-slate-200 rounded-xl p-4 relative overflow-hidden">
-                        <!-- Result Indicator -->
-                        @if($match->result_status === 'confirmed')
-                            <div
-                                class="absolute top-0 right-0 bg-gradient-to-r from-green-500 to-emerald-500 text-white text-[10px] px-2 py-1 rounded-bl-lg font-bold uppercase shadow-lg">
-                                ✅ Completed
-                            </div>
-                        @endif
+            {{-- Matches List Area --}}
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                @if($tournament->rounds->count() > 0)
+                    @foreach($tournament->rounds as $round)
+                        <div x-show="selectedRound == '{{ $round->id }}'" style="display: none;">
 
-                        <div class="text-xs text-slate-500 mb-2 font-medium uppercase tracking-wide">
-                            📍 {{ $match->room->name ?? 'TBA' }}
-                        </div>
-
-                        @if($tournament->format === 'british')
-                            <!-- BP Format -->
-                            <div class="grid grid-cols-2 gap-2 text-sm">
-                                <div
-                                    class="bg-slate-50 p-2 rounded {{ $match->winner_id == $match->og_team_id ? 'ring-2 ring-green-500 bg-green-50' : '' }}">
-                                    <span class="block text-xs text-slate-500">OG</span>
-                                    <span class="font-medium">{{ $match->ogTeam->name ?? 'TBA' }}</span>
-                                </div>
-                                <div
-                                    class="bg-slate-50 p-2 rounded {{ $match->winner_id == $match->oo_team_id ? 'ring-2 ring-green-500 bg-green-50' : '' }}">
-                                    <span class="block text-xs text-slate-500">OO</span>
-                                    <span class="font-medium">{{ $match->ooTeam->name ?? 'TBA' }}</span>
-                                </div>
-                                <div
-                                    class="bg-slate-50 p-2 rounded {{ $match->winner_id == $match->cg_team_id ? 'ring-2 ring-green-500 bg-green-50' : '' }}">
-                                    <span class="block text-xs text-slate-500">CG</span>
-                                    <span class="font-medium">{{ $match->cgTeam->name ?? 'TBA' }}</span>
-                                </div>
-                                <div
-                                    class="bg-slate-50 p-2 rounded {{ $match->winner_id == $match->co_team_id ? 'ring-2 ring-green-500 bg-green-50' : '' }}">
-                                    <span class="block text-xs text-slate-500">CO</span>
-                                    <span class="font-medium">{{ $match->coTeam->name ?? 'TBA' }}</span>
-                                </div>
-                            </div>
-                        @else
-                            <!-- AP Format -->
-                            <div class="space-y-2">
-                                <div
-                                    class="flex justify-between items-center p-3 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg shadow-sm {{ $match->winner_id == $match->gov_team_id ? 'ring-2 ring-green-500' : '' }}">
+                            {{-- Round Info Header (Clean White/Gray, No Gradient) --}}
+                            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                                <div class="flex justify-between items-center">
+                                    <h4 class="font-bold text-purple-700 text-lg">{{ $round->name }}</h4>
                                     <span
-                                        class="text-sm font-bold text-slate-900">🛡️ {{ $match->govTeam->name ?? 'Affirmative' }}</span>
-                                    <span class="text-xs font-bold px-2 py-1 bg-indigo-600 text-white rounded">GOV</span>
+                                        class="px-3 py-1 text-xs font-semibold rounded-full {{ $round->is_published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                        {{ $round->is_published ? 'Published' : 'Draft' }}
+                                    </span>
                                 </div>
-                                <div
-                                    class="flex justify-between items-center p-3 bg-gradient-to-r from-rose-50 to-pink-50 rounded-lg shadow-sm {{ $match->winner_id == $match->opp_team_id ? 'ring-2 ring-green-500' : '' }}">
-                                    <span
-                                        class="text-sm font-bold text-slate-900">🔥 {{ $match->oppTeam->name ?? 'Opposition' }}</span>
-                                    <span class="text-xs font-bold px-2 py-1 bg-rose-600 text-white rounded">OPP</span>
-                                </div>
+                                @if($round->motion)
+                                    <div class="mt-2 text-sm text-black">
+                                        <span class="font-semibold">Motion:</span> {{ $round->motion }}
+                                    </div>
+                                @endif
                             </div>
-                        @endif
 
-                        <div class="mt-4 pt-3 border-t border-slate-100">
-                            <p class="text-xs text-slate-500">
-                                <span class="font-medium text-slate-700">⚖️ Adjudicator:</span>
-                                {{ $match->adjudicator->name ?? 'TBA' }}
-                            </p>
+                            {{-- Matches Table --}}
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th scope="col"
+                                                class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                                                Venue / Room</th>
+                                            <th scope="col"
+                                                class="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider">
+                                                Proposition (Gov)</th>
+                                            <th scope="col"
+                                                class="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider">
+                                                VS</th>
+                                            <th scope="col"
+                                                class="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider">
+                                                Opposition (Opp)</th>
+                                            <th scope="col"
+                                                class="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider">
+                                                Adjudicators</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        @forelse($round->matches as $match)
+                                            <tr class="hover:bg-gray-50 transition-colors">
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-black">
+                                                    {{ $match->room->name ?? 'TBA' }}
+                                                </td>
+
+                                                {{-- Team Gov --}}
+                                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                    <div class="text-sm font-bold text-black">{{ $match->govTeam->emoji ?? '🛡️' }}
+                                                        {{ $match->govTeam->name ?? 'N/A' }}</div>
+                                                    <div class="text-xs text-black">{{ $match->govTeam->institution ?? '' }}</div>
+                                                </td>
+
+                                                {{-- VS Badge --}}
+                                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                    <span
+                                                        class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-black bg-gray-200 rounded">
+                                                        VS
+                                                    </span>
+                                                </td>
+
+                                                {{-- Team Opp --}}
+                                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                                    <div class="text-sm font-bold text-black">{{ $match->oppTeam->emoji ?? '🔥' }}
+                                                        {{ $match->oppTeam->name ?? 'N/A' }}</div>
+                                                    <div class="text-xs text-black">{{ $match->oppTeam->institution ?? '' }}</div>
+                                                </td>
+
+                                                {{-- Adjudicators --}}
+                                                <td class="px-6 py-4 text-center">
+                                                    <div class="flex flex-col items-center gap-1">
+                                                        @if($match->adjudicator)
+                                                            <span
+                                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                                                                {{ $match->adjudicator->name }}
+                                                            </span>
+                                                        @else
+                                                            <span class="text-xs text-black italic">No Adjudicator</span>
+                                                        @endif
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="5" class="px-6 py-10 text-center text-black">
+                                                    Belum ada pairing/match untuk ronde ini.
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
+                    @endforeach
+                @else
+                    <div class="p-10 text-center">
+                        <svg class="mx-auto h-12 w-12 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                        <h3 class="mt-2 text-sm font-medium text-black">Tidak ada data</h3>
+                        <p class="mt-1 text-sm text-black">Jadwal pertandingan belum tersedia.</p>
                     </div>
-                @endforeach
+                @endif
             </div>
         </div>
-    @empty
-        <div class="text-center py-12 bg-white rounded-2xl border border-dashed border-slate-300">
-            <p class="text-sm text-slate-500">No rounds or matches published yet.</p>
-        </div>
-    @endforelse
-</div>
-
+    </div>
 @endsection

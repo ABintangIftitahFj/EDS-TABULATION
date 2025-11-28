@@ -5,8 +5,8 @@
 @section('content')
     <div class="sm:flex sm:items-center">
         <div class="sm:flex-auto">
-            <h1 class="text-2xl font-semibold text-slate-900">Ballot Entry</h1>
-            <p class="mt-2 text-sm text-slate-700">Select a match to enter scores.</p>
+            <h1 class="text-2xl font-semibold text-black">Ballot Entry</h1>
+            <p class="mt-2 text-sm text-black">Select a match to enter scores.</p>
         </div>
     </div>
 
@@ -14,9 +14,9 @@
     <div class="mt-6">
         <form action="{{ route('admin.ballots.index') }}" method="GET" class="flex gap-4 items-end">
             <div>
-                <label for="tournament_id" class="block text-sm font-medium leading-6 text-slate-900">Tournament</label>
+                <label for="tournament_id" class="block text-sm font-medium leading-6 text-black">Tournament</label>
                 <select id="tournament_id" name="tournament_id" onchange="this.form.submit()"
-                    class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-slate-900 ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                    class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-black ring-1 ring-inset ring-slate-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
                     @foreach($tournaments as $tournament)
                         <option value="{{ $tournament->id }}" {{ $selectedTournament && $selectedTournament->id == $tournament->id ? 'selected' : '' }}>
                             {{ $tournament->name }}
@@ -35,14 +35,14 @@
                         <thead class="bg-slate-50">
                             <tr>
                                 <th scope="col"
-                                    class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900 sm:pl-6">Round
+                                    class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-black sm:pl-6">Round
                                 </th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Room</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Matchup
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-black">Room</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-black">Matchup
                                 </th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-black">
                                     Adjudicators</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Status
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-black">Status
                                 </th>
                                 <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
                                     <span class="sr-only">Enter</span>
@@ -52,11 +52,11 @@
                         <tbody class="divide-y divide-slate-200 bg-white">
                             @forelse($matches as $match)
                                 <tr>
-                                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-slate-900 sm:pl-6">
+                                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-black sm:pl-6">
                                         {{ $match->round->name }}</td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-500">
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">
                                         {{ $match->room->name ?? 'TBA' }}</td>
-                                    <td class="px-3 py-4 text-sm text-slate-500">
+                                    <td class="px-3 py-4 text-sm text-black">
                                         @if($selectedTournament->format === 'british')
                                             OG: {{ $match->ogTeam->name }}<br>
                                             OO: {{ $match->ooTeam->name }}<br>
@@ -67,10 +67,10 @@
                                             Opp: {{ $match->oppTeam->name }}
                                         @endif
                                     </td>
-                                    <td class="px-3 py-4 text-sm text-slate-500">
+                                    <td class="px-3 py-4 text-sm text-black">
                                         {{ $match->adjudicators->pluck('name')->join(', ') }}
                                     </td>
-                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-slate-500">
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-black">
                                         <span
                                             class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset {{ $match->result_status === 'confirmed' ? 'bg-green-50 text-green-700 ring-green-600/20' : 'bg-yellow-50 text-yellow-800 ring-yellow-600/20' }}">
                                             {{ ucfirst($match->result_status ?? 'Pending') }}
@@ -85,7 +85,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-12 text-center text-sm text-slate-500">
+                                    <td colspan="6" class="px-6 py-12 text-center text-sm text-black">
                                         No matches found for this tournament.
                                     </td>
                                 </tr>

@@ -12,11 +12,13 @@ class Match extends Model
     protected $fillable = [
         'round_id', 'room_id', 'adjudicator_id', 'gov_team_id', 'opp_team_id', 
         'winner_id', 'panel_judges', 'status', 'is_completed',
-        'final_score_team_a', 'final_score_team_b', 'winner_team_id'
+        'final_score_team_a', 'final_score_team_b', 'winner_team_id',
+        'ballot_password', 'is_ballot_submitted'
     ];
 
     protected $casts = [
         'is_completed' => 'boolean',
+        'is_ballot_submitted' => 'boolean',
         'final_score_team_a' => 'decimal:2',
         'final_score_team_b' => 'decimal:2',
     ];

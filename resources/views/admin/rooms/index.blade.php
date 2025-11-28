@@ -5,11 +5,11 @@
 @section('content')
     <div class="mb-8 flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-slate-900">Rooms</h1>
-            <p class="text-slate-500">Manage debate rooms and venues</p>
+            <h1 class="text-2xl font-bold text-black">Rooms</h1>
+            <p class="text-black">Manage debate rooms and venues</p>
         </div>
         <a href="{{ route('admin.rooms.create') }}"
-            class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
+            class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-black shadow-sm hover:bg-indigo-500">
             + Add Room
         </a>
     </div>
@@ -25,13 +25,13 @@
             <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Room Name
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Location
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Capacity
                         </th>
                         <th class="relative px-6 py-3">
@@ -43,13 +43,13 @@
                     @forelse($rooms as $room)
                         <tr class="hover:bg-slate-50">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-slate-900">{{ $room->name }}</div>
+                                <div class="text-sm font-medium text-black">{{ $room->name }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-slate-500">{{ $room->location ?? 'N/A' }}</div>
+                                <div class="text-sm text-black">{{ $room->location ?? 'N/A' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-slate-500">{{ $room->capacity ?? 'N/A' }}</div>
+                                <div class="text-sm text-black">{{ $room->capacity ?? 'N/A' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <a href="{{ route('admin.rooms.edit', $room) }}"
@@ -64,7 +64,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-12 text-center text-slate-500">
+                            <td colspan="4" class="px-6 py-12 text-center text-black">
                                 No rooms found. <a href="{{ route('admin.rooms.create') }}"
                                     class="text-indigo-600 hover:text-indigo-500">Add one</a>
                             </td>

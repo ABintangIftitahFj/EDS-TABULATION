@@ -14,6 +14,8 @@ Route::controller(App\Http\Controllers\TournamentController::class)->group(funct
     Route::get('/tournaments/{id}/standings', 'standings')->name('tournaments.standings');
     Route::get('/tournaments/{id}/matches', 'matches')->name('tournaments.matches');
     Route::get('/tournaments/{id}/motions', 'motions')->name('tournaments.motions');
+    Route::get('/tournaments/{id}/results', 'results')->name('tournaments.results');
+    Route::get('/tournaments/{id}/speakers', 'speakers')->name('tournaments.speakers');
 });
 
 Route::controller(App\Http\Controllers\ArticleController::class)->group(function () {
@@ -70,6 +72,25 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/matches/{match}/reviews', [App\Http\Controllers\Admin\AdjudicatorReviewController::class, 'create'])->name('adjudicator-reviews.create');
     Route::post('/matches/{match}/reviews', [App\Http\Controllers\Admin\AdjudicatorReviewController::class, 'store'])->name('adjudicator-reviews.store');
     Route::delete('/reviews/{review}', [App\Http\Controllers\Admin\AdjudicatorReviewController::class, 'destroy'])->name('adjudicator-reviews.destroy');
+
+    // Match Management & Scoring
+    Route::get('/match-scoring', [App\Http\Controllers\Admin\MatchScoringController::class, 'index'])->name('match-scoring.index');
+    Route::get('/match-scoring/{tournament}', [App\Http\Controllers\Admin\MatchScoringController::class, 'show'])->name('match-scoring.show');
+    Route::get('/tournament-dashboard/{tournament}', [App\Http\Controllers\Admin\MatchScoringController::class, 'dashboard'])->name('tournament-dashboard');
+});
+
+// API Routes for AJAX
+Route::prefix('api')->middleware(['auth'])->group(function () {
+    Route::get('/tournaments/{tournament}/rounds', [App\Http\Controllers\Api\MatchManagementController::class, 'getRounds']);
+    Route::get('/rounds/{round}/matches', [App\Http\Controllers\Api\MatchManagementController::class, 'getMatches']);
+    Route::get('/matches/{match}/adjudicators', [App\Http\Controllers\Api\MatchManagementController::class, 'getAdjudicatorsByDraw'])->name('api.draw.adjudicators');
+    Route::get('/teams/{team}/speakers', [App\Http\Controllers\Api\MatchManagementController::class, 'getSpeakersByTeam'])->name('api.team.speakers');
+    Route::post('/matches/{match}/score', [App\Http\Controllers\Api\MatchManagementController::class, 'submitScore'])->name('api.match.score');
+    Route::post('/rounds/{round}/publish-draw', [App\Http\Controllers\Api\MatchManagementController::class, 'publishDraw'])->name('api.draw.publish');
+    Route::post('/rounds/{round}/publish-motion', [App\Http\Controllers\Api\MatchManagementController::class, 'publishMotion'])->name('api.motion.publish');
+    Route::get('/tournaments/{tournament}/ballot-status/{round?}', [App\Http\Controllers\Api\MatchManagementController::class, 'getBallotStatus']);
+    Route::post('/verify-ballot-password', [App\Http\Controllers\Api\MatchManagementController::class, 'verifyBallotPassword']);
+    Route::get('/matches/{match}/details', [App\Http\Controllers\Admin\MatchScoringController::class, 'getMatchDetails']);
 });
 
 require __DIR__ . '/auth.php';

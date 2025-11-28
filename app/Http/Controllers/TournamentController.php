@@ -15,7 +15,9 @@ class TournamentController extends Controller
 
     public function show($id)
     {
-        $tournament = Tournament::withCount(['teams', 'adjudicators', 'rounds'])->findOrFail($id);
+        $tournament = Tournament::with(['teams', 'adjudicators', 'rounds'])
+            ->withCount(['teams', 'adjudicators', 'rounds'])
+            ->findOrFail($id);
         return view('tournaments.show', compact('tournament'));
     }
 
@@ -55,5 +57,54 @@ class TournamentController extends Controller
         ])->findOrFail($id);
 
         return view('tournaments.motions', compact('tournament'));
+    }
+
+    public function results($id, Request $request)
+    {
+        $roundId = $request->get('round_id');
+        
+        $tournament = Tournament::with([
+            'rounds' => function ($query) use ($roundId) {
+                if ($roundId) {
+                    $query->where('id', $roundId);
+                }
+            },
+            'rounds.matches' => function ($query) {
+                $query->with([
+                    'govTeam.speakers',
+                    'oppTeam.speakers',
+                    'adjudicator',
+                    'room',
+                    'winner',
+                    'ballots.speaker',
+                    'ballots.adjudicator'
+                ])->where('is_completed', true);
+            }
+        ])->findOrFail($id);
+
+        // Get all rounds for dropdown (separate query for dropdown options)
+        $allRounds = Tournament::findOrFail($id)->rounds;
+
+        return view('tournaments.results', compact('tournament', 'allRounds', 'roundId'));
+    }
+
+    public function speakers($id)
+    {
+        $tournament = Tournament::with([
+            'teams.speakers' => function ($query) {
+                $query->orderBy('total_score', 'desc');
+            }
+        ])->findOrFail($id);
+
+        // Flatten and sort all speakers
+        $speakers = $tournament->teams->flatMap->speakers
+                   ->sortByDesc('total_score')
+                   ->values()
+                   ->map(function ($speaker, $index) {
+                       $speaker->rank = $index + 1;
+                       return $speaker;
+                   });
+
+        return view('tournaments.speakers', compact('tournament', 'speakers'));
     }
 }

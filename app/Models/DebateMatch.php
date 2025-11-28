@@ -51,6 +51,11 @@ class DebateMatch extends Model
 
     public function ballots()
     {
-        return $this->hasMany(Ballot::class);
+        return $this->hasMany(Ballot::class, 'match_id');
+    }
+
+    public function adjudicatorReviews()
+    {
+        return $this->hasMany(AdjudicatorReview::class, 'match_id');
     }
 }

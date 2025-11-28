@@ -6,17 +6,17 @@
     <div class="mb-8">
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-3xl font-bold text-slate-900">{{ $tournament->name }}</h1>
-                <p class="text-slate-500 mt-1">{{ $tournament->format }} • {{ $tournament->location }}</p>
+                <h1 class="text-3xl font-bold text-black">{{ $tournament->name }}</h1>
+                <p class="text-black mt-1">{{ $tournament->format }} • {{ $tournament->location }}</p>
             </div>
             <div class="flex gap-3">
                 <a href="{{ route('admin.tournaments.edit', $tournament) }}"
-                    class="inline-flex items-center px-4 py-2 bg-white border border-slate-300 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">
+                    class="inline-flex items-center px-4 py-2 bg-white border border-slate-300 rounded-lg text-sm font-medium text-black hover:bg-slate-50">
                     Edit Tournament
                 </a>
                 <span
                     class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-                    {{ $tournament->status === 'ongoing' ? 'bg-green-100 text-green-800' : ($tournament->status === 'upcoming' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-800') }}">
+                    {{ $tournament->status === 'ongoing' ? 'bg-green-100 text-green-800' : ($tournament->status === 'upcoming' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-black') }}">
                     {{ ucfirst($tournament->status) }}
                 </span>
             </div>
@@ -25,7 +25,7 @@
 
     <!-- Stats Grid -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div class="bg-blue-600 rounded-xl shadow-lg p-6 text-white border-2 border-blue-700">
+        <div class="bg-blue-600 rounded-xl shadow-lg p-6 text-black border-2 border-blue-700">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-blue-50 text-sm font-medium uppercase tracking-wide">Teams</p>
@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        <div class="bg-purple-600 rounded-xl shadow-lg p-6 text-white border-2 border-purple-700">
+        <div class="bg-purple-600 rounded-xl shadow-lg p-6 text-black border-2 border-purple-700">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-purple-50 text-sm font-medium uppercase tracking-wide">Adjudicators</p>
@@ -55,7 +55,7 @@
             </div>
         </div>
 
-        <div class="bg-green-600 rounded-xl shadow-lg p-6 text-white border-2 border-green-700">
+        <div class="bg-green-600 rounded-xl shadow-lg p-6 text-black border-2 border-green-700">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-green-50 text-sm font-medium uppercase tracking-wide">Rounds</p>
@@ -70,7 +70,7 @@
             </div>
         </div>
 
-        <div class="bg-orange-600 rounded-xl shadow-lg p-6 text-white border-2 border-orange-700">
+        <div class="bg-orange-600 rounded-xl shadow-lg p-6 text-black border-2 border-orange-700">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-orange-50 text-sm font-medium uppercase tracking-wide">Speakers</p>
@@ -98,8 +98,8 @@
                     </svg>
                 </div>
                 <div>
-                    <h3 class="font-semibold text-slate-900">Import Data</h3>
-                    <p class="text-sm text-slate-500">Upload CSV files</p>
+                    <h3 class="font-semibold text-black">Import Data</h3>
+                    <p class="text-sm text-black">Upload CSV files</p>
                 </div>
             </div>
         </a>
@@ -114,8 +114,8 @@
                     </svg>
                 </div>
                 <div>
-                    <h3 class="font-semibold text-slate-900">Create Round</h3>
-                    <p class="text-sm text-slate-500">Add new round</p>
+                    <h3 class="font-semibold text-black">Create Round</h3>
+                    <p class="text-sm text-black">Add new round</p>
                 </div>
             </div>
         </a>
@@ -130,8 +130,8 @@
                     </svg>
                 </div>
                 <div>
-                    <h3 class="font-semibold text-slate-900">Create Match</h3>
-                    <p class="text-sm text-slate-500">Generate pairings</p>
+                    <h3 class="font-semibold text-black">Create Match</h3>
+                    <p class="text-sm text-black">Generate pairings</p>
                 </div>
             </div>
         </a>
@@ -146,11 +146,11 @@
                     data-tab="teams">
                     Teams
                 </button>
-                <button class="tab-button px-6 py-4 text-sm font-medium border-b-2 border-transparent text-slate-500"
+                <button class="tab-button px-6 py-4 text-sm font-medium border-b-2 border-transparent text-black"
                     data-tab="adjudicators">
                     Adjudicators
                 </button>
-                <button class="tab-button px-6 py-4 text-sm font-medium border-b-2 border-transparent text-slate-500"
+                <button class="tab-button px-6 py-4 text-sm font-medium border-b-2 border-transparent text-black"
                     data-tab="rounds">
                     Rounds
                 </button>
@@ -164,24 +164,24 @@
                     <table class="min-w-full divide-y divide-slate-200">
                         <thead>
                             <tr>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Team</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Institution
+                                <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Team</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Institution
                                 </th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Speakers</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Speakers</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-200">
                             @forelse($tournament->teams as $team)
                                 <tr>
-                                    <td class="px-4 py-3 text-sm font-medium text-slate-900">{{ $team->name }}</td>
-                                    <td class="px-4 py-3 text-sm text-slate-500">{{ $team->institution }}</td>
-                                    <td class="px-4 py-3 text-sm text-slate-500">
+                                    <td class="px-4 py-3 text-sm font-medium text-black">{{ $team->name }}</td>
+                                    <td class="px-4 py-3 text-sm text-black">{{ $team->institution }}</td>
+                                    <td class="px-4 py-3 text-sm text-black">
                                         {{ $team->speakers->pluck('name')->join(', ') }}
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="px-4 py-8 text-center text-slate-500">No teams yet</td>
+                                    <td colspan="3" class="px-4 py-8 text-center text-black">No teams yet</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -195,22 +195,22 @@
                     <table class="min-w-full divide-y divide-slate-200">
                         <thead>
                             <tr>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Name</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Institution
+                                <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Name</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Institution
                                 </th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Rating</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Rating</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-200">
                             @forelse($tournament->adjudicators as $adj)
                                 <tr>
-                                    <td class="px-4 py-3 text-sm font-medium text-slate-900">{{ $adj->name }}</td>
-                                    <td class="px-4 py-3 text-sm text-slate-500">{{ $adj->institution }}</td>
-                                    <td class="px-4 py-3 text-sm text-slate-500">{{ $adj->rating ?? 'N/A' }}</td>
+                                    <td class="px-4 py-3 text-sm font-medium text-black">{{ $adj->name }}</td>
+                                    <td class="px-4 py-3 text-sm text-black">{{ $adj->institution }}</td>
+                                    <td class="px-4 py-3 text-sm text-black">{{ $adj->rating ?? 'N/A' }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="px-4 py-8 text-center text-slate-500">No adjudicators yet
+                                    <td colspan="3" class="px-4 py-8 text-center text-black">No adjudicators yet
                                     </td>
                                 </tr>
                             @endforelse
@@ -225,19 +225,19 @@
                     <table class="min-w-full divide-y divide-slate-200">
                         <thead>
                             <tr>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Round</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase">Motion</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Round</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Motion</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-200">
                             @forelse($tournament->rounds as $round)
                                 <tr>
-                                    <td class="px-4 py-3 text-sm font-medium text-slate-900">{{ $round->name }}</td>
-                                    <td class="px-4 py-3 text-sm text-slate-500">{{ $round->motion ?? 'TBA' }}</td>
+                                    <td class="px-4 py-3 text-sm font-medium text-black">{{ $round->name }}</td>
+                                    <td class="px-4 py-3 text-sm text-black">{{ $round->motion ?? 'TBA' }}</td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="2" class="px-4 py-8 text-center text-slate-500">No rounds yet</td>
+                                    <td colspan="2" class="px-4 py-8 text-center text-black">No rounds yet</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -257,10 +257,10 @@
                 // Update buttons
                 document.querySelectorAll('.tab-button').forEach(btn => {
                     btn.classList.remove('border-indigo-600', 'text-indigo-600', 'active');
-                    btn.classList.add('border-transparent', 'text-slate-500');
+                    btn.classList.add('border-transparent', 'text-black');
                 });
                 button.classList.add('border-indigo-600', 'text-indigo-600', 'active');
-                button.classList.remove('border-transparent', 'text-slate-500');
+                button.classList.remove('border-transparent', 'text-black');
 
                 // Update content
                 document.querySelectorAll('.tab-content').forEach(content => {

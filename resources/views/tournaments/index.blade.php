@@ -4,10 +4,10 @@
 
 <div class="md:flex md:items-center md:justify-between mb-8">
     <div class="min-w-0 flex-1">
-        <h2 class="text-2xl font-bold leading-7 text-slate-900 sm:truncate sm:text-3xl sm:tracking-tight">
+        <h2 class="text-2xl font-bold leading-7 text-black sm:truncate sm:text-3xl sm:tracking-tight">
             Tournaments
         </h2>
-        <p class="mt-1 text-sm text-slate-500">
+        <p class="mt-1 text-sm text-black">
             View ongoing and past debate tournaments.
         </p>
     </div>
@@ -20,21 +20,21 @@
             <div class="p-6">
                 <div class="flex items-center justify-between">
                     <span
-                        class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset {{ $tournament->status === 'ongoing' ? 'bg-green-50 text-green-700 ring-green-600/20' : 'bg-slate-50 text-slate-600 ring-slate-500/10' }}">
+                        class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset {{ $tournament->status === 'ongoing' ? 'bg-green-50 text-green-700 ring-green-600/20' : 'bg-slate-50 text-black ring-slate-500/10' }}">
                         {{ ucfirst($tournament->status) }}
                     </span>
-                    <span class="text-xs text-slate-500">{{ $tournament->format }}</span>
+                    <span class="text-xs text-black">{{ $tournament->format }}</span>
                 </div>
-                <h3 class="mt-4 text-lg font-semibold leading-6 text-slate-900">
+                <h3 class="mt-4 text-lg font-semibold leading-6 text-black">
                     <a href="/tournaments/{{ $tournament->id }}">
                         <span class="absolute inset-0"></span>
                         {{ $tournament->name }}
                     </a>
                 </h3>
-                <p class="mt-2 text-sm text-slate-500 line-clamp-2">
+                <p class="mt-2 text-sm text-black line-clamp-2">
                     {{ $tournament->description ?? 'No description available.' }}
                 </p>
-                <div class="mt-6 flex items-center gap-x-4 text-xs text-slate-500">
+                <div class="mt-6 flex items-center gap-x-4 text-xs text-black">
                     <div class="flex items-center gap-x-1">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -57,13 +57,13 @@
     @empty
         <!-- Empty State -->
         <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-dashed border-slate-300">
-            <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+            <svg class="mx-auto h-12 w-12 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                 aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
-            <h3 class="mt-2 text-sm font-semibold text-slate-900">No tournaments found</h3>
-            <p class="mt-1 text-sm text-slate-500">Check back later for upcoming events.</p>
+            <h3 class="mt-2 text-sm font-semibold text-black">No tournaments found</h3>
+            <p class="mt-1 text-sm text-black">Check back later for upcoming events.</p>
         </div>
     @endforelse
 </div>

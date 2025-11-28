@@ -4,8 +4,8 @@
 
 @section('content')
     <div class="mb-8">
-        <h1 class="text-2xl font-bold text-slate-900">Create New Match</h1>
-        <p class="text-slate-500">Set up a debate match pairing</p>
+        <h1 class="text-2xl font-bold text-black">Create New Match</h1>
+        <p class="text-black">Set up a debate match pairing</p>
     </div>
 
     <div class="bg-white overflow-hidden rounded-xl shadow-sm ring-1 ring-slate-200 p-6">
@@ -14,7 +14,7 @@
 
             <div class="space-y-6">
                 <div>
-                    <label for="round_id" class="block text-sm font-medium text-slate-700">Round</label>
+                    <label for="round_id" class="block text-sm font-medium text-black">Round</label>
                     <select id="round_id" name="round_id" required
                         class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                         <option value="">Select Round</option>
@@ -30,7 +30,7 @@
                 </div>
 
                 <div>
-                    <label for="room_id" class="block text-sm font-medium text-slate-700">Room</label>
+                    <label for="room_id" class="block text-sm font-medium text-black">Room</label>
                     <select id="room_id" name="room_id"
                         class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                         <option value="">Select Room (Optional)</option>
@@ -45,7 +45,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="og_team_id" class="block text-sm font-medium text-slate-700">Opening Government
+                        <label for="og_team_id" class="block text-sm font-medium text-black">Opening Government
                             (OG)</label>
                         <select id="og_team_id" name="og_team_id" required
                             class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
@@ -60,7 +60,7 @@
                     </div>
 
                     <div>
-                        <label for="oo_team_id" class="block text-sm font-medium text-slate-700">Opening Opposition
+                        <label for="oo_team_id" class="block text-sm font-medium text-black">Opening Opposition
                             (OO)</label>
                         <select id="oo_team_id" name="oo_team_id" required
                             class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
@@ -75,7 +75,7 @@
                     </div>
 
                     <div>
-                        <label for="cg_team_id" class="block text-sm font-medium text-slate-700">Closing Government
+                        <label for="cg_team_id" class="block text-sm font-medium text-black">Closing Government
                             (CG)</label>
                         <select id="cg_team_id" name="cg_team_id" required
                             class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
@@ -90,7 +90,7 @@
                     </div>
 
                     <div>
-                        <label for="co_team_id" class="block text-sm font-medium text-slate-700">Closing Opposition
+                        <label for="co_team_id" class="block text-sm font-medium text-black">Closing Opposition
                             (CO)</label>
                         <select id="co_team_id" name="co_team_id" required
                             class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
@@ -106,7 +106,7 @@
                 </div>
 
                 <div>
-                    <label for="chair_id" class="block text-sm font-medium text-slate-700">Chair Adjudicator</label>
+                    <label for="chair_id" class="block text-sm font-medium text-black">Chair Adjudicator</label>
                     <select id="chair_id" name="chair_id"
                         class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                         <option value="">Select Chair (Optional)</option>
@@ -123,11 +123,11 @@
 
             <div class="mt-6 flex items-center justify-end gap-x-3">
                 <a href="{{ route('admin.matches.index') }}"
-                    class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50">
+                    class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-black shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50">
                     Cancel
                 </a>
                 <button type="submit"
-                    class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
+                    class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-black shadow-sm hover:bg-indigo-500">
                     Create Match
                 </button>
             </div>

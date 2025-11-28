@@ -5,11 +5,11 @@
 @section('content')
     <div class="mb-8 flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-slate-900">Teams</h1>
-            <p class="text-slate-500">Manage tournament teams and speakers</p>
+            <h1 class="text-2xl font-bold text-black">Teams</h1>
+            <p class="text-black">Manage tournament teams and speakers</p>
         </div>
         <a href="{{ route('admin.teams.create') }}"
-            class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+            class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-black shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
             + Add Team
         </a>
     </div>
@@ -26,23 +26,23 @@
                 <thead class="bg-slate-50">
                     <tr>
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                            class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Team Name
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                            class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Institution
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                            class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Tournament
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                            class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Speakers
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                            class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Points
                         </th>
                         <th scope="col" class="relative px-6 py-3">
@@ -54,23 +54,23 @@
                     @forelse($teams as $team)
                         <tr class="hover:bg-slate-50">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-slate-900">{{ $team->name }}</div>
+                                <div class="text-sm font-medium text-black">{{ $team->name }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-slate-500">{{ $team->institution }}</div>
+                                <div class="text-sm text-black">{{ $team->institution }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-slate-500">{{ $team->tournament->name ?? 'N/A' }}</div>
+                                <div class="text-sm text-black">{{ $team->tournament->name ?? 'N/A' }}</div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="text-sm text-slate-500">
+                                <div class="text-sm text-black">
                                     @foreach ($team->speakers as $speaker)
                                         <div>{{ $speaker->name }}</div>
                                     @endforeach
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-semibold text-slate-900">{{ $team->total_points ?? 0 }}</div>
+                                <div class="text-sm font-semibold text-black">{{ $team->total_points ?? 0 }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <a href="{{ route('admin.teams.edit', $team) }}"
@@ -85,7 +85,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center text-slate-500">
+                            <td colspan="6" class="px-6 py-12 text-center text-black">
                                 No teams found. <a href="{{ route('admin.teams.create') }}"
                                     class="text-indigo-600 hover:text-indigo-500">Create one</a>
                             </td>

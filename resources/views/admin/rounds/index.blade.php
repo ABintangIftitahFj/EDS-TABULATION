@@ -5,11 +5,11 @@
 @section('content')
     <div class="mb-8 flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-slate-900">Rounds</h1>
-            <p class="text-slate-500">Manage tournament rounds and motions</p>
+            <h1 class="text-2xl font-bold text-black">Rounds</h1>
+            <p class="text-black">Manage tournament rounds and motions</p>
         </div>
         <a href="{{ route('admin.rounds.create') }}"
-            class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
+            class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-black shadow-sm hover:bg-indigo-500">
             + Add Round
         </a>
     </div>
@@ -25,13 +25,13 @@
             <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Round
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Tournament
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Motion
                         </th>
                         <th class="relative px-6 py-3">
@@ -43,14 +43,14 @@
                     @forelse($rounds as $round)
                         <tr class="hover:bg-slate-50">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-slate-900">{{ $round->name }}</div>
-                                <div class="text-sm text-slate-500">Round {{ $round->round_number }}</div>
+                                <div class="text-sm font-medium text-black">{{ $round->name }}</div>
+                                <div class="text-sm text-black">Round {{ $round->round_number }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-slate-500">{{ $round->tournament->name ?? 'N/A' }}</div>
+                                <div class="text-sm text-black">{{ $round->tournament->name ?? 'N/A' }}</div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="text-sm text-slate-900">{{ $round->motion ?? 'Not set' }}</div>
+                                <div class="text-sm text-black">{{ $round->motion ?? 'Not set' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <a href="{{ route('admin.rounds.edit', $round) }}"
@@ -65,7 +65,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-6 py-12 text-center text-slate-500">
+                            <td colspan="4" class="px-6 py-12 text-center text-black">
                                 No rounds found. <a href="{{ route('admin.rounds.create') }}"
                                     class="text-indigo-600 hover:text-indigo-500">Create one</a>
                             </td>

@@ -5,14 +5,14 @@
 @section('content')
     <div class="mb-8">
         <div class="flex items-center gap-3 mb-2">
-            <a href="{{ route('admin.matches.index') }}" class="text-slate-400 hover:text-slate-600 transition-colors">
+            <a href="{{ route('admin.matches.index') }}" class="text-black hover:text-black transition-colors">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
             </a>
             <div>
-                <h1 class="text-3xl font-bold text-slate-900">Adjudicator Reviews</h1>
-                <p class="text-slate-500 mt-1">
+                <h1 class="text-3xl font-bold text-black">Adjudicator Reviews</h1>
+                <p class="text-black mt-1">
                     {{ $match->govTeam->name }} vs {{ $match->oppTeam->name }} • Round {{ $match->round->name }}
                 </p>
             </div>
@@ -32,22 +32,22 @@
     <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-6 mb-6">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-                <h3 class="text-sm font-medium text-slate-500 mb-2">Government Team</h3>
+                <h3 class="text-sm font-medium text-black mb-2">Government Team</h3>
                 <p class="text-lg font-bold text-blue-600">{{ $match->govTeam->name }}</p>
-                <p class="text-sm text-slate-500">{{ $match->govTeam->institution }}</p>
+                <p class="text-sm text-black">{{ $match->govTeam->institution }}</p>
             </div>
             <div class="text-center">
-                <h3 class="text-sm font-medium text-slate-500 mb-2">VS</h3>
+                <h3 class="text-sm font-medium text-black mb-2">VS</h3>
                 <span
                     class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-                        {{ $match->status === 'finished' ? 'bg-green-100 text-green-800' : ($match->status === 'ongoing' ? 'bg-yellow-100 text-yellow-800' : 'bg-slate-100 text-slate-800') }}">
+                        {{ $match->status === 'finished' ? 'bg-green-100 text-green-800' : ($match->status === 'ongoing' ? 'bg-yellow-100 text-yellow-800' : 'bg-slate-100 text-black') }}">
                     {{ ucfirst(str_replace('_', ' ', $match->status)) }}
                 </span>
             </div>
             <div class="text-right">
-                <h3 class="text-sm font-medium text-slate-500 mb-2">Opposition Team</h3>
+                <h3 class="text-sm font-medium text-black mb-2">Opposition Team</h3>
                 <p class="text-lg font-bold text-purple-600">{{ $match->oppTeam->name }}</p>
-                <p class="text-sm text-slate-500">{{ $match->oppTeam->institution }}</p>
+                <p class="text-sm text-black">{{ $match->oppTeam->institution }}</p>
             </div>
         </div>
 
@@ -55,17 +55,17 @@
             <div class="mt-6 pt-6 border-t border-slate-200">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div class="text-center">
-                        <p class="text-sm text-slate-500 mb-1">Final Score (Gov)</p>
+                        <p class="text-sm text-black mb-1">Final Score (Gov)</p>
                         <p class="text-3xl font-bold text-blue-600">{{ number_format($match->final_score_team_a, 2) }}</p>
                     </div>
                     <div class="text-center">
-                        <p class="text-sm text-slate-500 mb-1">Winner</p>
+                        <p class="text-sm text-black mb-1">Winner</p>
                         <p class="text-2xl font-bold text-green-600">
                             {{ $match->winnerTeam ? $match->winnerTeam->name : 'Draw' }}
                         </p>
                     </div>
                     <div class="text-center">
-                        <p class="text-sm text-slate-500 mb-1">Final Score (Opp)</p>
+                        <p class="text-sm text-black mb-1">Final Score (Opp)</p>
                         <p class="text-3xl font-bold text-purple-600">{{ number_format($match->final_score_team_b, 2) }}
                         </p>
                     </div>
@@ -78,7 +78,7 @@
     @if ($existingReviews->count() > 0)
         <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 mb-6">
             <div class="border-b border-slate-200 bg-slate-50 px-6 py-4">
-                <h3 class="text-lg font-semibold text-slate-900">Submitted Reviews
+                <h3 class="text-lg font-semibold text-black">Submitted Reviews
                     ({{ $existingReviews->count() }})</h3>
             </div>
             <div class="p-6">
@@ -96,8 +96,8 @@
                                             </svg>
                                         </div>
                                         <div>
-                                            <h4 class="font-semibold text-slate-900">{{ $review->adjudicator->name }}</h4>
-                                            <p class="text-sm text-slate-500">{{ $review->adjudicator->institution }}</p>
+                                            <h4 class="font-semibold text-black">{{ $review->adjudicator->name }}</h4>
+                                            <p class="text-sm text-black">{{ $review->adjudicator->institution }}</p>
                                         </div>
                                     </div>
                                     <div class="grid grid-cols-2 gap-4 mb-3">
@@ -112,7 +112,7 @@
                                     </div>
                                     @if ($review->comment)
                                         <div class="bg-slate-50 rounded-lg p-3">
-                                            <p class="text-sm text-slate-600">{{ $review->comment }}</p>
+                                            <p class="text-sm text-black">{{ $review->comment }}</p>
                                         </div>
                                     @endif
                                 </div>
@@ -138,7 +138,7 @@
     <!-- Add New Review Form -->
     <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200">
         <div class="border-b border-slate-200 bg-slate-50 px-6 py-4">
-            <h3 class="text-lg font-semibold text-slate-900">Add Adjudicator Review</h3>
+            <h3 class="text-lg font-semibold text-black">Add Adjudicator Review</h3>
         </div>
         <div class="p-6">
             <form action="{{ route('admin.adjudicator-reviews.store', $match) }}" method="POST">
@@ -146,7 +146,7 @@
 
                 <div class="space-y-6">
                     <div>
-                        <label for="adjudicator_id" class="block text-sm font-medium text-slate-700">Adjudicator</label>
+                        <label for="adjudicator_id" class="block text-sm font-medium text-black">Adjudicator</label>
                         <select id="adjudicator_id" name="adjudicator_id" required
                             class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                             <option value="">Select Adjudicator</option>
@@ -166,7 +166,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="score_team_a" class="block text-sm font-medium text-slate-700">
+                            <label for="score_team_a" class="block text-sm font-medium text-black">
                                 Score for {{ $match->govTeam->name }} (Gov)
                             </label>
                             <input type="number" name="score_team_a" id="score_team_a" value="{{ old('score_team_a') }}"
@@ -178,7 +178,7 @@
                         </div>
 
                         <div>
-                            <label for="score_team_b" class="block text-sm font-medium text-slate-700">
+                            <label for="score_team_b" class="block text-sm font-medium text-black">
                                 Score for {{ $match->oppTeam->name }} (Opp)
                             </label>
                             <input type="number" name="score_team_b" id="score_team_b" value="{{ old('score_team_b') }}"
@@ -191,7 +191,7 @@
                     </div>
 
                     <div>
-                        <label for="comment" class="block text-sm font-medium text-slate-700">Comment (Optional)</label>
+                        <label for="comment" class="block text-sm font-medium text-black">Comment (Optional)</label>
                         <textarea name="comment" id="comment" rows="4"
                             class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                             placeholder="Feedback on team performance...">{{ old('comment') }}</textarea>
@@ -203,11 +203,11 @@
 
                 <div class="mt-6 flex items-center justify-end gap-x-3">
                     <a href="{{ route('admin.matches.index') }}"
-                        class="rounded-md bg-white px-4 py-2 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50">
+                        class="rounded-md bg-white px-4 py-2 text-sm font-semibold text-black shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50">
                         Back to Matches
                     </a>
                     <button type="submit"
-                        class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
+                        class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-black shadow-sm hover:bg-indigo-500">
                         Submit Review
                     </button>
                 </div>

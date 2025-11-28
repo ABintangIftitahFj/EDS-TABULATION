@@ -10,16 +10,16 @@
         </div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div
-                class="inline-flex items-center rounded-full border border-slate-200 bg-white/50 px-3 py-1 text-sm leading-6 text-slate-600 backdrop-blur-sm mb-8">
+                class="inline-flex items-center rounded-full border border-slate-200 bg-white/50 px-3 py-1 text-sm leading-6 text-black backdrop-blur-sm mb-8">
                 <span class="flex h-2 w-2 rounded-full bg-indigo-500 mr-2"></span>
                 The Official Debate Society of UPI
             </div>
-            <h1 class="text-5xl md:text-7xl font-bold tracking-tight text-slate-900 mb-6">
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tight text-black mb-6">
                 Summon the fire of <br class="hidden md:block" />
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">discourse &
                     debate.</span>
             </h1>
-            <p class="mt-6 text-lg leading-8 text-slate-600 max-w-2xl mx-auto">
+            <p class="mt-6 text-lg leading-8 text-black max-w-2xl mx-auto">
                 Join a community of critical thinkers. We foster excellence in argumentation, public speaking, and
                 analytical thinking through competitive debate.
             </p>
@@ -29,7 +29,7 @@
                     View Tournaments
                 </a>
                 <a href="/about"
-                    class="text-sm font-semibold leading-6 text-slate-900 flex items-center gap-1 hover:gap-2 transition-all">
+                    class="text-sm font-semibold leading-6 text-black flex items-center gap-1 hover:gap-2 transition-all">
                     Learn more <span aria-hidden="true">→</span>
                 </a>
             </div>
@@ -41,20 +41,20 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 gap-8 md:grid-cols-4 text-center">
                 <div class="flex flex-col gap-1">
-                    <dt class="text-3xl font-bold text-slate-900">50+</dt>
-                    <dd class="text-sm font-medium text-slate-500">Active Members</dd>
+                    <dt class="text-3xl font-bold text-black">50+</dt>
+                    <dd class="text-sm font-medium text-black">Active Members</dd>
                 </div>
                 <div class="flex flex-col gap-1">
-                    <dt class="text-3xl font-bold text-slate-900">120+</dt>
-                    <dd class="text-sm font-medium text-slate-500">Awards Won</dd>
+                    <dt class="text-3xl font-bold text-black">120+</dt>
+                    <dd class="text-sm font-medium text-black">Awards Won</dd>
                 </div>
-                <div class="flex flex-col gap-1">
-                    <dt class="text-3xl font-bold text-slate-900">15</dt>
-                    <dd class="text-sm font-medium text-slate-500">Years of Excellence</dd>
+                <div class="flex flex-col-reverse">
+                    <dt class="text-3xl font-bold text-black">15</dt>
+                    <dd class="text-sm font-medium text-black">Years of Excellence</dd>
                 </div>
-                <div class="flex flex-col gap-1">
-                    <dt class="text-3xl font-bold text-slate-900">AP/BP</dt>
-                    <dd class="text-sm font-medium text-slate-500">Formats Supported</dd>
+                <div class="flex flex-col-reverse">
+                    <dt class="text-3xl font-bold text-black">AP/BP</dt>
+                    <dd class="text-sm font-medium text-black">Formats Supported</dd>
                 </div>
             </div>
         </div>
@@ -65,15 +65,15 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="mx-auto max-w-2xl lg:text-center mb-16">
                 <h2 class="text-base font-semibold leading-7 text-indigo-600">What We Do</h2>
-                <p class="mt-2 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Excellence in every motion.</p>
-                <p class="mt-6 text-lg leading-8 text-slate-600">
+                <p class="mt-2 text-3xl font-bold tracking-tight text-black sm:text-4xl">Excellence in every motion.</p>
+                <p class="mt-6 text-lg leading-8 text-black">
                     We provide a comprehensive platform for debaters to grow, compete, and manage tournaments efficiently.
                 </p>
             </div>
             <div class="mx-auto max-w-2xl lg:max-w-none">
                 <dl class="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
                     <div class="flex flex-col">
-                        <dt class="flex items-center gap-x-3 text-base font-semibold leading-7 text-slate-900">
+                        <dt class="flex items-center gap-x-3 text-base font-semibold leading-7 text-black">
                             <div class="h-10 w-10 flex items-center justify-center rounded-lg bg-indigo-50">
                                 <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                     stroke="currentColor">
@@ -83,13 +83,13 @@
                             </div>
                             Regular Training
                         </dt>
-                        <dd class="mt-4 flex flex-auto flex-col text-base leading-7 text-slate-600">
+                        <dd class="mt-4 flex flex-auto flex-col text-base leading-7 text-black">
                             <p class="flex-auto">Weekly practice sessions covering matter, manner, and method across various
                                 motion themes.</p>
                         </dd>
                     </div>
                     <div class="flex flex-col">
-                        <dt class="flex items-center gap-x-3 text-base font-semibold leading-7 text-slate-900">
+                        <dt class="flex items-center gap-x-3 text-base font-semibold leading-7 text-black">
                             <div class="h-10 w-10 flex items-center justify-center rounded-lg bg-indigo-50">
                                 <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                     stroke="currentColor">
@@ -99,13 +99,13 @@
                             </div>
                             Tournament Hosting
                         </dt>
-                        <dd class="mt-4 flex flex-auto flex-col text-base leading-7 text-slate-600">
+                        <dd class="mt-4 flex flex-auto flex-col text-base leading-7 text-black">
                             <p class="flex-auto">State-of-the-art tabulation system for managing large-scale tournaments
                                 with ease.</p>
                         </dd>
                     </div>
                     <div class="flex flex-col">
-                        <dt class="flex items-center gap-x-3 text-base font-semibold leading-7 text-slate-900">
+                        <dt class="flex items-center gap-x-3 text-base font-semibold leading-7 text-black">
                             <div class="h-10 w-10 flex items-center justify-center rounded-lg bg-indigo-50">
                                 <svg class="h-6 w-6 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                     stroke="currentColor">
@@ -115,7 +115,7 @@
                             </div>
                             Community
                         </dt>
-                        <dd class="mt-4 flex flex-auto flex-col text-base leading-7 text-slate-600">
+                        <dd class="mt-4 flex flex-auto flex-col text-base leading-7 text-black">
                             <p class="flex-auto">A vibrant network of alumni and students fostering connections beyond the
                                 debate chamber.</p>
                         </dd>
@@ -130,8 +130,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-end mb-12">
                 <div>
-                    <h2 class="text-3xl font-bold tracking-tight text-slate-900">Latest News</h2>
-                    <p class="mt-2 text-slate-600">Updates from the society and the debating world.</p>
+                    <h2 class="text-3xl font-bold tracking-tight text-black">Latest News</h2>
+                    <p class="mt-2 text-black">Updates from the society and the debating world.</p>
                 </div>
                 <a href="/articles" class="hidden md:block text-sm font-semibold text-indigo-600 hover:text-indigo-500">
                     View all posts <span aria-hidden="true">→</span>
@@ -143,18 +143,18 @@
                 <article
                     class="flex flex-col items-start justify-between bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
                     <div class="flex items-center gap-x-4 text-xs">
-                        <time datetime="2023-10-16" class="text-slate-500">Oct 16, 2023</time>
+                        <time datetime="2023-10-16" class="text-black">Oct 16, 2023</time>
                         <span
-                            class="relative z-10 rounded-full bg-slate-100 px-3 py-1.5 font-medium text-slate-600 hover:bg-slate-200">Achievement</span>
+                            class="relative z-10 rounded-full bg-slate-100 px-3 py-1.5 font-medium text-black hover:bg-slate-200">Achievement</span>
                     </div>
                     <div class="group relative">
-                        <h3 class="mt-3 text-lg font-semibold leading-6 text-slate-900 group-hover:text-slate-600">
+                        <h3 class="mt-3 text-lg font-semibold leading-6 text-black group-hover:text-black">
                             <a href="#">
                                 <span class="absolute inset-0"></span>
                                 EDS UPI Wins National Championship
                             </a>
                         </h3>
-                        <p class="mt-5 line-clamp-3 text-sm leading-6 text-slate-600">
+                        <p class="mt-5 line-clamp-3 text-sm leading-6 text-black">
                             Our delegation secured the championship title at the National University Debating
                             Championship...
                         </p>
@@ -165,18 +165,18 @@
                 <article
                     class="flex flex-col items-start justify-between bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
                     <div class="flex items-center gap-x-4 text-xs">
-                        <time datetime="2023-10-10" class="text-slate-500">Oct 10, 2023</time>
+                        <time datetime="2023-10-10" class="text-black">Oct 10, 2023</time>
                         <span
-                            class="relative z-10 rounded-full bg-slate-100 px-3 py-1.5 font-medium text-slate-600 hover:bg-slate-200">Event</span>
+                            class="relative z-10 rounded-full bg-slate-100 px-3 py-1.5 font-medium text-black hover:bg-slate-200">Event</span>
                     </div>
                     <div class="group relative">
-                        <h3 class="mt-3 text-lg font-semibold leading-6 text-slate-900 group-hover:text-slate-600">
+                        <h3 class="mt-3 text-lg font-semibold leading-6 text-black group-hover:text-black">
                             <a href="#">
                                 <span class="absolute inset-0"></span>
                                 Upcoming Internal Selection
                             </a>
                         </h3>
-                        <p class="mt-5 line-clamp-3 text-sm leading-6 text-slate-600">
+                        <p class="mt-5 line-clamp-3 text-sm leading-6 text-black">
                             We are opening registration for the internal selection process for the upcoming regional
                             tournament...
                         </p>
@@ -187,18 +187,18 @@
                 <article
                     class="flex flex-col items-start justify-between bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
                     <div class="flex items-center gap-x-4 text-xs">
-                        <time datetime="2023-09-28" class="text-slate-500">Sep 28, 2023</time>
+                        <time datetime="2023-09-28" class="text-black">Sep 28, 2023</time>
                         <span
-                            class="relative z-10 rounded-full bg-slate-100 px-3 py-1.5 font-medium text-slate-600 hover:bg-slate-200">Training</span>
+                            class="relative z-10 rounded-full bg-slate-100 px-3 py-1.5 font-medium text-black hover:bg-slate-200">Training</span>
                     </div>
                     <div class="group relative">
-                        <h3 class="mt-3 text-lg font-semibold leading-6 text-slate-900 group-hover:text-slate-600">
+                        <h3 class="mt-3 text-lg font-semibold leading-6 text-black group-hover:text-black">
                             <a href="#">
                                 <span class="absolute inset-0"></span>
                                 Weekly Training Schedule
                             </a>
                         </h3>
-                        <p class="mt-5 line-clamp-3 text-sm leading-6 text-slate-600">
+                        <p class="mt-5 line-clamp-3 text-sm leading-6 text-black">
                             Check out the new training schedule for this semester. We have added special sessions for
                             novices...
                         </p>

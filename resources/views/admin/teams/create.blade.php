@@ -4,8 +4,8 @@
 
 @section('content')
     <div class="mb-8">
-        <h1 class="text-2xl font-bold text-slate-900">Create New Team</h1>
-        <p class="text-slate-500">Add a new team to a tournament</p>
+        <h1 class="text-2xl font-bold text-black">Create New Team</h1>
+        <p class="text-black">Add a new team to a tournament</p>
     </div>
 
     <div class="bg-white overflow-hidden rounded-xl shadow-sm ring-1 ring-slate-200 p-6">
@@ -14,7 +14,7 @@
 
             <div class="space-y-6">
                 <div>
-                    <label for="tournament_id" class="block text-sm font-medium text-slate-700">Tournament</label>
+                    <label for="tournament_id" class="block text-sm font-medium text-black">Tournament</label>
                     <select id="tournament_id" name="tournament_id" required
                         class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                         <option value="">Select Tournament</option>
@@ -30,7 +30,7 @@
                 </div>
 
                 <div>
-                    <label for="name" class="block text-sm font-medium text-slate-700">Team Name</label>
+                    <label for="name" class="block text-sm font-medium text-black">Team Name</label>
                     <input type="text" name="name" id="name" value="{{ old('name') }}" required
                         class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                     @error('name')
@@ -39,7 +39,7 @@
                 </div>
 
                 <div>
-                    <label for="institution" class="block text-sm font-medium text-slate-700">Institution</label>
+                    <label for="institution" class="block text-sm font-medium text-black">Institution</label>
                     <input type="text" name="institution" id="institution" value="{{ old('institution') }}" required
                         class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                     @error('institution')
@@ -48,7 +48,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Speakers</label>
+                    <label class="block text-sm font-medium text-black mb-2">Speakers</label>
                     <div id="speakers-container" class="space-y-3">
                         <div class="speaker-input flex gap-2">
                             <input type="text" name="speakers[0][name]" placeholder="Speaker 1 Name" required
@@ -60,7 +60,7 @@
                         </div>
                     </div>
                     <button type="button" id="add-speaker"
-                        class="mt-3 inline-flex items-center px-3 py-1.5 border border-slate-300 shadow-sm text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        class="mt-3 inline-flex items-center px-3 py-1.5 border border-slate-300 shadow-sm text-sm font-medium rounded-md text-black bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         + Add Speaker
                     </button>
                     @error('speakers')
@@ -71,11 +71,11 @@
 
             <div class="mt-6 flex items-center justify-end gap-x-3">
                 <a href="{{ route('admin.teams.index') }}"
-                    class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50">
+                    class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-black shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50">
                     Cancel
                 </a>
                 <button type="submit"
-                    class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                    class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-black shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                     Create Team
                 </button>
             </div>

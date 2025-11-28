@@ -5,11 +5,11 @@
 @section('content')
     <div class="mb-8 flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-slate-900">Adjudicators</h1>
-            <p class="text-slate-500">Manage tournament adjudicators and judges</p>
+            <h1 class="text-2xl font-bold text-black">Adjudicators</h1>
+            <p class="text-black">Manage tournament adjudicators and judges</p>
         </div>
         <a href="{{ route('admin.adjudicators.create') }}"
-            class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
+            class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-black shadow-sm hover:bg-indigo-500">
             + Add Adjudicator
         </a>
     </div>
@@ -25,16 +25,16 @@
             <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Name
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Institution
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Tournament
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Rating
                         </th>
                         <th class="relative px-6 py-3">
@@ -46,16 +46,16 @@
                     @forelse($adjudicators as $adjudicator)
                         <tr class="hover:bg-slate-50">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-slate-900">{{ $adjudicator->name }}</div>
+                                <div class="text-sm font-medium text-black">{{ $adjudicator->name }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-slate-500">{{ $adjudicator->institution ?? 'N/A' }}</div>
+                                <div class="text-sm text-black">{{ $adjudicator->institution ?? 'N/A' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-slate-500">{{ $adjudicator->tournament->name ?? 'N/A' }}</div>
+                                <div class="text-sm text-black">{{ $adjudicator->tournament->name ?? 'N/A' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-semibold text-slate-900">
+                                <div class="text-sm font-semibold text-black">
                                     {{ $adjudicator->rating ? number_format($adjudicator->rating, 1) : 'N/A' }}
                                 </div>
                             </td>
@@ -73,7 +73,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-slate-500">
+                            <td colspan="5" class="px-6 py-12 text-center text-black">
                                 No adjudicators found. <a href="{{ route('admin.adjudicators.create') }}"
                                     class="text-indigo-600 hover:text-indigo-500">Add one</a>
                             </td>

@@ -1,5 +1,5 @@
 <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-xl shadow-lg overflow-hidden">
-    <div class="p-6 text-white">
+    <div class="p-6 text-black">
         <div class="flex items-start justify-between">
             <div class="flex-1">
                 <div class="flex items-center gap-2 mb-3">
@@ -52,3 +52,4 @@
         @endif
     </div>
 </div>
+

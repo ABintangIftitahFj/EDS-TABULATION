@@ -5,11 +5,11 @@
 @section('content')
     <div class="mb-8 flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-slate-900">Matches</h1>
-            <p class="text-slate-500">Manage debate matches and pairings</p>
+            <h1 class="text-2xl font-bold text-black">Matches</h1>
+            <p class="text-black">Manage debate matches and pairings</p>
         </div>
         <a href="{{ route('admin.matches.create') }}"
-            class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
+            class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-black shadow-sm hover:bg-indigo-500">
             + Create Match
         </a>
     </div>
@@ -25,19 +25,19 @@
             <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Round
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Room
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Teams
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Adjudicator
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Status
                         </th>
                         <th class="relative px-6 py-3">
@@ -49,29 +49,29 @@
                     @forelse($matches as $match)
                         <tr class="hover:bg-slate-50">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-slate-900">
+                                <div class="text-sm font-medium text-black">
                                     {{ $match->round->tournament->name ?? 'N/A' }}
                                 </div>
-                                <div class="text-sm text-slate-500">{{ $match->round->name ?? 'N/A' }}</div>
+                                <div class="text-sm text-black">{{ $match->round->name ?? 'N/A' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-slate-500">{{ $match->room->name ?? 'TBA' }}</div>
+                                <div class="text-sm text-black">{{ $match->room->name ?? 'TBA' }}</div>
                             </td>
                             <td class="px-6 py-4">
-                                <div class="text-sm text-slate-900">
+                                <div class="text-sm text-black">
                                     <div><span class="font-semibold text-blue-600">Gov:</span>
-                                        {{ $match->govTeam->name ?? 'N/A' }}</div>
+                                        {{ $match->govTeam->emoji ?? '' }} {{ $match->govTeam->name ?? 'N/A' }}</div>
                                     <div><span class="font-semibold text-purple-600">Opp:</span>
-                                        {{ $match->oppTeam->name ?? 'N/A' }}</div>
+                                        {{ $match->oppTeam->emoji ?? '' }} {{ $match->oppTeam->name ?? 'N/A' }}</div>
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-slate-500">{{ $match->adjudicator->name ?? 'TBA' }}</div>
+                                <div class="text-sm text-black">{{ $match->adjudicator->name ?? 'TBA' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span
                                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                    {{ $match->status === 'finished' ? 'bg-green-100 text-green-800' : ($match->status === 'ongoing' ? 'bg-yellow-100 text-yellow-800' : 'bg-slate-100 text-slate-800') }}">
+                                            {{ $match->status === 'finished' ? 'bg-green-100 text-green-800' : ($match->status === 'ongoing' ? 'bg-yellow-100 text-yellow-800' : 'bg-slate-100 text-black') }}">
                                     {{ ucfirst(str_replace('_', ' ', $match->status ?? 'not started')) }}
                                 </span>
                             </td>
@@ -80,8 +80,7 @@
                                     class="text-green-600 hover:text-green-900 mr-3">Reviews</a>
                                 <a href="{{ route('admin.matches.edit', $match) }}"
                                     class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                                <form action="{{ route('admin.matches.destroy', $match) }}" method="POST"
-                                    class="inline-block"
+                                <form action="{{ route('admin.matches.destroy', $match) }}" method="POST" class="inline-block"
                                     onsubmit="return confirm('Are you sure you want to delete this match?');">
                                     @csrf
                                     @method('DELETE')
@@ -91,7 +90,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center text-slate-500">
+                            <td colspan="6" class="px-6 py-12 text-center text-black">
                                 No matches found. <a href="{{ route('admin.matches.create') }}"
                                     class="text-indigo-600 hover:text-indigo-500">Create one</a>
                             </td>

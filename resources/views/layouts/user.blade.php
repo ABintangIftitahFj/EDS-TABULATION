@@ -26,34 +26,34 @@
             <div class="flex justify-between items-center h-16">
                 <!-- Logo -->
                 <div class="flex items-center">
-                    <a href="/" class="text-xl font-bold text-slate-900">EDS UPI</a>
+                    <a href="/" class="text-xl font-bold text-black">EDS UPI</a>
                 </div>
 
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex items-center space-x-8">
                     <a href="/"
-                        class="text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors">Home</a>
+                        class="text-sm font-medium text-black hover:text-black transition-colors">Home</a>
                     <a href="/tournaments"
-                        class="text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors">Tournaments</a>
+                        class="text-sm font-medium text-black hover:text-black transition-colors">Tournaments</a>
                     @guest
                         <a href="/login"
                             class="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors">Login</a>
                         <a href="/register"
-                            class="rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 transition-colors">Register</a>
+                            class="rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-black hover:bg-indigo-700 transition-colors">Register</a>
                     @else
                         <a href="/admin/dashboard"
                             class="text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors">Admin</a>
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
                             <button type="submit"
-                                class="text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors">Logout</button>
+                                class="text-sm font-medium text-black hover:text-black transition-colors">Logout</button>
                         </form>
                     @endguest
                 </div>
 
                 <!-- Mobile Menu Button -->
                 <div class="md:hidden">
-                    <button type="button" class="text-slate-700 hover:text-slate-900" onclick="toggleMobileMenu()">
+                    <button type="button" class="text-black hover:text-black" onclick="toggleMobileMenu()">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round"
                                 d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
@@ -67,9 +67,9 @@
         <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200">
             <div class="px-4 py-4 space-y-2">
                 <a href="/"
-                    class="block px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-100 rounded-md">Home</a>
+                    class="block px-3 py-2 text-base font-medium text-black hover:bg-slate-100 rounded-md">Home</a>
                 <a href="/tournaments"
-                    class="block px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-100 rounded-md">Tournaments</a>
+                    class="block px-3 py-2 text-base font-medium text-black hover:bg-slate-100 rounded-md">Tournaments</a>
                 @guest
                     <a href="/login"
                         class="block px-3 py-2 text-base font-medium text-indigo-600 hover:bg-slate-100 rounded-md">Login</a>
@@ -82,7 +82,7 @@
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit"
-                            class="w-full text-left block px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-100 rounded-md">Logout</button>
+                            class="w-full text-left block px-3 py-2 text-base font-medium text-black hover:bg-slate-100 rounded-md">Logout</button>
                     </form>
                 @endguest
             </div>
@@ -103,7 +103,7 @@
                 <!-- About Column -->
                 <div class="col-span-1 md:col-span-2">
                     <h3 class="text-lg font-bold mb-4">EDS UPI</h3>
-                    <p class="text-slate-400 text-sm leading-relaxed">
+                    <p class="text-white text-sm leading-relaxed">
                         The official debate society of Universitas Pendidikan Indonesia.
                         Fostering excellence in argumentation and critical thinking since 2009.
                     </p>
@@ -111,21 +111,21 @@
 
                 <!-- Quick Links -->
                 <div>
-                    <h4 class="text-sm font-semibold mb-4 uppercase tracking-wider text-slate-300">Quick Links</h4>
+                    <h4 class="text-sm font-semibold mb-4 uppercase tracking-wider text-white">Quick Links</h4>
                     <ul class="space-y-2">
                         <li><a href="/tournaments"
-                                class="text-sm text-slate-400 hover:text-white transition-colors">Tournaments</a></li>
+                                class="text-sm text-white hover:text-white transition-colors">Tournaments</a></li>
                         <li><a href="/articles"
-                                class="text-sm text-slate-400 hover:text-white transition-colors">News</a></li>
-                        <li><a href="/about" class="text-sm text-slate-400 hover:text-white transition-colors">About
+                                class="text-sm text-white hover:text-white transition-colors">News</a></li>
+                        <li><a href="/about" class="text-sm text-white hover:text-white transition-colors">About
                                 Us</a></li>
                     </ul>
                 </div>
 
                 <!-- Contact -->
                 <div>
-                    <h4 class="text-sm font-semibold mb-4 uppercase tracking-wider text-slate-300">Contact</h4>
-                    <ul class="space-y-2 text-sm text-slate-400">
+                    <h4 class="text-sm font-semibold mb-4 uppercase tracking-wider text-white">Contact</h4>
+                    <ul class="space-y-2 text-sm text-white">
                         <li>UPI Bandung</li>
                         <li>Gedung Geget Winda</li>
                         <li>085624705616</li>
@@ -133,7 +133,7 @@
                 </div>
             </div>
 
-            <div class="mt-8 pt-8 border-t border-slate-800 text-center text-sm text-slate-400">
+            <div class="mt-8 pt-8 border-t border-slate-800 text-center text-sm text-white">
                 &copy; {{ date('Y') }} English Debate Society UPI. All rights reserved.
             </div>
         </div>

@@ -5,11 +5,11 @@
 @section('content')
     <div class="mb-8 flex items-center justify-between">
         <div>
-            <h1 class="text-2xl font-bold text-slate-900">Tournaments</h1>
-            <p class="text-slate-500">Manage all debate tournaments</p>
+            <h1 class="text-2xl font-bold text-black">Tournaments</h1>
+            <p class="text-black">Manage all debate tournaments</p>
         </div>
         <a href="{{ route('admin.tournaments.create') }}"
-            class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
+            class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-black shadow-sm hover:bg-indigo-500">
             + Add Tournament
         </a>
     </div>
@@ -25,16 +25,16 @@
             <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Name
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Format
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Status
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
                             Date
                         </th>
                         <th class="relative px-6 py-3">
@@ -46,22 +46,22 @@
                     @forelse($tournaments as $tournament)
                         <tr class="hover:bg-slate-50">
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-slate-900">{{ $tournament->name }}</div>
-                                <div class="text-sm text-slate-500">{{ $tournament->location }}</div>
+                                <div class="text-sm font-medium text-black">{{ $tournament->name }}</div>
+                                <div class="text-sm text-black">{{ $tournament->location }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-slate-500">{{ ucfirst(str_replace('_', ' ', $tournament->format)) }}
+                                <div class="text-sm text-black">{{ ucfirst(str_replace('_', ' ', $tournament->format)) }}
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span
                                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                    {{ $tournament->status === 'ongoing' ? 'bg-green-100 text-green-800' : ($tournament->status === 'upcoming' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-slate-800') }}">
+                                    {{ $tournament->status === 'ongoing' ? 'bg-green-100 text-green-800' : ($tournament->status === 'upcoming' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-black') }}">
                                     {{ ucfirst($tournament->status) }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-slate-500">
+                                <div class="text-sm text-black">
                                     {{ $tournament->start_date ? $tournament->start_date->format('M d, Y') : 'TBA' }}
                                 </div>
                             </td>
@@ -81,7 +81,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-slate-500">
+                            <td colspan="5" class="px-6 py-12 text-center text-black">
                                 No tournaments found. <a href="{{ route('admin.tournaments.create') }}"
                                     class="text-indigo-600 hover:text-indigo-500">Create one</a>
                             </td>
