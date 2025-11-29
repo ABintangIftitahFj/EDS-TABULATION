@@ -5,42 +5,41 @@
 
         {{-- Tournament Header --}}
         <div class="mb-8">
-            <h1 class="text-4xl font-bold leading-tight text-purple-700">
-                🏆 Standings: {{ $tournament->name }}
+            <h1 class="text-5xl font-pixel leading-tight text-england-blue drop-shadow-sm">
+                🏆 STANDINGS: {{ $tournament->name }}
             </h1>
         </div>
 
         {{-- Tabs Navigation --}}
-        <div class="border-b border-slate-200 mb-8">
-            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+        <div class="border-b-4 border-slate-200 mb-8 overflow-x-auto pb-1">
+            <nav class="-mb-1 flex space-x-8 min-w-max" aria-label="Tabs">
                 <a href="/tournaments"
-                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                    ← All Tournaments
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    ← ALL TOURNAMENTS
                 </a>
                 <a href="/tournaments/{{ $tournament->id }}"
-                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                    🏠 Overview
-                </a>
-                <a href="/tournaments/{{ $tournament->id }}/standings"
-                    class="border-indigo-500 text-indigo-600 whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium"
-                    aria-current="page">
-                    🏆 Standings
-                </a>
-                <a href="/tournaments/{{ $tournament->id }}/matches"
-                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                    ⚔️ Matches & Draw
-                </a>
-                <a href="/tournaments/{{ $tournament->id }}/results"
-                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                    📊 Results
-                </a>
-                <a href="/tournaments/{{ $tournament->id }}/speakers"
-                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                    🎤 Speakers
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    🏠 OVERVIEW
                 </a>
                 <a href="/tournaments/{{ $tournament->id }}/motions"
-                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                    💡 Motions
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    💡 MOTIONS
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/standings"
+                    class="pixel-tab pixel-tab-active">
+                    🏆 STANDINGS
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/matches"
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    ⚔️ MATCHES & DRAW
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/results"
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    📊 RESULTS
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/speakers"
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    🎤 SPEAKERS
                 </a>
             </nav>
         </div>
@@ -48,94 +47,94 @@
         <!-- Standings Content -->
         <div class="mt-8" x-data="{ tab: 'teams' }">
             <!-- Sub-tabs for Team/Speaker -->
-            <div class="sm:hidden">
+            <div class="sm:hidden mb-4">
                 <label for="tabs" class="sr-only">Select a tab</label>
                 <select id="tabs" name="tabs"
-                    class="block w-full rounded-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                    class="pixel-input block w-full"
                     x-model="tab">
                     <option value="teams">Team Standings</option>
                     <option value="speakers">Speaker Standings</option>
                 </select>
             </div>
             <div class="hidden sm:block mb-6">
-                <div class="border-b border-gray-200">
-                    <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                <div class="border-b-2 border-slate-200">
+                    <nav class="-mb-0.5 flex space-x-8" aria-label="Tabs">
                         <button @click="tab = 'teams'"
-                            :class="tab === 'teams' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-black hover:border-gray-300 hover:text-black'"
-                            class="whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                            👥 Team Standings
+                            :class="tab === 'teams' ? 'border-england-blue text-england-blue' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
+                            class="whitespace-nowrap border-b-4 py-4 px-1 text-xl font-pixel transition-colors">
+                            👥 TEAM STANDINGS
                         </button>
                         <button @click="tab = 'speakers'"
-                            :class="tab === 'speakers' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-black hover:border-gray-300 hover:text-black'"
-                            class="whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                            🎤 Speaker Standings
+                            :class="tab === 'speakers' ? 'border-england-blue text-england-blue' : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'"
+                            class="whitespace-nowrap border-b-4 py-4 px-1 text-xl font-pixel transition-colors">
+                            🎤 SPEAKER STANDINGS
                         </button>
                     </nav>
                 </div>
             </div>
 
             <!-- Team Standings -->
-            <div x-show="tab === 'teams'" class="bg-white shadow-sm ring-1 ring-slate-200 rounded-xl overflow-hidden">
+            <div x-show="tab === 'teams'" class="pixel-card overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-slate-200">
-                        <thead class="bg-slate-50">
+                    <table class="min-w-full divide-y-2 divide-slate-900">
+                        <thead class="bg-england-red text-white">
                             <tr>
                                 <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Rank
+                                    class="px-6 py-4 text-left text-lg font-pixel tracking-wider border-r-2 border-slate-900/20">Rank
                                 </th>
                                 <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Team
+                                    class="px-6 py-4 text-left text-lg font-pixel tracking-wider border-r-2 border-slate-900/20">Team
                                 </th>
                                 <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                                    class="px-6 py-4 text-left text-lg font-pixel tracking-wider border-r-2 border-slate-900/20">
                                     Institution</th>
                                 <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">VP
+                                    class="px-6 py-4 text-left text-lg font-pixel tracking-wider border-r-2 border-slate-900/20">VP
                                 </th>
                                 <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                                    class="px-6 py-4 text-left text-lg font-pixel tracking-wider">
                                     Speaker Score</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-slate-200">
+                        <tbody class="bg-white divide-y-2 divide-slate-100">
                             @forelse($tournament->teams as $index => $team)
                                 <tr
-                                    class="{{ $index < 3 ? 'bg-gradient-to-r from-yellow-50 to-orange-50' : 'hover:bg-slate-50' }} transition-colors">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    class="{{ $index < 3 ? 'bg-yellow-50' : 'hover:bg-soft-pink/10' }} transition-colors">
+                                    <td class="px-6 py-4 whitespace-nowrap text-lg font-pixel border-r border-slate-100">
                                         @if($index === 0)
-                                            <span class="text-2xl" title="1st Place">🥇</span>
+                                            <span class="text-3xl drop-shadow-sm" title="1st Place">🥇</span>
                                         @elseif($index === 1)
-                                            <span class="text-2xl" title="2nd Place">🥈</span>
+                                            <span class="text-3xl drop-shadow-sm" title="2nd Place">🥈</span>
                                         @elseif($index === 2)
-                                            <span class="text-2xl" title="3rd Place">🥉</span>
+                                            <span class="text-3xl drop-shadow-sm" title="3rd Place">🥉</span>
                                         @else
-                                            <span class="text-black font-medium">{{ $index + 1 }}</span>
+                                            <span class="text-slate-600 font-bold">#{{ $index + 1 }}</span>
                                         @endif
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-6 py-4 whitespace-nowrap border-r border-slate-100">
                                         <div class="flex items-center gap-2">
-                                            <span class="text-sm font-bold text-black">{{ $team->emoji ?? '👥' }}
+                                            <span class="text-base font-bold text-black font-sans">{{ $team->emoji ?? '👥' }}
                                                 {{ $team->name }}</span>
                                             @if($index < 4)
                                                 <span
-                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">Break</span>
+                                                    class="inline-flex items-center px-2 py-0.5 border-2 border-indigo-900 text-xs font-pixel bg-indigo-100 text-indigo-900 shadow-sm">BREAK</span>
                                             @endif
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-black">🏦 {{ $team->institution }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700 font-sans border-r border-slate-100">🏦 {{ $team->institution }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap border-r border-slate-100">
                                         <span
-                                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-indigo-100 text-indigo-700">
+                                            class="inline-flex items-center px-3 py-1 text-sm font-bold font-pixel bg-england-blue text-white border-2 border-black shadow-pixel-sm">
                                             ⚡ {{ $team->total_vp }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-black">📊
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold font-mono text-black">
                                         {{ $team->total_speaker_score }}
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-12 text-center text-sm text-black">
+                                    <td colspan="5" class="px-6 py-12 text-center text-lg font-pixel text-slate-500">
                                         No teams found or standings not yet generated.
                                     </td>
                                 </tr>
@@ -147,69 +146,68 @@
 
             <!-- Speaker Standings -->
             <div x-show="tab === 'speakers'" style="display: none;"
-                class="bg-white shadow-sm ring-1 ring-slate-200 rounded-xl overflow-hidden">
+                class="pixel-card overflow-hidden">
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-slate-200">
-                        <thead class="bg-slate-50">
+                    <table class="min-w-full divide-y-2 divide-slate-900">
+                        <thead class="bg-england-blue text-white">
                             <tr>
                                 <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Rank
+                                    class="px-6 py-4 text-left text-lg font-pixel tracking-wider border-r-2 border-white/20">Rank
                                 </th>
                                 <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                                    class="px-6 py-4 text-left text-lg font-pixel tracking-wider border-r-2 border-white/20">
                                     Speaker</th>
                                 <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Team
+                                    class="px-6 py-4 text-left text-lg font-pixel tracking-wider border-r-2 border-white/20">Team
                                 </th>
                                 <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                                    class="px-6 py-4 text-left text-lg font-pixel tracking-wider border-r-2 border-white/20">
                                     Total Score</th>
                                 <th scope="col"
-                                    class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
+                                    class="px-6 py-4 text-left text-lg font-pixel tracking-wider">
                                     Average</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-slate-200">
+                        <tbody class="bg-white divide-y-2 divide-slate-100">
                             @forelse($speakers as $index => $speaker)
                                 <tr
-                                    class="{{ $loop->iteration <= 3 ? 'bg-gradient-to-r from-purple-50 to-pink-50' : 'hover:bg-slate-50' }} transition-colors">
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                    class="{{ $loop->iteration <= 3 ? 'bg-purple-50' : 'hover:bg-soft-pink/10' }} transition-colors">
+                                    <td class="px-6 py-4 whitespace-nowrap text-lg font-pixel border-r border-slate-100">
                                         @if($loop->iteration === 1)
-                                            <span class="text-2xl" title="Best Speaker">🏆</span>
+                                            <span class="text-3xl drop-shadow-sm" title="Best Speaker">🏆</span>
                                         @elseif($loop->iteration === 2)
-                                            <span class="text-2xl">🥈</span>
+                                            <span class="text-3xl drop-shadow-sm">🥈</span>
                                         @elseif($loop->iteration === 3)
-                                            <span class="text-2xl">🥉</span>
+                                            <span class="text-3xl drop-shadow-sm">🥉</span>
                                         @else
-                                            <span class="text-black font-medium">{{ $loop->iteration }}</span>
+                                            <span class="text-slate-600 font-bold">#{{ $loop->iteration }}</span>
                                         @endif
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-6 py-4 whitespace-nowrap border-r border-slate-100">
                                         <div class="flex items-center gap-2">
-                                            <span class="text-sm font-bold text-black">🎤 {{ $speaker->name }}</span>
+                                            <span class="text-base font-bold text-black font-sans">🎤 {{ $speaker->name }}</span>
                                             @if($loop->iteration === 1)
                                                 <span
-                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">⭐
-                                                    Top</span>
+                                                    class="inline-flex items-center px-2 py-0.5 border-2 border-yellow-700 text-xs font-pixel bg-yellow-100 text-yellow-800 shadow-sm">TOP</span>
                                             @endif
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-black">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700 font-sans border-r border-slate-100">
                                         {{ $speaker->team->name ?? 'N/A' }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
+                                    <td class="px-6 py-4 whitespace-nowrap border-r border-slate-100">
                                         <span
-                                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-purple-100 text-purple-700">
+                                            class="inline-flex items-center px-3 py-1 text-sm font-bold font-pixel bg-purple-600 text-white border-2 border-black shadow-pixel-sm">
                                             🎯 {{ $speaker->total_score }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-black">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-bold font-mono text-black">
                                         {{ $tournament->rounds_count > 0 ? number_format($speaker->total_score / max(1, $tournament->rounds_count), 2) : '0.00' }}
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-12 text-center text-sm text-black">
+                                    <td colspan="5" class="px-6 py-12 text-center text-lg font-pixel text-slate-500">
                                         No speakers found.
                                     </td>
                                 </tr>
@@ -219,5 +217,5 @@
                 </div>
             </div>
         </div>
-
+    </div>
 @endsection

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreMatchScoreRequest;
 use App\Models\Tournament;
 use App\Models\Round;
 use App\Models\DebateMatch;
@@ -46,6 +47,33 @@ class MatchManagementController extends Controller
         ]);
     }
 
+    // Get adjudicators by round (FOR REVIEWS)
+    public function getAdjudicatorsByRound($roundId)
+    {
+        $round = Round::with('tournament')->findOrFail($roundId);
+        
+        // Get adjudicators who are allocated to matches in this round
+        $allocatedAdjudicators = DebateMatch::where('round_id', $roundId)
+            ->whereNotNull('adjudicator_id')
+            ->with('adjudicator')
+            ->get()
+            ->pluck('adjudicator')
+            ->unique('id')
+            ->values();
+        
+        // If no allocated adjudicators, return all tournament adjudicators
+        if ($allocatedAdjudicators->isEmpty()) {
+            $allocatedAdjudicators = Adjudicator::where('tournament_id', $round->tournament_id)
+                ->orderBy('name')
+                ->get();
+        }
+        
+        return response()->json([
+            'success' => true,
+            'adjudicators' => $allocatedAdjudicators
+        ]);
+    }
+
     // Get speakers by team
     public function getSpeakersByTeam($teamId)
     {
@@ -54,20 +82,9 @@ class MatchManagementController extends Controller
     }
 
     // Submit match scores
-    public function submitScore(Request $request, $matchId)
+    public function submitScore(StoreMatchScoreRequest $request, $matchId)
     {
-        $validated = $request->validate([
-            'winner' => 'required|in:government,opposition',
-            'gov_scores' => 'required|array',
-            'gov_scores.*.speaker_id' => 'required|exists:speakers,id',
-            'gov_scores.*.score' => 'required|numeric|min:50|max:100',
-            'gov_scores.*.feedback' => 'nullable|string',
-            'opp_scores' => 'required|array',
-            'opp_scores.*.speaker_id' => 'required|exists:speakers,id',
-            'opp_scores.*.score' => 'required|numeric|min:50|max:100',
-            'opp_scores.*.feedback' => 'nullable|string',
-            'adjudicator_id' => 'required|exists:adjudicators,id',
-        ]);
+        $validated = $request->validated();
 
         DB::beginTransaction();
         try {

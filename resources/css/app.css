@@ -1,3 +1,41 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+    .pixel-card {
+        @apply bg-white border-2 border-slate-900 shadow-pixel rounded-lg;
+    }
+    
+    .pixel-btn {
+        @apply inline-flex items-center justify-center px-4 py-2 border-2 border-slate-900 shadow-pixel-sm font-pixel text-lg tracking-wide transition-transform active:translate-x-[2px] active:translate-y-[2px] active:shadow-none hover:bg-opacity-90;
+    }
+
+    .pixel-btn-primary {
+        @apply bg-england-red text-white hover:bg-red-700;
+    }
+
+    .pixel-btn-secondary {
+        @apply bg-soft-pink text-slate-900 hover:bg-pink-300;
+    }
+
+    .pixel-btn-outline {
+        @apply bg-white text-slate-900 hover:bg-slate-50;
+    }
+
+    .pixel-input {
+        @apply border-2 border-slate-900 shadow-pixel-sm rounded-none focus:ring-0 focus:border-england-blue font-sans;
+    }
+
+    .pixel-header {
+        @apply font-pixel text-slate-900 uppercase tracking-widest;
+    }
+
+    .pixel-tab {
+        @apply font-pixel text-lg border-b-4 border-transparent hover:border-soft-pink px-4 py-2 transition-colors;
+    }
+
+    .pixel-tab-active {
+        @apply border-england-red text-england-blue;
+    }
+}

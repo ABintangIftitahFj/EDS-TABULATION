@@ -120,7 +120,7 @@
                     <h3 class="text-xl font-semibold text-black mb-2">No Tournaments Found</h3>
                     <p class="text-black mb-6">Create a tournament first to start managing matches and scoring.</p>
                     <a href="{{ route('admin.tournaments.create') }}" 
-                       class="bg-blue-600 hover:bg-blue-700 text-black px-6 py-3 rounded-lg transition-colors font-medium">
+                       class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg transition-colors font-medium">
                         Create Tournament
                     </a>
                 </div>

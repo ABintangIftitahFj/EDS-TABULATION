@@ -53,6 +53,15 @@ class TournamentController extends Controller
         $tournament = Tournament::with([
             'rounds' => function ($query) {
                 $query->where('is_motion_published', true);
+            },
+            'rounds.motions' => function ($query) {
+                // Filter only visible and published motions if columns exist
+                if (\Schema::hasColumn('motions', 'is_visible')) {
+                    $query->where('is_visible', true);
+                }
+                if (\Schema::hasColumn('motions', 'status')) {
+                    $query->where('status', 'published');
+                }
             }
         ])->findOrFail($id);
 

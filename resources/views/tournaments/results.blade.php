@@ -7,55 +7,54 @@
 
         {{-- Tournament Header --}}
         <div class="mb-8">
-            <h1 class="text-4xl font-bold leading-tight text-purple-700">
-                📊 Results: {{ $tournament->name }}
+            <h1 class="text-5xl font-pixel leading-tight text-england-blue drop-shadow-sm">
+                📊 RESULTS: {{ $tournament->name }}
             </h1>
         </div>
 
         {{-- Tabs Navigation --}}
-        <div class="border-b border-slate-200 mb-8">
-            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+        <div class="border-b-4 border-slate-200 mb-8 overflow-x-auto pb-1">
+            <nav class="-mb-1 flex space-x-8 min-w-max" aria-label="Tabs">
                 <a href="/tournaments"
-                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                    ← All Tournaments
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    ← ALL TOURNAMENTS
                 </a>
                 <a href="/tournaments/{{ $tournament->id }}"
-                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                    🏠 Overview
-                </a>
-                <a href="/tournaments/{{ $tournament->id }}/standings"
-                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                    🏆 Standings
-                </a>
-                <a href="/tournaments/{{ $tournament->id }}/matches"
-                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                    ⚔️ Matches & Draw
-                </a>
-                <a href="/tournaments/{{ $tournament->id }}/results"
-                    class="border-indigo-500 text-indigo-600 whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium"
-                    aria-current="page">
-                    📊 Results
-                </a>
-                <a href="/tournaments/{{ $tournament->id }}/speakers"
-                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                    🎤 Speakers
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    🏠 OVERVIEW
                 </a>
                 <a href="/tournaments/{{ $tournament->id }}/motions"
-                    class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                    💡 Motions
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    💡 MOTIONS
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/standings"
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    🏆 STANDINGS
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/matches"
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    ⚔️ MATCHES & DRAW
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/results"
+                    class="pixel-tab pixel-tab-active">
+                    📊 RESULTS
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/speakers"
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    🎤 SPEAKERS
                 </a>
             </nav>
         </div>
 
         {{-- Round Filter --}}
         <div class="mb-6">
-            <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-6">
+            <div class="pixel-card p-6 bg-white">
                 <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-semibold text-black mb-0">Filter Results by Round</h3>
+                    <h3 class="text-xl font-pixel text-black mb-0">FILTER RESULTS BY ROUND</h3>
                     <form method="GET" action="/tournaments/{{ $tournament->id }}/results" class="flex items-center gap-4">
                         <select name="round_id" onchange="this.form.submit()"
-                            class="rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
-                            <option value="">📋 All Rounds</option>
+                            class="pixel-input rounded-none border-2 border-black shadow-pixel-sm text-sm font-pixel py-2 pl-3 pr-10">
+                            <option value="">📋 ALL ROUNDS</option>
                             @foreach($allRounds as $round)
                                 <option value="{{ $round->id }}" {{ $roundId == $round->id ? 'selected' : '' }}>
                                     {{ $round->name }}
@@ -64,8 +63,8 @@
                         </select>
                         @if($roundId)
                             <a href="/tournaments/{{ $tournament->id }}/results"
-                                class="px-4 py-2 text-sm bg-slate-200 text-black rounded-lg hover:bg-slate-300 transition-colors">
-                                🗙 Clear Filter
+                                class="pixel-btn bg-slate-200 text-black text-sm py-2 hover:bg-slate-300">
+                                🗙 CLEAR
                             </a>
                         @endif
                     </form>
@@ -76,229 +75,193 @@
         {{-- Results by Round --}}
         @forelse($tournament->rounds as $round)
             @if($round->matches->where('is_completed', true)->count() > 0)
-                <div class="mb-8">
-                    <h2 class="text-2xl font-bold text-black mb-4 flex items-center gap-2">
-                        <span class="text-purple-700">
-                            📢 {{ $round->name }}
-                        </span>
+                <div class="mb-12">
+                    <h2 class="text-3xl font-pixel text-england-blue mb-6 flex items-center gap-3 border-b-4 border-england-red pb-2 inline-block">
+                        📢 {{ $round->name }}
                         @if($roundId)
-                            <span class="px-3 py-1 bg-indigo-100 text-indigo-800 text-sm font-medium rounded-full">
-                                Filtered Results
+                            <span class="px-3 py-1 bg-soft-pink text-england-blue text-sm font-pixel border-2 border-black shadow-pixel-sm transform rotate-3">
+                                FILTERED
                             </span>
                         @endif
                     </h2>
 
                     {{-- Motion Display --}}
-                    <div class="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg p-4 mb-6">
-                        <div class="flex items-center gap-3">
-                            <span class="text-2xl">💡</span>
+                    <div class="pixel-card p-6 mb-8 bg-gradient-to-r from-purple-50 to-indigo-50 border-l-8 border-l-purple-500">
+                        <div class="flex items-start gap-4">
+                            <span class="text-4xl">💡</span>
                             <div>
-                                <p class="text-sm font-medium text-black">Motion:</p>
-                                <p class="text-lg font-semibold text-black">{{ $round->motion }}</p>
+                                <p class="text-sm font-pixel text-slate-500 uppercase tracking-widest mb-1">Motion</p>
+                                <p class="text-xl font-serif italic text-black leading-relaxed">"{{ $round->motion }}"</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="space-y-6">
+                    <div class="space-y-8">
                         @foreach($round->matches->where('is_completed', true) as $match)
-                            <div class="bg-white rounded-xl shadow-lg ring-1 ring-slate-200 overflow-hidden">
+                            <div class="pixel-card overflow-hidden bg-white hover:shadow-pixel-lg transition-shadow duration-300">
 
                                 {{-- Match Header --}}
-                                <div class="bg-gradient-to-r from-slate-50 to-slate-100 px-6 py-4 border-b border-slate-200">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center gap-3">
-                                            <span class="text-sm font-semibold text-black">📍
-                                                {{ $match->room->name ?? 'Room TBA' }}</span>
-                                            <span class="text-xs text-black">•</span>
-                                            <span class="text-sm text-black">⚖️
-                                                {{ $match->adjudicator->name ?? 'Adjudicator TBA' }}</span>
-                                        </div>
-                                        @if($match->winner)
-                                            <span
-                                                class="px-3 py-1 bg-gradient-to-r from-green-500 to-emerald-500 text-black text-xs font-bold rounded-full shadow-md">
-                                                ✅ Winner: {{ $match->winner->name }}
-                                            </span>
-                                        @endif
+                                <div class="bg-slate-100 px-6 py-4 border-b-2 border-slate-900 flex items-center justify-between">
+                                    <div class="flex items-center gap-4">
+                                        <span class="text-base font-bold font-sans text-black bg-white px-3 py-1 border-2 border-slate-300 shadow-sm">
+                                            📍 {{ $match->room->name ?? 'Room TBA' }}
+                                        </span>
+                                        <span class="text-sm font-pixel text-slate-500 uppercase">
+                                            ⚖️ {{ $match->adjudicator->name ?? 'Adjudicator TBA' }}
+                                        </span>
                                     </div>
+                                    @if($match->winner)
+                                        <span
+                                            class="px-4 py-1 bg-green-400 text-black text-sm font-pixel border-2 border-black shadow-pixel-sm transform -rotate-2">
+                                            ✅ WINNER: {{ $match->winner->name }}
+                                        </span>
+                                    @endif
                                 </div>
 
                                 {{-- Team Results Grid --}}
-                                <div class="grid md:grid-cols-2 gap-6 p-6">
-                                    
+                                <div class="grid md:grid-cols-2 gap-0 divide-y md:divide-y-0 md:divide-x-2 divide-slate-900">
+
                                     {{-- GOV Team --}}
-                                    <div class="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-4 border-2 {{ $match->winner_id == $match->gov_team_id ? 'border-green-500 ring-2 ring-green-200' : 'border-indigo-200' }}">
-                                        <div class="flex items-center justify-between mb-3">
-                                            <h3 class="font-bold text-lg text-indigo-900 flex items-center gap-2">
+                                    <div
+                                        class="p-6 {{ $match->winner_id == $match->gov_team_id ? 'bg-green-50' : 'bg-white' }}">
+                                        <div class="flex items-center justify-between mb-6">
+                                            <h3 class="font-bold text-xl text-black flex items-center gap-2 font-sans">
                                                 🛡️ {{ $match->govTeam->name ?? 'Government' }}
                                             </h3>
-                                            <span class="px-3 py-1 bg-indigo-600 text-white text-xs font-bold rounded-full">GOV</span>
+                                            <span class="px-3 py-1 bg-england-blue text-white text-xs font-pixel border-2 border-black shadow-sm">GOV</span>
                                         </div>
-                                        
+
                                         {{-- Speakers & Scores --}}
-                                        <div class="space-y-2">
+                                        <div class="space-y-3">
                                             @php
                                                 $govBallots = $match->ballots->where('team_role', 'gov');
                                                 $govTotal = $govBallots->sum('score');
                                             @endphp
                                             @foreach($govBallots as $ballot)
-                                                <div class="bg-white rounded-lg p-3 shadow-sm">
-                                                    <div class="flex justify-between items-center">
-                                                        <span class="text-sm font-medium text-black">
-                                                            {{ $ballot->speaker->name ?? 'Speaker' }}
-                                                        </span>
-                                                        <span class="text-lg font-bold text-indigo-600">
-                                                            {{ $ballot->score }} pts
-                                                        </span>
-                                                    </div>
-                                                    @if($ballot->feedback)
-                                                        <p class="text-xs text-black mt-1 italic">"{{ $ballot->feedback }}"</p>
-                                                    @endif
+                                                <div class="flex justify-between items-center p-3 bg-white border-2 border-slate-200 shadow-sm">
+                                                    <span class="text-sm font-bold text-black font-sans">
+                                                        {{ $ballot->speaker->name ?? 'Speaker' }}
+                                                    </span>
+                                                    <span class="text-lg font-pixel text-england-blue">
+                                                        {{ $ballot->score }} pts
+                                                    </span>
                                                 </div>
                                             @endforeach
-                                            
-                                            <div class="bg-indigo-100 rounded-lg p-3 mt-3">
-                                                <div class="flex justify-between items-center">
-                                                    <span class="text-sm font-bold text-indigo-900">Total Score</span>
-                                                    <span class="text-xl font-bold text-indigo-700">{{ $govTotal }} pts</span>
-                                                </div>
+
+                                            <div class="mt-4 pt-4 border-t-2 border-slate-900 border-dashed flex justify-between items-center">
+                                                <span class="text-sm font-pixel text-slate-500 uppercase">Total Score</span>
+                                                <span class="text-2xl font-pixel text-black">{{ $govTotal }}</span>
                                             </div>
                                         </div>
                                     </div>
 
                                     {{-- OPP Team --}}
-                                    <div class="bg-gradient-to-br from-rose-50 to-pink-50 rounded-lg p-4 border-2 {{ $match->winner_id == $match->opp_team_id ? 'border-green-500 ring-2 ring-green-200' : 'border-rose-200' }}">
-                                        <div class="flex items-center justify-between mb-3">
-                                            <h3 class="font-bold text-lg text-rose-900 flex items-center gap-2">
+                                    <div
+                                        class="p-6 {{ $match->winner_id == $match->opp_team_id ? 'bg-green-50' : 'bg-white' }}">
+                                        <div class="flex items-center justify-between mb-6">
+                                            <h3 class="font-bold text-xl text-black flex items-center gap-2 font-sans">
                                                 🔥 {{ $match->oppTeam->name ?? 'Opposition' }}
                                             </h3>
-                                            <span class="px-3 py-1 bg-rose-600 text-white text-xs font-bold rounded-full">OPP</span>
+                                            <span class="px-3 py-1 bg-england-red text-white text-xs font-pixel border-2 border-black shadow-sm">OPP</span>
                                         </div>
-                                        
+
                                         {{-- Speakers & Scores --}}
-                                        <div class="space-y-2">
+                                        <div class="space-y-3">
                                             @php
                                                 $oppBallots = $match->ballots->where('team_role', 'opp');
                                                 $oppTotal = $oppBallots->sum('score');
                                             @endphp
                                             @foreach($oppBallots as $ballot)
-                                                <div class="bg-white rounded-lg p-3 shadow-sm">
-                                                    <div class="flex justify-between items-center">
-                                                        <span class="text-sm font-medium text-black">
-                                                            {{ $ballot->speaker->name ?? 'Speaker' }}
-                                                        </span>
-                                                        <span class="text-lg font-bold text-rose-600">
-                                                            {{ $ballot->score }} pts
-                                                        </span>
-                                                    </div>
-                                                    @if($ballot->feedback)
-                                                        <p class="text-xs text-black mt-1 italic">"{{ $ballot->feedback }}"</p>
-                                                    @endif
+                                                <div class="flex justify-between items-center p-3 bg-white border-2 border-slate-200 shadow-sm">
+                                                    <span class="text-sm font-bold text-black font-sans">
+                                                        {{ $ballot->speaker->name ?? 'Speaker' }}
+                                                    </span>
+                                                    <span class="text-lg font-pixel text-england-red">
+                                                        {{ $ballot->score }} pts
+                                                    </span>
                                                 </div>
                                             @endforeach
 
-                                            <div class="bg-rose-100 rounded-lg p-3 mt-3">
-                                                <div class="flex justify-between items-center">
-                                                    <span class="text-sm font-bold text-rose-900">Total Score</span>
-                                                    <span class="text-xl font-bold text-rose-700">{{ $oppTotal }} pts</span>
-                                                </div>
+                                            <div class="mt-4 pt-4 border-t-2 border-slate-900 border-dashed flex justify-between items-center">
+                                                <span class="text-sm font-pixel text-slate-500 uppercase">Total Score</span>
+                                                <span class="text-2xl font-pixel text-black">{{ $oppTotal }}</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 {{-- Adjudicator Review Section --}}
-                                <div class="bg-slate-50 px-6 py-4 border-t border-slate-200">
-                                    <div class="flex items-start justify-between gap-4">
-                                        <div class="flex-1">
-                                            <h4 class="text-sm font-semibold text-black mb-2 flex items-center gap-2">
-                                                ⚖️ Rate Adjudicator Performance
+                                <div class="bg-slate-50 px-6 py-4 border-t-2 border-slate-900">
+                                    <div class="flex items-center justify-between gap-4">
+                                        <div>
+                                            <h4 class="text-sm font-pixel text-black mb-1 uppercase">
+                                                ⭐ Rate Adjudicator
                                             </h4>
-                                            <p class="text-xs text-black">Help us improve judging quality by rating this adjudicator</p>
+                                            <p class="text-xs text-slate-500 font-sans">Help improve judging quality.</p>
                                         </div>
 
                                         <button
                                             onclick="document.getElementById('review-modal-{{ $match->id }}').classList.remove('hidden')"
-                                            class="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-black text-sm font-semibold rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all shadow-md">
-                                            ⭐ Leave Review
+                                            class="pixel-btn bg-white text-black text-xs py-2 hover:bg-yellow-50">
+                                            LEAVE REVIEW
                                         </button>
                                     </div>
-
-                                    {{-- Existing Reviews --}}
-                                    @if($match->adjudicatorReviews && $match->adjudicatorReviews->count() > 0)
-                                        <div class="mt-4 space-y-2">
-                                            <p class="text-xs font-semibold text-black mb-2">Recent Reviews:</p>
-                                            @foreach($match->adjudicatorReviews->take(3) as $review)
-                                                <div class="bg-white rounded-lg p-3 shadow-sm">
-                                                    <div class="flex items-center gap-2 mb-1">
-                                                        <span class="text-yellow-500 text-sm">
-                                                            @for($i = 0; $i < $review->rating; $i++) ⭐ @endfor
-                                                        </span>
-                                                        <span class="text-xs text-black">{{ $review->created_at->diffForHumans() }}</span>
-                                                    </div>
-                                                    @if($review->comment)
-                                                        <p class="text-xs text-black italic">"{{ $review->comment }}"</p>
-                                                    @endif
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @endif
                                 </div>
                             </div>
 
                             {{-- Review Modal --}}
                             <div id="review-modal-{{ $match->id }}"
-                                class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
-                                <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
-                                    <div class="flex items-center justify-between mb-4">
-                                        <h3 class="text-lg font-bold text-black">⚖️ Rate Adjudicator</h3>
-                                        <button
-                                            onclick="document.getElementById('review-modal-{{ $match->id }}').classList.add('hidden')"
-                                            class="text-black hover:text-black">
-                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
-                                    </div>
+                                class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                                <div class="pixel-card w-full max-w-md bg-white p-6 relative">
+                                    <button
+                                        onclick="document.getElementById('review-modal-{{ $match->id }}').classList.add('hidden')"
+                                        class="absolute top-4 right-4 text-black hover:text-england-red">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+
+                                    <h3 class="text-2xl font-pixel text-black mb-6 border-b-4 border-soft-pink inline-block">RATE ADJUDICATOR</h3>
 
                                     <form action="{{ route('admin.adjudicator-reviews.store', $match) }}" method="POST">
                                         @csrf
-                                        <div class="space-y-4">
+                                        <div class="space-y-6">
                                             <div>
-                                                <label class="block text-sm font-medium text-black mb-2">Adjudicator</label>
-                                                <p class="text-sm text-black font-semibold">{{ $match->adjudicator->name ?? 'N/A' }}</p>
+                                                <label class="block text-sm font-pixel text-slate-500 uppercase mb-2">Adjudicator</label>
+                                                <p class="text-lg font-bold font-sans text-black bg-slate-100 p-2 border-2 border-slate-200">{{ $match->adjudicator->name ?? 'N/A' }}</p>
                                             </div>
 
                                             <div>
-                                                <label class="block text-sm font-medium text-black mb-2">Rating (1-5 stars)</label>
-                                                <div class="flex gap-2">
+                                                <label class="block text-sm font-pixel text-slate-500 uppercase mb-2">Rating</label>
+                                                <div class="flex gap-3">
                                                     @for($i = 1; $i <= 5; $i++)
-                                                        <label class="cursor-pointer">
+                                                        <label class="cursor-pointer group">
                                                             <input type="radio" name="rating" value="{{ $i }}" required
                                                                 class="sr-only peer">
                                                             <span
-                                                                class="text-3xl peer-checked:text-yellow-500 text-black hover:text-yellow-400 transition-colors">⭐</span>
+                                                                class="text-4xl grayscale peer-checked:grayscale-0 group-hover:grayscale-0 transition-all">⭐</span>
                                                         </label>
                                                     @endfor
                                                 </div>
                                             </div>
 
                                             <div>
-                                                <label class="block text-sm font-medium text-black mb-2">Comment (optional)</label>
+                                                <label class="block text-sm font-pixel text-slate-500 uppercase mb-2">Comment</label>
                                                 <textarea name="comment" rows="3"
-                                                    class="w-full rounded-lg border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm"
-                                                    placeholder="Share your feedback about the adjudication..."></textarea>
+                                                    class="pixel-input w-full p-3"
+                                                    placeholder="Share your feedback..."></textarea>
                                             </div>
 
-                                            <div class="flex gap-3">
+                                            <div class="flex gap-4 pt-4">
                                                 <button type="submit"
-                                                    class="flex-1 px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-black font-semibold rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all shadow-md">
-                                                    Submit Review
+                                                    class="pixel-btn pixel-btn-primary flex-1">
+                                                    SUBMIT
                                                 </button>
                                                 <button type="button"
                                                     onclick="document.getElementById('review-modal-{{ $match->id }}').classList.add('hidden')"
-                                                    class="px-4 py-2 bg-slate-200 text-black font-semibold rounded-lg hover:bg-slate-300 transition-colors">
-                                                    Cancel
+                                                    class="pixel-btn bg-slate-200 hover:bg-slate-300 text-black">
+                                                    CANCEL
                                                 </button>
                                             </div>
                                         </div>
@@ -310,23 +273,25 @@
                 </div>
             @endif
         @empty
-            <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-12 text-center">
-                <svg class="mx-auto h-12 w-12 text-black mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                <h3 class="text-lg font-medium text-black mb-2">
+            <div class="pixel-card p-12 text-center bg-white">
+                <div class="inline-block p-6 bg-slate-100 rounded-full border-4 border-slate-200 mb-6">
+                    <svg class="h-16 w-16 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-pixel text-black mb-2">
                     @if($roundId)
-                        No Completed Matches in This Round
+                        NO MATCHES FOUND
                     @else
-                        No Results Available
+                        NO RESULTS YET
                     @endif
                 </h3>
-                <p class="text-sm text-black">
+                <p class="text-base font-sans text-slate-500">
                     @if($roundId)
-                        This round has no completed matches yet. Try selecting a different round or clear the filter.
+                        This round has no completed matches yet.
                     @else
-                        Completed matches will appear here with detailed ballot results
+                        Completed matches will appear here.
                     @endif
                 </p>
             </div>

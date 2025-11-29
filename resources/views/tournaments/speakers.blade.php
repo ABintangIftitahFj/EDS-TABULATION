@@ -1,193 +1,212 @@
 @extends('layouts.user')
 
 @section('title', 'Speakers - ' . $tournament->name)
-            <a href="/tournaments"
-                class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                ← All Tournaments
-            </a>
-            <a href="/tournaments/{{ $tournament->id }}"
-                class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                🏠 Overview
-            </a>
-            <a href="/tournaments/{{ $tournament->id }}/standings"
-                class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                🏆 Standings
-            </a>
-            <a href="/tournaments/{{ $tournament->id }}/matches"
-                class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                ⚔️ Matches & Draw
-            </a>
-            <a href="/tournaments/{{ $tournament->id }}/results"
-                class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                📊 Results
-            </a>
-            <a href="/tournaments/{{ $tournament->id }}/speakers"
-                class="border-indigo-500 text-indigo-600 whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium"
-                aria-current="page">
-                🎤 Speakers
-            </a>
-            <a href="/tournaments/{{ $tournament->id }}/motions"
-                class="border-transparent text-black hover:border-slate-300 hover:text-black whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium">
-                💡 Motions
-            </a>
-        </nav>
-    </div>
 
-    {{-- Speaker Rankings Table --}}
-    <div class="bg-white rounded-xl shadow-lg ring-1 ring-slate-200 overflow-hidden">
-        <div class="px-6 py-4 border-b border-slate-200 bg-gradient-to-r from-slate-50 to-slate-100">
-            <div class="flex items-center justify-between">
-                <h2 class="text-xl font-bold text-black">Individual Speaker Rankings</h2>
-                <span class="px-3 py-1 bg-indigo-100 text-indigo-800 text-sm font-medium rounded-full">
-                    {{ $speakers->count() }} Speakers
-                </span>
-            </div>
+@section('content')
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        {{-- Tournament Header --}}
+        <div class="mb-8">
+            <h1 class="text-5xl font-pixel leading-tight text-england-blue drop-shadow-sm">
+                🎤 SPEAKERS: {{ $tournament->name }}
+            </h1>
         </div>
 
-        @if($speakers->count() > 0)
-            <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-200">
-                    <thead class="bg-slate-50">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Rank</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Speaker</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Team & Institution</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider">Total Points</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider">Speeches</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider">Avg Score</th>
-                            <th class="px-6 py-3 text-center text-xs font-medium text-black uppercase tracking-wider">Highest Score</th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-slate-200">
-                        @foreach($speakers as $speaker)
-                            <tr class="hover:bg-slate-50 transition-colors {{ $speaker->rank <= 3 ? 'bg-gradient-to-r from-yellow-50 to-orange-50' : '' }}">
-                                {{-- Rank --}}
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        @if($speaker->rank == 1)
-                                            <div class="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center">
-                                                <span class="text-white font-bold text-sm">🥇</span>
-                                            </div>
-                                        @elseif($speaker->rank == 2)
-                                            <div class="w-8 h-8 bg-gradient-to-br from-gray-300 to-gray-500 rounded-full flex items-center justify-center">
-                                                <span class="text-white font-bold text-sm">🥈</span>
-                                            </div>
-                                        @elseif($speaker->rank == 3)
-                                            <div class="w-8 h-8 bg-gradient-to-br from-amber-500 to-amber-700 rounded-full flex items-center justify-center">
-                                                <span class="text-white font-bold text-sm">🥉</span>
-                                            </div>
-                                        @else
-                                            <div class="w-8 h-8 bg-gradient-to-br from-slate-400 to-slate-600 rounded-full flex items-center justify-center">
-                                                <span class="text-white font-bold text-sm">{{ $speaker->rank }}</span>
-                                            </div>
-                                        @endif
-                                        <span class="ml-3 text-sm font-medium text-black">#{{ $speaker->rank }}</span>
-                                    </div>
-                                </td>
+        {{-- Tabs Navigation --}}
+        <div class="border-b-4 border-slate-200 mb-8 overflow-x-auto pb-1">
+            <nav class="-mb-1 flex space-x-8 min-w-max" aria-label="Tabs">
+                <a href="/tournaments"
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    ← ALL TOURNAMENTS
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}"
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    🏠 OVERVIEW
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/motions"
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    💡 MOTIONS
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/standings"
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    🏆 STANDINGS
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/matches"
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    ⚔️ MATCHES & DRAW
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/results"
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    📊 RESULTS
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/speakers"
+                    class="pixel-tab pixel-tab-active">
+                    🎤 SPEAKERS
+                </a>
+            </nav>
+        </div>
 
-                                {{-- Speaker Name --}}
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <div>
-                                            <div class="text-sm font-bold text-black">{{ $speaker->name }}</div>
+        {{-- Speaker Rankings Table --}}
+        <div class="pixel-card overflow-hidden bg-white">
+            <div class="px-6 py-4 border-b-4 border-slate-900 bg-england-red flex justify-between items-center">
+                <h2 class="text-2xl font-pixel text-white">INDIVIDUAL RANKINGS</h2>
+                <span class="px-3 py-1 bg-white text-england-red text-sm font-pixel border-2 border-black shadow-pixel-sm">
+                    {{ $speakers->count() }} SPEAKERS
+                </span>
+            </div>
+
+            @if($speakers->count() > 0)
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y-2 divide-slate-900">
+                        <thead class="bg-slate-100">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-lg font-pixel text-black tracking-wider border-r-2 border-slate-300">Rank</th>
+                                <th class="px-6 py-3 text-left text-lg font-pixel text-black tracking-wider border-r-2 border-slate-300">Speaker</th>
+                                <th class="px-6 py-3 text-left text-lg font-pixel text-black tracking-wider border-r-2 border-slate-300">Team & Institution</th>
+                                <th class="px-6 py-3 text-center text-lg font-pixel text-black tracking-wider border-r-2 border-slate-300">Total Points</th>
+                                <th class="px-6 py-3 text-center text-lg font-pixel text-black tracking-wider border-r-2 border-slate-300">Speeches</th>
+                                <th class="px-6 py-3 text-center text-lg font-pixel text-black tracking-wider border-r-2 border-slate-300">Avg</th>
+                                <th class="px-6 py-3 text-center text-lg font-pixel text-black tracking-wider">Highest</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y-2 divide-slate-100">
+                            @foreach($speakers as $speaker)
+                                <tr class="hover:bg-soft-pink/10 transition-colors {{ $speaker->rank <= 3 ? 'bg-yellow-50' : '' }}">
+                                    {{-- Rank --}}
+                                    <td class="px-6 py-4 whitespace-nowrap border-r border-slate-100">
+                                        <div class="flex items-center">
+                                            @if($speaker->rank == 1)
+                                                <div class="w-10 h-10 bg-yellow-400 border-2 border-black shadow-pixel-sm flex items-center justify-center transform -rotate-3">
+                                                    <span class="text-2xl">🥇</span>
+                                                </div>
+                                            @elseif($speaker->rank == 2)
+                                                <div class="w-10 h-10 bg-slate-300 border-2 border-black shadow-pixel-sm flex items-center justify-center transform rotate-2">
+                                                    <span class="text-2xl">🥈</span>
+                                                </div>
+                                            @elseif($speaker->rank == 3)
+                                                <div class="w-10 h-10 bg-amber-600 border-2 border-black shadow-pixel-sm flex items-center justify-center transform -rotate-1">
+                                                    <span class="text-2xl">🥉</span>
+                                                </div>
+                                            @else
+                                                <div class="w-8 h-8 bg-slate-100 border-2 border-slate-300 flex items-center justify-center rounded">
+                                                    <span class="text-slate-600 font-pixel text-lg">{{ $speaker->rank }}</span>
+                                                </div>
+                                            @endif
+                                            <span class="ml-4 text-lg font-pixel text-black">#{{ $speaker->rank }}</span>
+                                        </div>
+                                    </td>
+
+                                    {{-- Speaker Name --}}
+                                    <td class="px-6 py-4 whitespace-nowrap border-r border-slate-100">
+                                        <div class="flex flex-col">
+                                            <div class="text-base font-bold font-sans text-black">{{ $speaker->name }}</div>
                                             @if($speaker->rank <= 3)
-                                                <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800">
-                                                    {{ $speaker->rank == 1 ? 'Best Speaker' : ($speaker->rank == 2 ? '2nd Best' : '3rd Best') }}
+                                                <span class="inline-block mt-1 px-2 py-0.5 text-xs font-pixel bg-purple-100 text-purple-800 border border-purple-300 w-max">
+                                                    {{ $speaker->rank == 1 ? 'BEST SPEAKER' : ($speaker->rank == 2 ? '2ND BEST' : '3RD BEST') }}
                                                 </span>
                                             @endif
                                         </div>
-                                    </div>
-                                </td>
+                                    </td>
 
-                                {{-- Team & Institution --}}
-                                <td class="px-6 py-4">
-                                    <div class="text-sm font-medium text-black">{{ $speaker->team->emoji ?? '👥' }} {{ $speaker->team->name ?? 'Unknown Team' }}</div>
-                                    <div class="text-xs text-black">{{ $speaker->team->institution ?? 'Unknown Institution' }}</div>
-                                </td>
+                                    {{-- Team & Institution --}}
+                                    <td class="px-6 py-4 border-r border-slate-100">
+                                        <div class="text-sm font-medium text-black font-sans">{{ $speaker->team->emoji ?? '👥' }} {{ $speaker->team->name ?? 'Unknown Team' }}</div>
+                                        <div class="text-xs text-slate-500 font-mono mt-1">{{ $speaker->team->institution ?? 'Unknown Institution' }}</div>
+                                    </td>
 
-                                {{-- Total Points --}}
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <div class="text-lg font-bold text-indigo-600">{{ $speaker->total_score ?? 0 }}</div>
-                                </td>
+                                    {{-- Total Points --}}
+                                    <td class="px-6 py-4 whitespace-nowrap text-center border-r border-slate-100">
+                                        <span class="inline-block px-3 py-1 bg-england-blue text-white font-pixel text-lg border-2 border-black shadow-sm">
+                                            {{ $speaker->total_score ?? 0 }}
+                                        </span>
+                                    </td>
 
-                                {{-- Speeches --}}
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <div class="text-sm font-medium text-black">{{ $speaker->ballots_count ?? 0 }}</div>
-                                </td>
+                                    {{-- Speeches --}}
+                                    <td class="px-6 py-4 whitespace-nowrap text-center border-r border-slate-100">
+                                        <div class="text-base font-bold font-mono text-black">{{ $speaker->ballots_count ?? 0 }}</div>
+                                    </td>
 
-                                {{-- Average Score --}}
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <div class="text-sm font-medium text-black">
-                                        {{ $speaker->ballots_count > 0 ? number_format(($speaker->total_score ?? 0) / $speaker->ballots_count, 1) : '0.0' }}
-                                    </div>
-                                </td>
+                                    {{-- Average Score --}}
+                                    <td class="px-6 py-4 whitespace-nowrap text-center border-r border-slate-100">
+                                        <div class="text-base font-bold font-mono text-black">
+                                            {{ $speaker->ballots_count > 0 ? number_format(($speaker->total_score ?? 0) / $speaker->ballots_count, 1) : '0.0' }}
+                                        </div>
+                                    </td>
 
-                                {{-- Highest Score --}}
-                                <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    <div class="text-sm font-medium text-black">
-                                        @php
-                                            $scores = [];
-                                            if ($speaker->ballots ?? false) {
-                                                $scores = $speaker->ballots->pluck('score')->toArray();
-                                            }
-                                            $highest = $scores ? max($scores) : 0;
-                                        @endphp
-                                        {{ $highest }}
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @else
-            <div class="p-12 text-center">
-                <svg class="mx-auto h-12 w-12 text-black mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-                <h3 class="text-lg font-medium text-black mb-2">No Speakers Found</h3>
-                <p class="text-sm text-black">Speaker rankings will appear here once matches are completed</p>
+                                    {{-- Highest Score --}}
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        <div class="text-base font-bold font-mono text-england-red">
+                                            @php
+                                                $scores = [];
+                                                if ($speaker->ballots ?? false) {
+                                                    $scores = $speaker->ballots->pluck('score')->toArray();
+                                                }
+                                                $highest = $scores ? max($scores) : 0;
+                                            @endphp
+                                            {{ $highest }}
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @else
+                <div class="pixel-card p-12 text-center bg-white border-dashed">
+                    <div class="inline-block p-6 bg-slate-100 rounded-full border-4 border-slate-200 mb-6">
+                        <svg class="h-16 w-16 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-pixel text-black mb-2">NO SPEAKERS FOUND</h3>
+                    <p class="text-base font-sans text-slate-500">Rankings will appear here after matches.</p>
+                </div>
+            @endif
+        </div>
+
+        {{-- Summary Stats --}}
+        @if($speakers->count() > 0)
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="pixel-card p-6 bg-yellow-50 relative overflow-hidden group hover:-translate-y-1 transition-transform">
+                    <div class="flex items-center gap-4 relative z-10">
+                        <div class="w-16 h-16 bg-yellow-400 border-2 border-black shadow-pixel-sm flex items-center justify-center text-4xl transform -rotate-3">
+                            🏆
+                        </div>
+                        <div>
+                            <p class="text-sm font-pixel text-yellow-800 uppercase tracking-widest">Best Speaker</p>
+                            <p class="text-2xl font-bold font-sans text-black">{{ $speakers->first()->name ?? 'N/A' }}</p>
+                            <p class="text-sm font-mono text-slate-600">{{ $speakers->first()->total_score ?? 0 }} pts</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pixel-card p-6 bg-blue-50 relative overflow-hidden group hover:-translate-y-1 transition-transform">
+                    <div class="flex items-center gap-4 relative z-10">
+                        <div class="w-16 h-16 bg-blue-400 border-2 border-black shadow-pixel-sm flex items-center justify-center text-4xl transform rotate-2">
+                            📊
+                        </div>
+                        <div>
+                            <p class="text-sm font-pixel text-blue-800 uppercase tracking-widest">Average Score</p>
+                            <p class="text-2xl font-bold font-sans text-black">{{ $speakers->count() > 0 ? number_format($speakers->avg('total_score'), 1) : '0.0' }}</p>
+                            <p class="text-sm font-mono text-slate-600">All Speakers</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pixel-card p-6 bg-green-50 relative overflow-hidden group hover:-translate-y-1 transition-transform">
+                    <div class="flex items-center gap-4 relative z-10">
+                        <div class="w-16 h-16 bg-green-400 border-2 border-black shadow-pixel-sm flex items-center justify-center text-4xl transform -rotate-1">
+                            🎯
+                        </div>
+                        <div>
+                            <p class="text-sm font-pixel text-green-800 uppercase tracking-widest">Highest Score</p>
+                            <p class="text-2xl font-bold font-sans text-black">{{ $speakers->max('total_score') ?? 0 }}</p>
+                            <p class="text-sm font-mono text-slate-600">Single Speech</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         @endif
+
     </div>
-
-    {{-- Summary Stats --}}
-    @if($speakers->count() > 0)
-        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
-                <div class="flex items-center gap-3">
-                    <span class="text-3xl">🏆</span>
-                    <div>
-                        <p class="text-sm font-medium text-black">Best Speaker</p>
-                        <p class="text-xl font-bold text-black">{{ $speakers->first()->name ?? 'N/A' }}</p>
-                        <p class="text-sm text-black">{{ $speakers->first()->total_score ?? 0 }} points</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
-                <div class="flex items-center gap-3">
-                    <span class="text-3xl">📊</span>
-                    <div>
-                        <p class="text-sm font-medium text-black">Average Score</p>
-                        <p class="text-xl font-bold text-black">{{ $speakers->count() > 0 ? number_format($speakers->avg('total_score'), 1) : '0.0' }}</p>
-                        <p class="text-sm text-black">across all speakers</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
-                <div class="flex items-center gap-3">
-                    <span class="text-3xl">🎯</span>
-                    <div>
-                        <p class="text-sm font-medium text-black">Highest Score</p>
-                        <p class="text-xl font-bold text-black">{{ $speakers->max('total_score') ?? 0 }}</p>
-                        <p class="text-sm text-black">single speech score</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
-
-</div>
 @endsection

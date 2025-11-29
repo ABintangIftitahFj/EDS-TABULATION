@@ -83,11 +83,17 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::get('/tournaments/{tournament}/rounds', [App\Http\Controllers\Api\MatchManagementController::class, 'getRounds']);
     Route::get('/rounds/{round}/matches', [App\Http\Controllers\Api\MatchManagementController::class, 'getMatches']);
+    Route::get('/rounds/{round}/adjudicators', [App\Http\Controllers\Api\MatchManagementController::class, 'getAdjudicatorsByRound'])->name('api.round.adjudicators');
     Route::get('/matches/{match}/adjudicators', [App\Http\Controllers\Api\MatchManagementController::class, 'getAdjudicatorsByDraw'])->name('api.draw.adjudicators');
     Route::get('/teams/{team}/speakers', [App\Http\Controllers\Api\MatchManagementController::class, 'getSpeakersByTeam'])->name('api.team.speakers');
     Route::post('/matches/{match}/score', [App\Http\Controllers\Api\MatchManagementController::class, 'submitScore'])->name('api.match.score');
+    
+    // Draw Management
+    Route::post('/rounds/{round}/generate-draw', [App\Http\Controllers\Api\DrawController::class, 'generateDraw'])->name('api.draw.generate');
+    Route::post('/rounds/{round}/toggle-lock', [App\Http\Controllers\Api\DrawController::class, 'toggleLock'])->name('api.draw.lock');
     Route::post('/rounds/{round}/publish-draw', [App\Http\Controllers\Api\MatchManagementController::class, 'publishDraw'])->name('api.draw.publish');
     Route::post('/rounds/{round}/publish-motion', [App\Http\Controllers\Api\MatchManagementController::class, 'publishMotion'])->name('api.motion.publish');
+    
     Route::get('/tournaments/{tournament}/ballot-status/{round?}', [App\Http\Controllers\Api\MatchManagementController::class, 'getBallotStatus']);
     Route::post('/verify-ballot-password', [App\Http\Controllers\Api\MatchManagementController::class, 'verifyBallotPassword']);
     Route::get('/matches/{match}/details', [App\Http\Controllers\Admin\MatchScoringController::class, 'getMatchDetails']);
