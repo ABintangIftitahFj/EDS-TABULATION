@@ -12,16 +12,16 @@ class RoundController extends Controller
     public function index(Request $request)
     {
         $tournamentFilter = $request->get('tournament_id');
-        
+
         $query = Round::with('tournament')->orderBy('created_at', 'desc');
-        
+
         if ($tournamentFilter) {
             $query->where('tournament_id', $tournamentFilter);
         }
-        
+
         $rounds = $query->paginate(15);
         $tournaments = Tournament::orderBy('name')->get();
-        
+
         return view('admin.rounds.index', compact('rounds', 'tournaments', 'tournamentFilter'));
     }
 
@@ -41,9 +41,24 @@ class RoundController extends Controller
             'info_slide' => 'nullable|string',
         ]);
 
-        Round::create($validated);
+        $round = Round::create($validated);
 
-        return redirect()->route('admin.rounds.index')->with('success', 'Round created successfully.');
+        $message = '✨ Round "' . $round->name . '" berhasil dibuat secara manual!';
+
+        // Check if AJAX request
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'round' => [
+                    'id' => $round->id,
+                    'name' => $round->name,
+                    'round_number' => $round->round_number,
+                ]
+            ]);
+        }
+
+        return redirect()->route('admin.rounds.index')->with('success', $message);
     }
 
     public function autoStore(Request $request)
@@ -56,13 +71,26 @@ class RoundController extends Controller
         $lastRound = Round::where('tournament_id', $tournamentId)->orderBy('round_number', 'desc')->first();
         $nextNumber = $lastRound ? $lastRound->round_number + 1 : 1;
 
-        Round::create([
+        $round = Round::create([
             'tournament_id' => $tournamentId,
             'name' => 'Round ' . $nextNumber,
             'round_number' => $nextNumber,
             'type' => 'preliminary',
             'status' => 'draft',
         ]);
+
+        // Check if AJAX request
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => '🎉 Round ' . $nextNumber . ' berhasil dibuat!',
+                'round' => [
+                    'id' => $round->id,
+                    'name' => $round->name,
+                    'round_number' => $round->round_number,
+                ]
+            ]);
+        }
 
         return redirect()->route('admin.tournaments.show', $tournamentId)->with('success', 'Round ' . $nextNumber . ' created automatically.');
     }
@@ -94,31 +122,51 @@ class RoundController extends Controller
         return redirect()->route('admin.rounds.index')->with('success', 'Round deleted successfully.');
     }
 
-    public function toggleMotionVisibility(Round $round)
+    public function toggleMotionVisibility(Round $round, Request $request)
     {
         $round->update([
             'is_motion_published' => !$round->is_motion_published,
             'motion_published_at' => !$round->is_motion_published ? now() : null
         ]);
 
-        return back()->with('success', 
-            $round->is_motion_published 
-                ? 'Motion is now public' 
-                : 'Motion is now hidden'
-        );
+        $message = $round->is_motion_published
+            ? '👁️ Motion berhasil dipublish! Peserta sudah bisa melihat motion.'
+            : '🔒 Motion berhasil disembunyikan! Motion sekarang private.';
+
+        // Check if AJAX request
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'is_published' => $round->is_motion_published,
+                'round_name' => $round->name
+            ]);
+        }
+
+        return back()->with('success', $message);
     }
 
-    public function toggleDrawVisibility(Round $round)
+    public function toggleDrawVisibility(Round $round, Request $request)
     {
         $round->update([
             'is_draw_published' => !$round->is_draw_published,
             'draw_published_at' => !$round->is_draw_published ? now() : null
         ]);
 
-        return back()->with('success', 
-            $round->is_draw_published 
-                ? 'Draw is now unlocked and public' 
-                : 'Draw is now locked and hidden'
-        );
+        $message = $round->is_draw_published
+            ? '🔓 Draw berhasil dipublish! Peserta sudah bisa melihat draw.'
+            : '🔐 Draw berhasil dikunci! Draw sekarang private.';
+
+        // Check if AJAX request
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'is_published' => $round->is_draw_published,
+                'round_name' => $round->name
+            ]);
+        }
+
+        return back()->with('success', $message);
     }
 }

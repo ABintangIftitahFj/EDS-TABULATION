@@ -489,5 +489,253 @@
             document.getElementById('scoreModal').classList.add('hidden');
             document.getElementById('scoreFrame').src = '';
         }
+
+        // AJAX Handler untuk Toggle Motion
+        document.querySelectorAll('form[action*="toggle-motion"]').forEach(form => {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const url = this.action;
+                
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Show SweetAlert with cute animation
+                        Swal.fire({
+                            title: data.round_name,
+                            html: `<div style="font-size: 1.1em;">${data.message}</div>`,
+                            icon: 'success',
+                            confirmButtonText: 'OK! 👍',
+                            confirmButtonColor: '#4F46E5',
+                            showClass: {
+                                popup: 'animate__animated animate__bounceIn'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOut'
+                            }
+                        }).then(() => {
+                            // Reload page to update button states
+                            window.location.reload();
+                        });
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan saat memproses permintaan.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+
+        // AJAX Handler untuk Toggle Draw
+        document.querySelectorAll('form[action*="toggle-draw"]').forEach(form => {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                const url = this.action;
+                
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        // Show SweetAlert with cute animation
+                        Swal.fire({
+                            title: data.round_name,
+                            html: `<div style="font-size: 1.1em;">${data.message}</div>`,
+                            icon: 'success',
+                            confirmButtonText: 'Mantap! 🚀',
+                            confirmButtonColor: '#3B82F6',
+                            showClass: {
+                                popup: 'animate__animated animate__bounceIn'
+                            },
+                            hideClass: {
+                                popup: 'animate__animated animate__fadeOut'
+                            }
+                        }).then(() => {
+                            // Reload page to update button states
+                            window.location.reload();
+                        });
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan saat memproses permintaan.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+
+        // AJAX Handler untuk Auto Generate Matches
+        document.querySelectorAll('form[action*="auto-generate"]').forEach(form => {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Show confirmation with SweetAlert
+                const result = await Swal.fire({
+                    title: 'Auto Generate Draw?',
+                    html: 'Apakah Anda yakin ingin membuat draw otomatis untuk round ini?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Generate! 🎲',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#10B981',
+                    cancelButtonColor: '#6B7280'
+                });
+                
+                if (!result.isConfirmed) return;
+                
+                // Show loading
+                Swal.fire({
+                    title: 'Generating...',
+                    html: 'Sedang membuat matches... ⚡',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                
+                const formData = new FormData(this);
+                const url = this.action;
+                
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Berhasil! 🎉',
+                            html: `
+                                <div style="font-size: 1.1em; line-height: 1.6;">
+                                    ${data.message}<br>
+                                    <strong style="color: #10B981; font-size: 1.5em; display: block; margin-top: 10px;">
+                                        ${data.matches_created} Matches Created!
+                                    </strong>
+                                </div>
+                            `,
+                            icon: 'success',
+                            confirmButtonText: 'Cek Draw! 🔥',
+                            confirmButtonColor: '#10B981',
+                            showClass: {
+                                popup: 'animate__animated animate__tada'
+                            }
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan saat generate matches.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
+
+        // AJAX Handler untuk Auto Add Round
+        document.querySelectorAll('form[action*="rounds/auto"]').forEach(form => {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Show loading
+                Swal.fire({
+                    title: 'Creating Round...',
+                    html: 'Sedang membuat round baru... ⚡',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+                
+                const formData = new FormData(this);
+                const url = this.action;
+                
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                        }
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Round Berhasil Dibuat! 🎊',
+                            html: `
+                                <div style="font-size: 1.2em; line-height: 1.8;">
+                                    ${data.message}<br>
+                                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                                                color: white; 
+                                                padding: 15px 20px; 
+                                                border-radius: 12px; 
+                                                margin-top: 15px;
+                                                font-weight: bold;
+                                                font-size: 1.3em;
+                                                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+                                        📋 ${data.round.name}
+                                    </div>
+                                </div>
+                            `,
+                            icon: 'success',
+                            confirmButtonText: 'Yeay! 🎉',
+                            confirmButtonColor: '#8B5CF6',
+                            showClass: {
+                                popup: 'animate__animated animate__bounceIn'
+                            }
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan saat membuat round.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            });
+        });
     </script>
+
+    <!-- Add Animate.css for animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 @endpush

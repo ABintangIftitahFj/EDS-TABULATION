@@ -147,6 +147,19 @@ class MatchController extends Controller
             $adjIndex++;
         }
 
-        return redirect()->back()->with('success', "Auto-generated {$matchesCreated} matches for {$tournament->format} format.");
+        $message = "🎲 Auto-generate berhasil! {$matchesCreated} matches sudah dibuat untuk {$round->name}";
+
+        // Check if AJAX request
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'matches_created' => $matchesCreated,
+                'round_name' => $round->name,
+                'tournament_format' => $tournament->format
+            ]);
+        }
+
+        return redirect()->back()->with('success', $message);
     }
 }

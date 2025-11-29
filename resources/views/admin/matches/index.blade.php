@@ -113,46 +113,74 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-slate-200">
                     @forelse($matches as $match)
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm font-medium text-black">
-                                                {{ $match->round->tournament->name ?? 'N/A' }}
-                                            </div>
-                                            <div class="text-sm text-black">{{ $match->round->name ?? 'N/A' }}</div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-black">{{ $match->room->name ?? 'TBA' }}</div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="text-sm text-black">
-                                                <div><span class="font-semibold text-blue-600">Gov:</span>
-                                                    {{ $match->govTeam->emoji ?? '' }} {{ $match->govTeam->name ?? 'N/A' }}</div>
-                                                <div><span class="font-semibold text-purple-600">Opp:</span>
-                                                    {{ $match->oppTeam->emoji ?? '' }} {{ $match->oppTeam->name ?? 'N/A' }}</div>
-                                                @if($match->cgTeam)
-                                                    <div><span class="font-semibold text-green-600">CG:</span>
-                                                        {{ $match->cgTeam->emoji ?? '' }} {{ $match->cgTeam->name ?? 'N/A' }}</div>
-                                                @endif
-                                                @if($match->coTeam)
-                                                    <div><span class="font-semibold text-orange-600">CO:</span>
-                                                        {{ $match->coTeam->emoji ?? '' }} {{ $match->coTeam->name ?? 'N/A' }}</div>
-                                                @endif
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-black">{{ $match->adjudicator->name ?? 'TBA' }}</div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span one</a>
-                        </div>
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-black">
+                                    {{ $match->round->tournament->name ?? 'N/A' }}
+                                </div>
+                                <div class="text-sm text-black">{{ $match->round->name ?? 'N/A' }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-black">{{ $match->room->name ?? 'TBA' }}</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="text-sm text-black">
+                                    <div><span class="font-semibold text-blue-600">Gov:</span>
+                                        {{ $match->govTeam->emoji ?? '' }} {{ $match->govTeam->name ?? 'N/A' }}</div>
+                                    <div><span class="font-semibold text-purple-600">Opp:</span>
+                                        {{ $match->oppTeam->emoji ?? '' }} {{ $match->oppTeam->name ?? 'N/A' }}</div>
+                                    @if($match->cgTeam)
+                                        <div><span class="font-semibold text-green-600">CG:</span>
+                                            {{ $match->cgTeam->emoji ?? '' }} {{ $match->cgTeam->name ?? 'N/A' }}</div>
+                                    @endif
+                                    @if($match->coTeam)
+                                        <div><span class="font-semibold text-orange-600">CO:</span>
+                                            {{ $match->coTeam->emoji ?? '' }} {{ $match->coTeam->name ?? 'N/A' }}</div>
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-black">{{ $match->adjudicator->name ?? 'TBA' }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span
+                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ ($match->result_status ?? '') === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                    {{ ucfirst($match->result_status ?? 'Scheduled') }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex items-center gap-2">
+                                    <button onclick="openScoreModal('{{ route('admin.ballots.create', $match->id) }}')"
+                                        class="text-indigo-600 hover:text-indigo-900 text-sm font-medium">
+                                        Input Score
+                                    </button>
+                                    <a href="{{ route('admin.matches.edit', $match->id) }}"
+                                        class="text-blue-600 hover:text-blue-900 text-sm font-medium">
+                                        Edit
+                                    </a>
+                                    <form action="{{ route('admin.matches.destroy', $match->id) }}" method="POST"
+                                        class="inline-block"
+                                        onsubmit="return confirm('Are you sure you want to delete this match?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-900 text-sm font-medium">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                                No matches found.
+                            </td>
+                        </tr>
                     @endforelse
-    </div>
-
-    @if ($matches->hasPages())
-        <div class="mt-4">
-            {{ $matches->links() }}
+                </tbody>
+            </table>
         </div>
-    @endif
+    </div>
 
     <!-- Auto Generate Modal -->
     <div id="autoGenerateModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title"

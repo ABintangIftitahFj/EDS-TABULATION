@@ -3,107 +3,120 @@
 @section('title', 'Manage Tournaments')
 
 @section('content')
-    <!-- Admin Home Button -->
-    <div class="mb-4">
-        <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-indigo-600 bg-white border border-indigo-300 rounded-md hover:bg-indigo-50 transition-colors">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-            </svg>
-            🏠 Admin Home
-        </a>
-    </div>
-    <div class="mb-8 flex items-center justify-between">
+    <div class="sm:flex sm:items-center sm:justify-between mb-8">
         <div>
-            <h1 class="text-2xl font-bold text-black">Tournaments</h1>
-            <p class="text-black">Manage all debate tournaments</p>
+            <h1 class="text-2xl font-bold text-gray-900">Tournaments</h1>
+            <p class="mt-2 text-sm text-gray-700">Daftar semua turnamen debat yang terdaftar dalam sistem.</p>
         </div>
-        <a href="{{ route('admin.tournaments.create') }}"
-            class="inline-flex items-center justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-black shadow-sm hover:bg-indigo-500">
-            + Add Tournament
-        </a>
+        <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+            <a href="{{ route('admin.tournaments.create') }}"
+                class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
+                + Add Tournament
+            </a>
+        </div>
     </div>
 
-    @if (session('success'))
-        <div class="mb-6 rounded-lg bg-green-50 p-4 text-green-800 border border-green-200">
-            {{ session('success') }}
-        </div>
-    @endif
+    <div class="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Name</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Format</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Dates</th>
+                    <th scope="col"
+                        class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th scope="col"
+                        class="relative px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+                @forelse($tournaments as $tournament)
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        {{-- Nama Turnamen --}}
+                        <td class="whitespace-nowrap px-6 py-4">
+                            <div class="font-medium text-gray-900">{{ $tournament->name }}</div>
+                            <div class="text-xs text-gray-500">{{ $tournament->location ?? 'Online' }}</div>
+                        </td>
 
-    <div class="bg-white overflow-hidden rounded-xl shadow-sm ring-1 ring-slate-200">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200">
-                <thead class="bg-slate-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Name
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Format
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Status
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Date
-                        </th>
-                        <th class="relative px-6 py-3">
-                            <span class="sr-only">Actions</span>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-slate-200">
-                    @forelse($tournaments as $tournament)
-                        <tr class="hover:bg-slate-50">
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-black">{{ $tournament->name }}</div>
-                                <div class="text-sm text-black">{{ $tournament->location }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-black">{{ ucfirst(str_replace('_', ' ', $tournament->format)) }}
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                    {{ $tournament->status === 'ongoing' ? 'bg-green-100 text-green-800' : ($tournament->status === 'upcoming' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-black') }}">
-                                    {{ ucfirst($tournament->status) }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-black">
-                                    {{ $tournament->start_date ? $tournament->start_date->format('M d, Y') : 'TBA' }}
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('admin.tournaments.show', $tournament) }}"
-                                    class="text-green-600 hover:text-green-900 mr-3">Manage</a>
-                                <a href="{{ route('admin.tournaments.edit', $tournament) }}"
-                                    class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                                <form action="{{ route('admin.tournaments.destroy', $tournament) }}" method="POST"
-                                    class="inline-block"
-                                    onsubmit="return confirm('Are you sure you want to delete this tournament?');">
+                        {{-- Format --}}
+                        <td class="whitespace-nowrap px-6 py-4">
+                            <span
+                                class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10 uppercase">
+                                {{ $tournament->format }}
+                            </span>
+                        </td>
+
+                        {{-- Tanggal --}}
+                        <td class="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                            {{ \Carbon\Carbon::parse($tournament->start_date)->format('d M Y') }}
+                            <span class="text-gray-400 mx-1">-</span>
+                            {{ \Carbon\Carbon::parse($tournament->end_date)->format('d M Y') }}
+                        </td>
+
+                        {{-- Status Badge --}}
+                        <td class="whitespace-nowrap px-6 py-4 text-center">
+                            @php
+                                $statusColors = [
+                                    'draft' => 'bg-gray-100 text-gray-600 ring-gray-500/10',
+                                    'ongoing' => 'bg-green-100 text-green-700 ring-green-600/20',
+                                    'completed' => 'bg-blue-100 text-blue-700 ring-blue-700/10',
+                                ];
+                                $colorClass = $statusColors[$tournament->status] ?? 'bg-gray-100 text-gray-600';
+                            @endphp
+                            <span
+                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset {{ $colorClass }}">
+                                {{ ucfirst($tournament->status) }}
+                            </span>
+                        </td>
+
+                        {{-- Action Buttons --}}
+                        <td class="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
+                            <div class="flex justify-end items-center gap-3">
+                                <a href="{{ route('admin.tournaments.show', $tournament->id) }}"
+                                    class="text-indigo-600 hover:text-indigo-900 font-semibold">Manage</a>
+                                <span class="text-gray-300">|</span>
+                                <a href="{{ route('admin.tournaments.edit', $tournament->id) }}"
+                                    class="text-gray-600 hover:text-blue-600">Edit</a>
+
+                                <form action="{{ route('admin.tournaments.destroy', $tournament->id) }}" method="POST"
+                                    onsubmit="return confirm('Are you sure? This will delete all matches and rounds associated.');"
+                                    class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                                    <button type="submit" class="text-red-600 hover:text-red-900 ml-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                        </svg>
+                                    </button>
                                 </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="px-6 py-12 text-center text-black">
-                                No tournaments found. <a href="{{ route('admin.tournaments.create') }}"
-                                    class="text-indigo-600 hover:text-indigo-500">Create one</a>
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
-        @if ($tournaments->hasPages())
-            <div class="px-6 py-4 border-t border-slate-200">
-                {{ $tournaments->links() }}
-            </div>
-        @endif
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="px-6 py-12 text-center text-gray-500">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                            </svg>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">No tournaments found</h3>
+                            <p class="mt-1 text-sm text-gray-500">Get started by creating a new tournament.</p>
+                            <div class="mt-6">
+                                <a href="{{ route('admin.tournaments.create') }}"
+                                    class="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                    + Create Tournament
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 @endsection
