@@ -12,12 +12,24 @@ use Illuminate\Http\Request;
 
 class MatchController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $matches = DebateMatch::with(['round.tournament', 'room', 'govTeam', 'oppTeam', 'adjudicator', 'winner'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
-        return view('admin.matches.index', compact('matches'));
+        $query = DebateMatch::with(['round.tournament', 'room', 'govTeam', 'oppTeam', 'adjudicator', 'winner'])
+            ->orderBy('created_at', 'desc');
+
+        if ($request->has('tournament_id') && $request->tournament_id) {
+            $query->whereHas('round', function ($q) use ($request) {
+                $q->where('tournament_id', $request->tournament_id);
+            });
+        }
+
+        if ($request->has('round_id') && $request->round_id) {
+            $query->where('round_id', $request->round_id);
+        }
+
+        $matches = $query->paginate(15);
+        $rounds = Round::with('tournament')->orderBy('created_at', 'desc')->get();
+        return view('admin.matches.index', compact('matches', 'rounds'));
     }
 
     public function create()
@@ -26,7 +38,7 @@ class MatchController extends Controller
         $teams = Team::orderBy('name')->get();
         $rooms = Room::orderBy('name')->get();
         $adjudicators = Adjudicator::orderBy('name')->get();
-        
+
         return view('admin.matches.create', compact('rounds', 'teams', 'rooms', 'adjudicators'));
     }
 
@@ -37,9 +49,11 @@ class MatchController extends Controller
             'room_id' => 'nullable|exists:rooms,id',
             'gov_team_id' => 'required|exists:teams,id',
             'opp_team_id' => 'required|exists:teams,id',
+            'cg_team_id' => 'nullable|exists:teams,id',
+            'co_team_id' => 'nullable|exists:teams,id',
             'adjudicator_id' => 'nullable|exists:adjudicators,id',
             'winner_id' => 'nullable|exists:teams,id',
-            'status' => 'nullable|in:pending,in_progress,completed',
+            'status' => 'nullable|in:scheduled,in_progress,completed',
             'is_completed' => 'nullable|boolean',
         ]);
 
@@ -54,7 +68,7 @@ class MatchController extends Controller
         $teams = Team::orderBy('name')->get();
         $rooms = Room::orderBy('name')->get();
         $adjudicators = Adjudicator::orderBy('name')->get();
-        
+
         return view('admin.matches.edit', compact('match', 'rounds', 'teams', 'rooms', 'adjudicators'));
     }
 
@@ -65,9 +79,11 @@ class MatchController extends Controller
             'room_id' => 'nullable|exists:rooms,id',
             'gov_team_id' => 'required|exists:teams,id',
             'opp_team_id' => 'required|exists:teams,id',
+            'cg_team_id' => 'nullable|exists:teams,id',
+            'co_team_id' => 'nullable|exists:teams,id',
             'adjudicator_id' => 'nullable|exists:adjudicators,id',
             'winner_id' => 'nullable|exists:teams,id',
-            'status' => 'nullable|in:pending,in_progress,completed',
+            'status' => 'nullable|in:scheduled,in_progress,completed',
             'is_completed' => 'nullable|boolean',
         ]);
 
@@ -80,5 +96,57 @@ class MatchController extends Controller
     {
         $match->delete();
         return redirect()->route('admin.matches.index')->with('success', 'Match deleted successfully.');
+    }
+
+    public function autoGenerate(Request $request)
+    {
+        $request->validate([
+            'round_id' => 'required|exists:rounds,id',
+        ]);
+
+        $round = Round::with('tournament')->findOrFail($request->round_id);
+        $tournament = $round->tournament;
+        $teams = $tournament->teams->shuffle();
+        $rooms = $tournament->rooms;
+        $adjudicators = $tournament->adjudicators;
+
+        // Determine chunk size based on format
+        $chunkSize = $tournament->format === 'british' ? 4 : 2;
+        $chunks = $teams->chunk($chunkSize);
+
+        $matchesCreated = 0;
+        $roomIndex = 0;
+        $adjIndex = 0;
+
+        foreach ($chunks as $chunk) {
+            if ($chunk->count() < $chunkSize) {
+                // Skip incomplete chunks (bye)
+                continue;
+            }
+
+            $teams = $chunk->values();
+
+            $matchData = [
+                'round_id' => $round->id,
+                'room_id' => $rooms[$roomIndex]->id ?? null,
+                'adjudicator_id' => $adjudicators[$adjIndex]->id ?? null,
+                'status' => 'scheduled',
+                'gov_team_id' => $teams[0]->id,
+                'opp_team_id' => $teams[1]->id,
+            ];
+
+            if ($tournament->format === 'british') {
+                $matchData['cg_team_id'] = $teams[2]->id;
+                $matchData['co_team_id'] = $teams[3]->id;
+            }
+
+            DebateMatch::create($matchData);
+
+            $matchesCreated++;
+            $roomIndex++;
+            $adjIndex++;
+        }
+
+        return redirect()->back()->with('success', "Auto-generated {$matchesCreated} matches for {$tournament->format} format.");
     }
 }

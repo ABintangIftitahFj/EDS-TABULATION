@@ -39,10 +39,17 @@ class TournamentController extends Controller
     public function matches($id)
     {
         $tournament = Tournament::with([
+            'rounds' => function ($query) {
+                // Only load rounds where draw is published
+                $query->where('is_draw_published', true);
+            },
             'rounds.matches' => function ($query) {
                 $query->with(['govTeam', 'oppTeam', 'adjudicator', 'room', 'winner']);
             },
-            'rounds.motions'
+            'rounds.motions' => function ($query) {
+                // Only show motion if motion is published
+                $query->where('is_released', true);
+            }
         ])->findOrFail($id);
 
         return view('tournaments.matches', compact('tournament'));
@@ -71,7 +78,7 @@ class TournamentController extends Controller
     public function results($id, Request $request)
     {
         $roundId = $request->get('round_id');
-        
+
         $tournament = Tournament::with([
             'rounds' => function ($query) use ($roundId) {
                 if ($roundId) {
@@ -99,21 +106,42 @@ class TournamentController extends Controller
 
     public function speakers($id)
     {
-        $tournament = Tournament::with([
-            'teams.speakers' => function ($query) {
-                $query->orderBy('total_score', 'desc');
-            }
-        ])->findOrFail($id);
+        $tournament = Tournament::with(['rounds.matches', 'teams.speakers.ballots.match'])->findOrFail($id);
+
+        // Identify completed rounds
+        $completedRoundIds = $tournament->rounds->filter(function ($round) {
+            return $round->matches->count() > 0 && $round->matches->every(function ($match) {
+                return $match->is_completed;
+            });
+        })->pluck('id')->toArray();
 
         // Flatten and sort all speakers
-        $speakers = $tournament->teams->flatMap->speakers
-                   ->sortByDesc('total_score')
-                   ->values()
-                   ->map(function ($speaker, $index) {
-                       $speaker->rank = $index + 1;
-                       return $speaker;
-                   });
+        $speakers = $tournament->teams->flatMap->speakers->map(function ($speaker) use ($completedRoundIds) {
+            // Calculate score only from completed rounds
+            $validBallots = $speaker->ballots->filter(function ($ballot) use ($completedRoundIds) {
+                return $ballot->match && in_array($ballot->match->round_id, $completedRoundIds);
+            });
+
+            $speaker->calculated_total_score = $validBallots->sum('score');
+            $speaker->ballots_count = $validBallots->count();
+
+            return $speaker;
+        })
+            ->sortByDesc('calculated_total_score')
+            ->values()
+            ->map(function ($speaker, $index) {
+                $speaker->rank = $index + 1;
+                // Override the database total_score with our calculated one for display
+                $speaker->total_score = $speaker->calculated_total_score;
+                return $speaker;
+            });
 
         return view('tournaments.speakers', compact('tournament', 'speakers'));
+    }
+
+    public function participants($id)
+    {
+        $tournament = Tournament::with(['teams.speakers', 'adjudicators'])->findOrFail($id);
+        return view('tournaments.participants', compact('tournament'));
     }
 }

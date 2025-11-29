@@ -48,25 +48,7 @@
                     @enderror
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="start_date" class="block text-sm font-medium text-black">Start Date & Time</label>
-                        <input type="datetime-local" name="start_date" id="start_date" value="{{ old('start_date') }}"
-                            class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                        @error('start_date')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="end_date" class="block text-sm font-medium text-black">End Date & Time</label>
-                        <input type="datetime-local" name="end_date" id="end_date" value="{{ old('end_date') }}"
-                            class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                        @error('end_date')
-                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-                </div>
+                <!-- Start and End date fields removed per requirements -->
 
                 <div>
                     <label for="motion" class="block text-sm font-medium text-black">Motion</label>

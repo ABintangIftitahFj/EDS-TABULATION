@@ -10,10 +10,20 @@ use Illuminate\Http\Request;
 
 class TeamController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $teams = Team::with(['tournament', 'speakers'])->orderBy('created_at', 'desc')->paginate(15);
-        return view('admin.teams.index', compact('teams'));
+        $tournamentFilter = $request->get('tournament_id');
+        
+        $query = Team::with(['tournament', 'speakers'])->orderBy('created_at', 'desc');
+        
+        if ($tournamentFilter) {
+            $query->where('tournament_id', $tournamentFilter);
+        }
+        
+        $teams = $query->paginate(15);
+        $tournaments = Tournament::orderBy('name')->get();
+        
+        return view('admin.teams.index', compact('teams', 'tournaments', 'tournamentFilter'));
     }
 
     public function create()

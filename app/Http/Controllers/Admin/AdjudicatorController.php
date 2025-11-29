@@ -9,10 +9,20 @@ use Illuminate\Http\Request;
 
 class AdjudicatorController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $adjudicators = Adjudicator::with('tournament')->orderBy('created_at', 'desc')->paginate(15);
-        return view('admin.adjudicators.index', compact('adjudicators'));
+        $tournamentFilter = $request->get('tournament_id');
+        
+        $query = Adjudicator::with('tournament')->orderBy('created_at', 'desc');
+        
+        if ($tournamentFilter) {
+            $query->where('tournament_id', $tournamentFilter);
+        }
+        
+        $adjudicators = $query->paginate(15);
+        $tournaments = Tournament::orderBy('name')->get();
+        
+        return view('admin.adjudicators.index', compact('adjudicators', 'tournaments', 'tournamentFilter'));
     }
 
     public function create()

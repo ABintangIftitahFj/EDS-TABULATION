@@ -19,7 +19,7 @@
                         class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                         <option value="">Select Tournament</option>
                         @foreach ($tournaments as $tournament)
-                            <option value="{{ $tournament->id }}">{{ $tournament->name }}</option>
+                            <option value="{{ $tournament->id }}" {{ (old('tournament_id') ?? request('tournament_id')) == $tournament->id ? 'selected' : '' }}>{{ $tournament->name }}</option>
                         @endforeach
                     </select>
                     @error('tournament_id')

@@ -14,6 +14,29 @@
         </a>
     </div>
 
+    <!-- Tournament Filter -->
+    <div class="mb-6 bg-white rounded-lg shadow-sm p-4">
+        <form method="GET" action="{{ route('admin.rounds.index') }}" class="flex items-center gap-4">
+            <div class="flex-1 max-w-xs">
+                <label for="tournament_id" class="block text-sm font-medium text-gray-700 mb-1">Filter by Tournament:</label>
+                <select id="tournament_id" name="tournament_id" onchange="this.form.submit()"
+                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                    <option value="">All Tournaments</option>
+                    @foreach($tournaments as $tournament)
+                        <option value="{{ $tournament->id }}" {{ $tournamentFilter == $tournament->id ? 'selected' : '' }}>
+                            {{ $tournament->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            @if($tournamentFilter)
+                <a href="{{ route('admin.rounds.index') }}" class="px-3 py-2 text-sm text-gray-600 hover:text-gray-900">
+                    Clear Filter
+                </a>
+            @endif
+        </form>
+    </div>
+
     @if (session('success'))
         <div class="mb-6 rounded-lg bg-green-50 p-4 text-green-800 border border-green-200">
             {{ session('success') }}

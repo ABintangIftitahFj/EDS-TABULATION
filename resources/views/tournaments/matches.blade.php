@@ -80,10 +80,14 @@
                                         {{ $round->is_published ? 'PUBLISHED' : 'DRAFT' }}
                                     </span>
                                 </div>
-                                @if($round->motion)
+                                @if($round->is_motion_published && $round->motion)
                                     <div class="mt-4 p-3 bg-white border-2 border-slate-300 shadow-sm">
                                         <span class="font-pixel text-england-red uppercase mr-2">Motion:</span>
                                         <span class="font-serif italic text-lg text-black">"{{ $round->motion }}"</span>
+                                    </div>
+                                @elseif(!$round->is_motion_published)
+                                    <div class="mt-4 p-3 bg-yellow-50 border-2 border-yellow-300 shadow-sm">
+                                        <span class="font-pixel text-yellow-700">Motion belum dipublikasikan</span>
                                     </div>
                                 @endif
                             </div>

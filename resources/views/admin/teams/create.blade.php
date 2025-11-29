@@ -19,7 +19,7 @@
                         class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                         <option value="">Select Tournament</option>
                         @foreach ($tournaments as $tournament)
-                            <option value="{{ $tournament->id }}" {{ old('tournament_id') == $tournament->id ? 'selected' : '' }}>
+                            <option value="{{ $tournament->id }}" data-format="{{ $tournament->format }}" {{ (old('tournament_id') ?? request('tournament_id')) == $tournament->id ? 'selected' : '' }}>
                                 {{ $tournament->name }}
                             </option>
                         @endforeach
@@ -85,24 +85,51 @@
 
 @push('scripts')
     <script>
-        let speakerCount = 2;
-        document.getElementById('add-speaker').addEventListener('click', function () {
-            const container = document.getElementById('speakers-container');
-            const newSpeaker = document.createElement('div');
-            newSpeaker.className = 'speaker-input flex gap-2';
-            newSpeaker.innerHTML = `
-                    <input type="text" name="speakers[${speakerCount}][name]" placeholder="Speaker ${speakerCount + 1} Name"
-                        class="flex-1 rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                    <button type="button" class="remove-speaker px-3 py-2 text-sm font-medium text-red-600 hover:text-red-700">Remove</button>
-                `;
-            container.appendChild(newSpeaker);
-            speakerCount++;
-        });
+        const tournamentSelect = document.getElementById('tournament_id');
+        const speakersContainer = document.getElementById('speakers-container');
+        const addSpeakerBtn = document.getElementById('add-speaker');
+        
+        // Hide add button as we enforce count based on format
+        if(addSpeakerBtn) addSpeakerBtn.style.display = 'none';
 
-        document.getElementById('speakers-container').addEventListener('click', function (e) {
-            if (e.target.classList.contains('remove-speaker')) {
-                e.target.closest('.speaker-input').remove();
+        function updateSpeakers(format) {
+            // Save current values if any
+            const currentInputs = Array.from(speakersContainer.querySelectorAll('input'));
+            const currentValues = currentInputs.map(input => input.value);
+
+            speakersContainer.innerHTML = '';
+            let count = 2; // Default/British
+            if (format === 'asian') {
+                count = 3;
+            }
+            
+            for (let i = 0; i < count; i++) {
+                const div = document.createElement('div');
+                div.className = 'speaker-input flex gap-2';
+                const value = currentValues[i] || '';
+                div.innerHTML = `
+                    <input type="text" name="speakers[${i}][name]" value="${value}" placeholder="Speaker ${i + 1} Name" required
+                        class="flex-1 rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                `;
+                speakersContainer.appendChild(div);
+            }
+        }
+
+        tournamentSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const format = selectedOption.getAttribute('data-format');
+            if (format) {
+                updateSpeakers(format);
             }
         });
+        
+        // Initial check
+        if (tournamentSelect.value) {
+             const selectedOption = tournamentSelect.options[tournamentSelect.selectedIndex];
+             const format = selectedOption.getAttribute('data-format');
+             if (format) {
+                 updateSpeakers(format);
+             }
+        }
     </script>
 @endpush

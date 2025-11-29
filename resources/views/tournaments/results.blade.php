@@ -234,16 +234,21 @@
 
                                             <div>
                                                 <label class="block text-sm font-pixel text-slate-500 uppercase mb-2">Rating</label>
-                                                <div class="flex gap-3">
+                                                <div class="flex gap-2 justify-center">
                                                     @for($i = 1; $i <= 5; $i++)
-                                                        <label class="cursor-pointer group">
+                                                        <label class="cursor-pointer group relative">
                                                             <input type="radio" name="rating" value="{{ $i }}" required
                                                                 class="sr-only peer">
-                                                            <span
-                                                                class="text-4xl grayscale peer-checked:grayscale-0 group-hover:grayscale-0 transition-all">⭐</span>
+                                                            <span class="text-5xl transition-all duration-200 
+                                                                peer-checked:scale-110 
+                                                                peer-checked:filter-none
+                                                                group-hover:scale-110 
+                                                                group-hover:filter-none
+                                                                filter grayscale">⭐</span>
                                                         </label>
                                                     @endfor
                                                 </div>
+                                                <p class="text-xs text-center text-slate-400 mt-2 font-sans">Click on stars to rate (1-5)</p>
                                             </div>
 
                                             <div>

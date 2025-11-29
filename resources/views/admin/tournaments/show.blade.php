@@ -5,9 +5,12 @@
 @section('content')
     <!-- Admin Home Button -->
     <div class="mb-4">
-        <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center px-3 py-2 text-sm font-medium text-indigo-600 bg-white border border-indigo-300 rounded-md hover:bg-indigo-50 transition-colors">
+        <a href="{{ route('admin.dashboard') }}"
+            class="inline-flex items-center px-3 py-2 text-sm font-medium text-indigo-600 bg-white border border-indigo-300 rounded-md hover:bg-indigo-50 transition-colors">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6">
+                </path>
             </svg>
             🏠 Admin Home
         </a>
@@ -25,7 +28,7 @@
                 </a>
                 <span
                     class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-                    {{ $tournament->status === 'ongoing' ? 'bg-green-100 text-green-800' : ($tournament->status === 'upcoming' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-black') }}">
+                        {{ $tournament->status === 'ongoing' ? 'bg-green-100 text-green-800' : ($tournament->status === 'upcoming' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-black') }}">
                     {{ ucfirst($tournament->status) }}
                 </span>
             </div>
@@ -113,9 +116,8 @@
             </div>
         </a>
 
-        <a href="{{ route('admin.rounds.create') }}?tournament_id={{ $tournament->id }}"
-            class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-6 hover:shadow-md transition-shadow">
-            <div class="flex items-center gap-4">
+        <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-4 mb-4">
                 <div class="bg-green-100 rounded-lg p-3">
                     <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -123,11 +125,25 @@
                     </svg>
                 </div>
                 <div>
-                    <h3 class="font-semibold text-black">Create Round</h3>
-                    <p class="text-sm text-black">Add new round</p>
+                    <h3 class="font-semibold text-black">Add Round</h3>
+                    <p class="text-sm text-black">Create new round</p>
                 </div>
             </div>
-        </a>
+            <div class="flex gap-2">
+                <form action="{{ route('admin.rounds.auto-store') }}" method="POST" class="flex-1">
+                    @csrf
+                    <input type="hidden" name="tournament_id" value="{{ $tournament->id }}">
+                    <button type="submit"
+                        class="w-full px-3 py-2 text-sm font-medium text-center text-white bg-green-600 rounded-lg hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300">
+                        Auto Add
+                    </button>
+                </form>
+                <a href="{{ route('admin.rounds.create') }}?tournament_id={{ $tournament->id }}"
+                    class="flex-1 px-3 py-2 text-sm font-medium text-center text-green-700 bg-green-100 border border-green-300 rounded-lg hover:bg-green-200 focus:ring-4 focus:outline-none focus:ring-green-300">
+                    Manual
+                </a>
+            </div>
+        </div>
 
         <a href="{{ route('admin.matches.create') }}?tournament_id={{ $tournament->id }}"
             class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-6 hover:shadow-md transition-shadow">
@@ -144,14 +160,61 @@
                 </div>
             </div>
         </a>
+
+        <a href="{{ route('admin.teams.create') }}?tournament_id={{ $tournament->id }}"
+            class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-4">
+                <div class="bg-blue-100 rounded-lg p-3">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-black">Add Team</h3>
+                    <p class="text-sm text-black">Manually add team</p>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ route('admin.adjudicators.create') }}?tournament_id={{ $tournament->id }}"
+            class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-4">
+                <div class="bg-orange-100 rounded-lg p-3">
+                    <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-black">Add Adjudicator</h3>
+                    <p class="text-sm text-black">Manually add adjudicator</p>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ route('admin.rooms.create') }}?tournament_id={{ $tournament->id }}"
+            class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-4">
+                <div class="bg-red-100 rounded-lg p-3">
+                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-black">Add Room</h3>
+                    <p class="text-sm text-black">Manually add room</p>
+                </div>
+            </div>
+        </a>
     </div>
 
     <!-- Tabs Content -->
     <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200">
         <div class="border-b border-slate-200">
             <nav class="flex -mb-px">
-                <button
-                    class="tab-button active px-6 py-4 text-sm font-medium border-b-2 border-indigo-600 text-indigo-600"
+                <button class="tab-button active px-6 py-4 text-sm font-medium border-b-2 border-indigo-600 text-indigo-600"
                     data-tab="teams">
                     Teams
                 </button>
@@ -162,6 +225,10 @@
                 <button class="tab-button px-6 py-4 text-sm font-medium border-b-2 border-transparent text-black"
                     data-tab="rounds">
                     Rounds
+                </button>
+                <button class="tab-button px-6 py-4 text-sm font-medium border-b-2 border-transparent text-black"
+                    data-tab="draw">
+                    Draw
                 </button>
             </nav>
         </div>
@@ -236,6 +303,8 @@
                             <tr>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Round</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Motion</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Status</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-black uppercase">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-200">
@@ -243,14 +312,146 @@
                                 <tr>
                                     <td class="px-4 py-3 text-sm font-medium text-black">{{ $round->name }}</td>
                                     <td class="px-4 py-3 text-sm text-black">{{ $round->motion ?? 'TBA' }}</td>
+                                    <td class="px-4 py-3 text-sm">
+                                        <div class="flex flex-col gap-1">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $round->is_motion_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                                {{ $round->is_motion_published ? '👁️ Motion Public' : '🔒 Motion Hidden' }}
+                                            </span>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $round->is_draw_published ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800' }}">
+                                                {{ $round->is_draw_published ? '🔓 Draw Public' : '🔐 Draw Locked' }}
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3 text-sm text-right">
+                                        <div class="flex justify-end gap-2 flex-wrap">
+                                            <!-- Toggle Motion -->
+                                            <form action="{{ route('admin.rounds.toggle-motion', $round) }}" method="POST" class="inline">
+                                                @csrf
+                                                <button type="submit" 
+                                                    class="px-2 py-1 rounded text-xs font-medium transition {{ $round->is_motion_published ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-500 hover:bg-gray-600' }} text-white"
+                                                    title="{{ $round->is_motion_published ? 'Hide Motion' : 'Publish Motion' }}">
+                                                    {{ $round->is_motion_published ? '👁️' : '🔒' }} Motion
+                                                </button>
+                                            </form>
+
+                                            <!-- Toggle Draw -->
+                                            <form action="{{ route('admin.rounds.toggle-draw', $round) }}" method="POST" class="inline">
+                                                @csrf
+                                                <button type="submit" 
+                                                    class="px-2 py-1 rounded text-xs font-medium transition {{ $round->is_draw_published ? 'bg-blue-500 hover:bg-blue-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white"
+                                                    title="{{ $round->is_draw_published ? 'Lock Draw' : 'Unlock Draw' }}">
+                                                    {{ $round->is_draw_published ? '🔓' : '🔐' }} Draw
+                                                </button>
+                                            </form>
+
+                                            <!-- Auto Draw -->
+                                            <form action="{{ route('admin.matches.auto-generate') }}" method="POST"
+                                                onsubmit="return confirm('Auto-generate draw for {{ $round->name }}?');">
+                                                @csrf
+                                                <input type="hidden" name="round_id" value="{{ $round->id }}">
+                                                <button type="submit" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition text-xs font-medium">
+                                                    Auto Draw
+                                                </button>
+                                            </form>
+                                            
+                                            <!-- Manual -->
+                                            <a href="{{ route('admin.matches.create') }}?tournament_id={{ $tournament->id }}&round_id={{ $round->id }}"
+                                                class="px-2 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition text-xs font-medium">
+                                                Manual
+                                            </a>
+                                        </div>
+                                    </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="2" class="px-4 py-8 text-center text-black">No rounds yet</td>
+                                    <td colspan="4" class="px-4 py-8 text-center text-black">No rounds yet</td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Draw Tab -->
+        <div id="draw-tab" class="tab-content hidden">
+            <div class="space-y-8">
+                @forelse($tournament->rounds as $round)
+                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                        <h3 class="text-lg font-bold text-black mb-4">{{ $round->name }}</h3>
+
+                        @if($round->matches->count() > 0)
+                            <div class="grid grid-cols-1 gap-4">
+                                @foreach($round->matches as $match)
+                                    <div
+                                        class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
+                                        <div class="flex-1">
+                                            <div class="text-sm font-medium text-gray-500 mb-1">{{ $match->room->name ?? 'Room TBA' }} •
+                                                {{ $match->adjudicator->name ?? 'Adj TBA' }}</div>
+                                            <div class="flex items-center gap-4">
+                                                <div class="flex-1 text-right">
+                                                    <span class="font-bold text-blue-700">{{ $match->govTeam->name }}</span>
+                                                </div>
+                                                <div class="font-bold text-gray-400">VS</div>
+                                                <div class="flex-1 text-left">
+                                                    <span class="font-bold text-red-700">{{ $match->oppTeam->name }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            <button onclick="openScoreModal('{{ route('admin.ballots.create', $match) }}')"
+                                                class="px-3 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-700 transition-colors">
+                                                Input Score
+                                            </button>
+                                            <a href="{{ route('admin.matches.edit', $match) }}"
+                                                class="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded hover:bg-gray-50 transition-colors">
+                                                Edit Score
+                                            </a>
+                                            <form action="{{ route('admin.matches.destroy', $match) }}" method="POST"
+                                                onsubmit="return confirm('Delete this match?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="px-3 py-1.5 bg-red-100 text-red-700 text-sm font-medium rounded hover:bg-red-200 transition-colors">
+                                                    Delete Match
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="text-gray-500 text-sm italic">No matches generated for this round yet.</p>
+                        @endif
+                    </div>
+                @empty
+                    <p class="text-center text-gray-500 py-8">No rounds found.</p>
+                @endforelse
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Score Modal -->
+    <div id="scoreModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"
+                onclick="closeScoreModal()"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div
+                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full h-[80vh]">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 h-full flex flex-col">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">Enter Ballot</h3>
+                        <button onclick="closeScoreModal()" class="text-gray-400 hover:text-gray-500">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <iframe id="scoreFrame" src="" class="w-full flex-1 border-0"></iframe>
                 </div>
             </div>
         </div>
@@ -278,5 +479,15 @@
                 document.getElementById(`${tabName}-tab`).classList.remove('hidden');
             });
         });
+
+        function openScoreModal(url) {
+            document.getElementById('scoreFrame').src = url;
+            document.getElementById('scoreModal').classList.remove('hidden');
+        }
+
+        function closeScoreModal() {
+            document.getElementById('scoreModal').classList.add('hidden');
+            document.getElementById('scoreFrame').src = '';
+        }
     </script>
 @endpush

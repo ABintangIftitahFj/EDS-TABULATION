@@ -16,6 +16,7 @@ Route::controller(App\Http\Controllers\TournamentController::class)->group(funct
     Route::get('/tournaments/{id}/motions', 'motions')->name('tournaments.motions');
     Route::get('/tournaments/{id}/results', 'results')->name('tournaments.results');
     Route::get('/tournaments/{id}/speakers', 'speakers')->name('tournaments.speakers');
+    Route::get('/tournaments/{id}/participants', 'participants')->name('tournaments.participants');
 });
 
 Route::controller(App\Http\Controllers\ArticleController::class)->group(function () {
@@ -44,18 +45,27 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::resource('tournaments', App\Http\Controllers\Admin\TournamentController::class);
     Route::get('/tournaments/{tournament}/import', [App\Http\Controllers\Admin\TournamentController::class, 'import'])->name('tournaments.import');
     Route::post('/tournaments/{tournament}/import', [App\Http\Controllers\Admin\TournamentController::class, 'processImport'])->name('tournaments.processImport');
+    Route::get('/tournaments/{tournament}/import-errors', [App\Http\Controllers\Admin\TournamentController::class, 'downloadImportErrors'])->name('tournaments.downloadImportErrors');
 
     // Teams Management
     Route::resource('teams', App\Http\Controllers\Admin\TeamController::class);
 
     // Rounds Management
+    Route::post('/rounds/auto-create', [App\Http\Controllers\Admin\RoundController::class, 'autoStore'])->name('rounds.auto-store');
+    Route::post('/rounds/{round}/toggle-motion', [App\Http\Controllers\Admin\RoundController::class, 'toggleMotionVisibility'])->name('rounds.toggle-motion');
+    Route::post('/rounds/{round}/toggle-draw', [App\Http\Controllers\Admin\RoundController::class, 'toggleDrawVisibility'])->name('rounds.toggle-draw');
     Route::resource('rounds', App\Http\Controllers\Admin\RoundController::class);
 
     // Matches Management
     Route::resource('matches', App\Http\Controllers\Admin\MatchController::class);
+    Route::post('/matches/auto-generate', [App\Http\Controllers\Admin\MatchController::class, 'autoGenerate'])->name('matches.auto-generate');
 
     // Motions Management
     Route::resource('motions', App\Http\Controllers\Admin\MotionController::class);
+    Route::post('/rounds/{round}/publish-motion', [App\Http\Controllers\Admin\MotionController::class, 'publishMotion'])->name('rounds.publishMotion');
+    Route::post('/rounds/{round}/unpublish-motion', [App\Http\Controllers\Admin\MotionController::class, 'unpublishMotion'])->name('rounds.unpublishMotion');
+    Route::post('/rounds/{round}/publish-draw', [App\Http\Controllers\Admin\MotionController::class, 'publishDraw'])->name('rounds.publishDraw');
+    Route::post('/rounds/{round}/unpublish-draw', [App\Http\Controllers\Admin\MotionController::class, 'unpublishDraw'])->name('rounds.unpublishDraw');
 
     // Adjudicators Management
     Route::resource('adjudicators', App\Http\Controllers\Admin\AdjudicatorController::class);
@@ -87,13 +97,13 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::get('/matches/{match}/adjudicators', [App\Http\Controllers\Api\MatchManagementController::class, 'getAdjudicatorsByDraw'])->name('api.draw.adjudicators');
     Route::get('/teams/{team}/speakers', [App\Http\Controllers\Api\MatchManagementController::class, 'getSpeakersByTeam'])->name('api.team.speakers');
     Route::post('/matches/{match}/score', [App\Http\Controllers\Api\MatchManagementController::class, 'submitScore'])->name('api.match.score');
-    
+
     // Draw Management
     Route::post('/rounds/{round}/generate-draw', [App\Http\Controllers\Api\DrawController::class, 'generateDraw'])->name('api.draw.generate');
     Route::post('/rounds/{round}/toggle-lock', [App\Http\Controllers\Api\DrawController::class, 'toggleLock'])->name('api.draw.lock');
     Route::post('/rounds/{round}/publish-draw', [App\Http\Controllers\Api\MatchManagementController::class, 'publishDraw'])->name('api.draw.publish');
     Route::post('/rounds/{round}/publish-motion', [App\Http\Controllers\Api\MatchManagementController::class, 'publishMotion'])->name('api.motion.publish');
-    
+
     Route::get('/tournaments/{tournament}/ballot-status/{round?}', [App\Http\Controllers\Api\MatchManagementController::class, 'getBallotStatus']);
     Route::post('/verify-ballot-password', [App\Http\Controllers\Api\MatchManagementController::class, 'verifyBallotPassword']);
     Route::get('/matches/{match}/details', [App\Http\Controllers\Admin\MatchScoringController::class, 'getMatchDetails']);

@@ -22,45 +22,54 @@ class AdjudicatorReviewController extends Controller
     {
         $validated = $request->validate([
             'adjudicator_id' => 'required|exists:adjudicators,id',
-            'score_team_a' => 'required|numeric|min:0|max:100',
-            'score_team_b' => 'required|numeric|min:0|max:100',
+            'rating' => 'required|integer|min:1|max:5',
+            'score_team_a' => 'nullable|numeric|min:0|max:100',
+            'score_team_b' => 'nullable|numeric|min:0|max:100',
             'comment' => 'nullable|string|max:1000',
         ]);
 
-        // Check if this adjudicator already reviewed this match
-        $existing = AdjudicatorReview::where('match_id', $match->id)
-            ->where('adjudicator_id', $validated['adjudicator_id'])
-            ->first();
+        $adjudicator = Adjudicator::findOrFail($validated['adjudicator_id']);
 
-        if ($existing) {
-            return back()->withErrors(['adjudicator_id' => 'This adjudicator has already reviewed this match.']);
-        }
-
-        $review = AdjudicatorReview::create([
-            'match_id' => $match->id,
+        // Create feedback record
+        \App\Models\AdjudicatorFeedback::create([
             'adjudicator_id' => $validated['adjudicator_id'],
-            'score_team_a' => $validated['score_team_a'],
-            'score_team_b' => $validated['score_team_b'],
-            'comment' => $validated['comment'],
+            'user_id' => auth()->id(),
+            'match_id' => $match->id,
+            'rating' => $validated['rating'],
+            'comment' => $validated['comment'] ?? null,
         ]);
 
-        // Update adjudicator stats
-        $adjudicator = Adjudicator::find($validated['adjudicator_id']);
-        $adjudicator->increment('total_matches_judged');
+        // Recalculate average rating
+        $avgRating = \App\Models\AdjudicatorFeedback::where('adjudicator_id', $adjudicator->id)
+            ->avg('rating');
+        
+        $adjudicator->update(['rating' => round($avgRating, 2)]);
 
-        // Recalculate average score
-        $avgScore = AdjudicatorReview::where('adjudicator_id', $adjudicator->id)
-            ->selectRaw('AVG((score_team_a + score_team_b) / 2) as avg')
-            ->first()
-            ->avg;
-        $adjudicator->update(['average_score_given' => $avgScore]);
+        // If scores provided, create review
+        if (isset($validated['score_team_a']) && isset($validated['score_team_b'])) {
+            // Check if this adjudicator already reviewed this match
+            $existing = AdjudicatorReview::where('match_id', $match->id)
+                ->where('adjudicator_id', $validated['adjudicator_id'])
+                ->first();
 
-        // Calculate final scores if all reviews are in
-        $match->calculateFinalScores();
+            if (!$existing) {
+                AdjudicatorReview::create([
+                    'match_id' => $match->id,
+                    'adjudicator_id' => $validated['adjudicator_id'],
+                    'score_team_a' => $validated['score_team_a'],
+                    'score_team_b' => $validated['score_team_b'],
+                    'comment' => $validated['comment'],
+                ]);
 
-        return redirect()
-            ->route('admin.adjudicator-reviews.create', $match)
-            ->with('success', 'Review submitted successfully!');
+                // Update adjudicator stats
+                $adjudicator->increment('total_matches_judged');
+
+                // Calculate final scores if all reviews are in
+                $match->calculateFinalScores();
+            }
+        }
+
+        return back()->with('success', 'Review submitted successfully! Adjudicator rating updated to ' . round($avgRating, 2) . '/5');
     }
 
     public function destroy(AdjudicatorReview $review)

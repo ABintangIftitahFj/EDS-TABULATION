@@ -12,7 +12,23 @@ class DebateMatch extends Model
     protected $table = 'matches';
 
     protected $fillable = [
-        'round_id', 'room_id', 'adjudicator_id', 'gov_team_id', 'opp_team_id', 'winner_id', 'panel_judges', 'status', 'is_completed'
+        'round_id',
+        'room_id',
+        'adjudicator_id',
+        'gov_team_id',
+        'opp_team_id',
+        'cg_team_id',
+        'co_team_id',
+        'gov_rank',
+        'opp_rank',
+        'cg_rank',
+        'co_rank',
+        'winner_id',
+        'panel_judges',
+        'status',
+        'is_completed',
+        'gov_reply_score',
+        'opp_reply_score'
     ];
 
     protected $casts = [
@@ -42,6 +58,16 @@ class DebateMatch extends Model
     public function oppTeam()
     {
         return $this->belongsTo(Team::class, 'opp_team_id');
+    }
+
+    public function cgTeam()
+    {
+        return $this->belongsTo(Team::class, 'cg_team_id');
+    }
+
+    public function coTeam()
+    {
+        return $this->belongsTo(Team::class, 'co_team_id');
     }
 
     public function winner()

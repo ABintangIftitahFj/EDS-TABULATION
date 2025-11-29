@@ -40,7 +40,7 @@ class TournamentController extends Controller
 
     public function show(Tournament $tournament)
     {
-        $tournament->load(['teams', 'rounds', 'adjudicators']);
+        $tournament->load(['teams', 'rounds.matches', 'adjudicators']);
         return view('admin.tournaments.show', compact('tournament'));
     }
 
@@ -76,7 +76,23 @@ class TournamentController extends Controller
 
     public function import(Tournament $tournament)
     {
-        return view('admin.tournaments.import', compact('tournament'));
+        // Get imported data summary
+        $summary = [
+            'teams' => $tournament->teams()->count(),
+            'speakers' => $tournament->teams()->with('speakers')->get()->sum(function ($team) {
+                return $team->speakers->count(); }),
+            'adjudicators' => $tournament->adjudicators()->count(),
+            'rooms' => \App\Models\Room::where('tournament_id', $tournament->id)->count(),
+        ];
+
+        // Get recent import logs
+        $recentImports = \App\Models\ImportLog::where('tournament_id', $tournament->id)
+            ->orderBy('created_at', 'desc')
+            ->limit(100)
+            ->get()
+            ->groupBy('entity_type');
+
+        return view('admin.tournaments.import', compact('tournament', 'summary', 'recentImports'));
     }
 
     public function processImport(Request $request, Tournament $tournament)
@@ -89,115 +105,176 @@ class TournamentController extends Controller
 
             $file = $request->file('file');
             $type = $request->type;
+            $fileName = $file->getClientOriginalName();
 
             // Read CSV file
-            $data = array_map('str_getcsv', file($file->getRealPath()));
-            $header = array_shift($data); // Remove header row
+            $content = file_get_contents($file->getRealPath());
+            $lines = explode(PHP_EOL, $content);
+            $data = [];
+            foreach ($lines as $line) {
+                if (!empty(trim($line))) {
+                    $data[] = str_getcsv($line);
+                }
+            }
 
             if (empty($data)) {
                 return redirect()->back()->withErrors(['file' => 'CSV file is empty.']);
             }
 
+            $header = array_shift($data); // Remove header row
+
             $imported = 0;
             $errors = [];
 
-            if ($type === 'teams') {
-                // Expected format: Team Name, Institution, Speaker 1, Speaker 2, ...
-                foreach ($data as $index => $row) {
-                    $lineNumber = $index + 2; // +2 because header is line 1, data starts at line 2
+            foreach ($data as $index => $row) {
+                $lineNumber = $index + 2; // +2 because header is line 1, data starts at line 2
+                $success = false;
+                $message = '';
 
-                    if (count($row) < 2) {
-                        $errors[] = "Line {$lineNumber}: Missing required columns (Team Name, Institution)";
-                        continue;
+                try {
+                    if ($type === 'teams') {
+                        $result = $this->importTeamRow($tournament, $row, $lineNumber);
+                    } elseif ($type === 'adjudicators') {
+                        $result = $this->importAdjudicatorRow($tournament, $row, $lineNumber);
+                    } elseif ($type === 'rooms') {
+                        $result = $this->importRoomRow($tournament, $row, $lineNumber);
                     }
 
-                    if (empty(trim($row[0]))) {
-                        $errors[] = "Line {$lineNumber}: Team name cannot be empty";
-                        continue;
-                    }
+                    $success = $result['success'];
+                    $message = $result['message'];
 
-                    try {
-                        $team = \App\Models\Team::create([
-                            'tournament_id' => $tournament->id,
-                            'name' => trim($row[0]),
-                            'institution' => trim($row[1] ?? ''),
-                        ]);
-
-                        // Import speakers if provided (columns 2+)
-                        for ($i = 2; $i < count($row); $i++) {
-                            if (!empty(trim($row[$i]))) {
-                                \App\Models\Speaker::create([
-                                    'team_id' => $team->id,
-                                    'name' => trim($row[$i]),
-                                ]);
-                            }
-                        }
+                    if ($success) {
                         $imported++;
-                    } catch (\Exception $e) {
-                        $errors[] = "Line {$lineNumber}: " . $e->getMessage();
+                    } else {
+                        $errors[] = "Line {$lineNumber}: " . $message;
                     }
+
+                } catch (\Exception $e) {
+                    $success = false;
+                    $message = $e->getMessage();
+                    $errors[] = "Line {$lineNumber}: " . $message;
                 }
-            } elseif ($type === 'adjudicators') {
-                // Expected format: Name, Institution
-                foreach ($data as $index => $row) {
-                    $lineNumber = $index + 2;
 
-                    if (count($row) < 2) {
-                        $errors[] = "Line {$lineNumber}: Missing required columns (Name, Institution)";
-                        continue;
-                    }
-
-                    if (empty(trim($row[0]))) {
-                        $errors[] = "Line {$lineNumber}: Adjudicator name cannot be empty";
-                        continue;
-                    }
-
-                    try {
-                        \App\Models\Adjudicator::create([
-                            'tournament_id' => $tournament->id,
-                            'name' => trim($row[0]),
-                            'institution' => trim($row[1]),
-                        ]);
-                        $imported++;
-                    } catch (\Exception $e) {
-                        $errors[] = "Line {$lineNumber}: " . $e->getMessage();
-                    }
-                }
-            } elseif ($type === 'rooms') {
-                // Expected format: Name
-                foreach ($data as $index => $row) {
-                    $lineNumber = $index + 2;
-
-                    if (count($row) < 1 || empty(trim($row[0]))) {
-                        $errors[] = "Line {$lineNumber}: Room name cannot be empty";
-                        continue;
-                    }
-
-                    try {
-                        \App\Models\Room::create([
-                            'name' => trim($row[0]),
-                        ]);
-                        $imported++;
-                    } catch (\Exception $e) {
-                        $errors[] = "Line {$lineNumber}: " . $e->getMessage();
-                    }
-                }
+                // Log the import attempt
+                \App\Models\ImportLog::create([
+                    'tournament_id' => $tournament->id,
+                    'file_name' => $fileName,
+                    'entity_type' => $type,
+                    'line_number' => $lineNumber,
+                    'raw_row' => $row,
+                    'status' => $success ? 'success' : 'error',
+                    'message' => $message,
+                ]);
             }
 
             if (!empty($errors)) {
-                $errorMessage = "Imported {$imported} {$type} with " . count($errors) . " errors:\n" . implode("\n", array_slice($errors, 0, 5));
-                if (count($errors) > 5) {
-                    $errorMessage .= "\n... and " . (count($errors) - 5) . " more errors.";
-                }
-                return redirect()->route('admin.tournaments.show', $tournament)
-                    ->with('warning', $errorMessage);
+                $errorMessage = "Import selesai: {$imported} sukses, " . count($errors) . " gagal. Klik 'Download errors' untuk detail.";
+                return redirect()->back()->with('warning', $errorMessage);
             }
 
-            return redirect()->route('admin.tournaments.show', $tournament)
-                ->with('success', "Successfully imported {$imported} {$type}.");
+            return redirect()->back()->with('success', "Successfully imported {$imported} {$type}.");
 
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['file' => 'Error processing file: ' . $e->getMessage()]);
         }
+    }
+
+    private function importTeamRow(Tournament $tournament, array $row, int $lineNumber): array
+    {
+        if (count($row) < 2) {
+            return ['success' => false, 'message' => 'Missing required columns (Team Name, Institution)'];
+        }
+
+        if (empty(trim($row[0]))) {
+            return ['success' => false, 'message' => 'Team name cannot be empty'];
+        }
+
+        $team = \App\Models\Team::create([
+            'tournament_id' => $tournament->id,
+            'name' => trim($row[0]),
+            'institution' => trim($row[1] ?? ''),
+        ]);
+
+        // Import speakers if provided (columns 2+)
+        $speakersCount = 0;
+        for ($i = 2; $i < count($row); $i++) {
+            if (!empty(trim($row[$i]))) {
+                \App\Models\Speaker::create([
+                    'team_id' => $team->id,
+                    'name' => trim($row[$i]),
+                ]);
+                $speakersCount++;
+            }
+        }
+
+        $message = "Team '{$team->name}' created";
+        if ($speakersCount > 0) {
+            $message .= " with {$speakersCount} speakers";
+        }
+
+        return ['success' => true, 'message' => $message];
+    }
+
+    private function importAdjudicatorRow(Tournament $tournament, array $row, int $lineNumber): array
+    {
+        if (count($row) < 2) {
+            return ['success' => false, 'message' => 'Missing required columns (Name, Institution)'];
+        }
+
+        if (empty(trim($row[0]))) {
+            return ['success' => false, 'message' => 'Adjudicator name cannot be empty'];
+        }
+
+        $adjudicator = \App\Models\Adjudicator::create([
+            'tournament_id' => $tournament->id,
+            'user_id' => null, // We don't link to users during CSV import
+            'name' => trim($row[0]),
+            'institution' => trim($row[1]),
+            'rating' => isset($row[2]) && is_numeric(trim($row[2])) ? (float) trim($row[2]) : 0,
+        ]);
+
+        return ['success' => true, 'message' => "Adjudicator '{$adjudicator->name}' from {$adjudicator->institution} created"];
+    }
+
+    private function importRoomRow(Tournament $tournament, array $row, int $lineNumber): array
+    {
+        if (count($row) < 1 || empty(trim($row[0]))) {
+            return ['success' => false, 'message' => 'Room name cannot be empty'];
+        }
+
+        $room = \App\Models\Room::create([
+            'name' => trim($row[0]),
+            'tournament_id' => $tournament->id,
+        ]);
+
+        return ['success' => true, 'message' => "Room '{$room->name}' created"];
+    }
+
+    public function downloadImportErrors(Tournament $tournament, Request $request)
+    {
+        $entityType = $request->get('type', 'all');
+
+        $query = \App\Models\ImportLog::where('tournament_id', $tournament->id)
+            ->where('status', 'error')
+            ->orderBy('created_at', 'desc');
+
+        if ($entityType !== 'all') {
+            $query->where('entity_type', $entityType);
+        }
+
+        $errors = $query->get();
+
+        $csvContent = "Line Number,Entity Type,Raw Data,Error Message,Date\n";
+
+        foreach ($errors as $error) {
+            $rawData = is_array($error->raw_row) ? implode('|', $error->raw_row) : $error->raw_row;
+            $csvContent .= "{$error->line_number},{$error->entity_type},\"{$rawData}\",\"{$error->message}\",{$error->created_at}\n";
+        }
+
+        $fileName = "import-errors-{$tournament->id}-" . now()->format('Y-m-d-H-i-s') . '.csv';
+
+        return response($csvContent)
+            ->header('Content-Type', 'text/csv')
+            ->header('Content-Disposition', "attachment; filename=\"{$fileName}\"");
     }
 }
