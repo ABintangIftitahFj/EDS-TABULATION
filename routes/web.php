@@ -66,6 +66,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::post('/rounds/{round}/unpublish-motion', [App\Http\Controllers\Admin\MotionController::class, 'unpublishMotion'])->name('rounds.unpublishMotion');
     Route::post('/rounds/{round}/publish-draw', [App\Http\Controllers\Admin\MotionController::class, 'publishDraw'])->name('rounds.publishDraw');
     Route::post('/rounds/{round}/unpublish-draw', [App\Http\Controllers\Admin\MotionController::class, 'unpublishDraw'])->name('rounds.unpublishDraw');
+    Route::post('/rounds/{round}/toggle-results', [App\Http\Controllers\Admin\RoundController::class, 'toggleResults'])->name('rounds.toggle-results');
+
 
     // Adjudicators Management
     Route::resource('adjudicators', App\Http\Controllers\Admin\AdjudicatorController::class);
@@ -77,6 +79,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/ballots', [App\Http\Controllers\Admin\BallotController::class, 'index'])->name('ballots.index');
     Route::get('/ballots/{match}/create', [App\Http\Controllers\Admin\BallotController::class, 'create'])->name('ballots.create');
     Route::post('/ballots/{match}', [App\Http\Controllers\Admin\BallotController::class, 'store'])->name('ballots.store');
+
 
     // Adjudicator Reviews
     Route::get('/matches/{match}/reviews', [App\Http\Controllers\Admin\AdjudicatorReviewController::class, 'create'])->name('adjudicator-reviews.create');
@@ -108,5 +111,7 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::post('/verify-ballot-password', [App\Http\Controllers\Api\MatchManagementController::class, 'verifyBallotPassword']);
     Route::get('/matches/{match}/details', [App\Http\Controllers\Admin\MatchScoringController::class, 'getMatchDetails']);
 });
+
+
 
 require __DIR__ . '/auth.php';

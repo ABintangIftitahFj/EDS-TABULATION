@@ -169,4 +169,13 @@ class RoundController extends Controller
 
         return back()->with('success', $message);
     }
+
+    public function toggleResults(Round $round)
+    {
+        $round->results_published = !$round->results_published;
+        $round->save();
+
+        $status = $round->results_published ? 'Published' : 'Hidden';
+        return back()->with('success', "Round results are now $status.");
+    }
 }

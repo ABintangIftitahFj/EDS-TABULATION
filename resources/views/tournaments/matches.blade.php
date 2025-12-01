@@ -128,15 +128,35 @@
                                                         {{ $match->govTeam->name ?? 'N/A' }}
                                                     </div>
                                                     <div class="text-xs text-slate-500 font-mono">
-                                                        {{ $match->govTeam->institution ?? '' }}</div>
+                                                        {{ $match->govTeam->institution ?? '' }}
+                                                    </div>
                                                 </td>
 
-                                                {{-- VS Badge --}}
+                                                {{-- VS Badge or Status --}}
                                                 <td class="px-6 py-4 whitespace-nowrap text-center border-r border-slate-100">
-                                                    <span
-                                                        class="inline-flex items-center justify-center px-2 py-1 text-xl font-pixel text-white bg-england-red border-2 border-black shadow-pixel-sm transform rotate-12">
-                                                        VS
-                                                    </span>
+                                                    @if($match->is_completed)
+                                                        <div class="flex flex-col items-center gap-2">
+                                                            <span
+                                                                class="inline-flex items-center justify-center px-3 py-1 text-sm font-pixel text-white bg-green-600 border-2 border-black shadow-pixel-sm">
+                                                                ✓ BALLOT FILLED
+                                                            </span>
+                                                            @if($round->results_published)
+                                                                {{-- Calculate total scores from ballots + reply scores --}}
+                                                                @php
+                                                                    $govScore = $match->ballots->where('team_role', 'gov')->sum('score') + ($match->gov_reply_score ?? 0);
+                                                                    $oppScore = $match->ballots->where('team_role', 'opp')->sum('score') + ($match->opp_reply_score ?? 0);
+                                                                @endphp
+                                                                <div class="text-lg font-pixel text-black">
+                                                                    {{ $govScore }} - {{ $oppScore }}
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                    @else
+                                                        <span
+                                                            class="inline-flex items-center justify-center px-2 py-1 text-xl font-pixel text-white bg-england-red border-2 border-black shadow-pixel-sm transform rotate-12">
+                                                            VS
+                                                        </span>
+                                                    @endif
                                                 </td>
 
                                                 {{-- Team Opp --}}
@@ -146,7 +166,8 @@
                                                         {{ $match->oppTeam->name ?? 'N/A' }}
                                                     </div>
                                                     <div class="text-xs text-slate-500 font-mono">
-                                                        {{ $match->oppTeam->institution ?? '' }}</div>
+                                                        {{ $match->oppTeam->institution ?? '' }}
+                                                    </div>
                                                 </td>
 
                                                 {{-- Adjudicators --}}

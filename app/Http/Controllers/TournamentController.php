@@ -44,7 +44,7 @@ class TournamentController extends Controller
                 $query->where('is_draw_published', true);
             },
             'rounds.matches' => function ($query) {
-                $query->with(['govTeam', 'oppTeam', 'adjudicator', 'room', 'winner']);
+                $query->with(['govTeam', 'oppTeam', 'adjudicator', 'room', 'winner', 'ballots']);
             },
             'rounds.motions' => function ($query) {
                 // Only show motion if motion is published

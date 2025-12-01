@@ -18,7 +18,8 @@
     <div class="mb-6 bg-white rounded-lg shadow-sm p-4">
         <form method="GET" action="{{ route('admin.rounds.index') }}" class="flex items-center gap-4">
             <div class="flex-1 max-w-xs">
-                <label for="tournament_id" class="block text-sm font-medium text-gray-700 mb-1">Filter by Tournament:</label>
+                <label for="tournament_id" class="block text-sm font-medium text-gray-700 mb-1">Filter by
+                    Tournament:</label>
                 <select id="tournament_id" name="tournament_id" onchange="this.form.submit()"
                     class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                     <option value="">All Tournaments</option>
@@ -76,6 +77,16 @@
                                 <div class="text-sm text-black">{{ $round->motion ?? 'Not set' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                {{-- Toggle Results Button --}}
+                                <form action="{{ route('admin.rounds.toggle-results', $round->id) }}" method="POST"
+                                    class="inline-block mr-3">
+                                    @csrf
+                                    <button type="submit"
+                                        class="px-2 py-1 rounded text-xs font-bold border {{ $round->results_published ? 'bg-green-100 text-green-800 border-green-300' : 'bg-gray-100 text-gray-600 border-gray-300' }}">
+                                        {{ $round->results_published ? 'Hide Speaker Score' : 'Show Speaker Score' }}
+                                    </button>
+                                </form>
+
                                 <a href="{{ route('admin.rounds.edit', $round) }}"
                                     class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
                                 <form action="{{ route('admin.rounds.destroy', $round) }}" method="POST" class="inline-block"

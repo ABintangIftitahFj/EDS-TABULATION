@@ -3,6 +3,20 @@
 @section('title', $tournament->name)
 
 @section('content')
+    {{-- Success Notification --}}
+    @if (session('success'))
+        <div class="mb-6 rounded-lg bg-green-50 p-4 text-green-800 border-l-4 border-green-500 shadow-sm">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clip-rule="evenodd" />
+                </svg>
+                <span class="font-medium">{{ session('success') }}</span>
+            </div>
+        </div>
+    @endif
+
     <!-- Admin Home Button -->
     <div class="mb-4">
         <a href="{{ route('admin.dashboard') }}"
@@ -28,7 +42,7 @@
                 </a>
                 <span
                     class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-                        {{ $tournament->status === 'ongoing' ? 'bg-green-100 text-green-800' : ($tournament->status === 'upcoming' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-black') }}">
+                            {{ $tournament->status === 'ongoing' ? 'bg-green-100 text-green-800' : ($tournament->status === 'upcoming' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-black') }}">
                     {{ ucfirst($tournament->status) }}
                 </span>
             </div>
@@ -314,10 +328,12 @@
                                     <td class="px-4 py-3 text-sm text-black">{{ $round->motion ?? 'TBA' }}</td>
                                     <td class="px-4 py-3 text-sm">
                                         <div class="flex flex-col gap-1">
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $round->is_motion_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                            <span
+                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $round->is_motion_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
                                                 {{ $round->is_motion_published ? '👁️ Motion Public' : '🔒 Motion Hidden' }}
                                             </span>
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $round->is_draw_published ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800' }}">
+                                            <span
+                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $round->is_draw_published ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800' }}">
                                                 {{ $round->is_draw_published ? '🔓 Draw Public' : '🔐 Draw Locked' }}
                                             </span>
                                         </div>
@@ -325,9 +341,10 @@
                                     <td class="px-4 py-3 text-sm text-right">
                                         <div class="flex justify-end gap-2 flex-wrap">
                                             <!-- Toggle Motion -->
-                                            <form action="{{ route('admin.rounds.toggle-motion', $round) }}" method="POST" class="inline">
+                                            <form action="{{ route('admin.rounds.toggle-motion', $round) }}" method="POST"
+                                                class="inline">
                                                 @csrf
-                                                <button type="submit" 
+                                                <button type="submit"
                                                     class="px-2 py-1 rounded text-xs font-medium transition {{ $round->is_motion_published ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-500 hover:bg-gray-600' }} text-white"
                                                     title="{{ $round->is_motion_published ? 'Hide Motion' : 'Publish Motion' }}">
                                                     {{ $round->is_motion_published ? '👁️' : '🔒' }} Motion
@@ -335,9 +352,10 @@
                                             </form>
 
                                             <!-- Toggle Draw -->
-                                            <form action="{{ route('admin.rounds.toggle-draw', $round) }}" method="POST" class="inline">
+                                            <form action="{{ route('admin.rounds.toggle-draw', $round) }}" method="POST"
+                                                class="inline">
                                                 @csrf
-                                                <button type="submit" 
+                                                <button type="submit"
                                                     class="px-2 py-1 rounded text-xs font-medium transition {{ $round->is_draw_published ? 'bg-blue-500 hover:bg-blue-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white"
                                                     title="{{ $round->is_draw_published ? 'Lock Draw' : 'Unlock Draw' }}">
                                                     {{ $round->is_draw_published ? '🔓' : '🔐' }} Draw
@@ -349,11 +367,12 @@
                                                 onsubmit="return confirm('Auto-generate draw for {{ $round->name }}?');">
                                                 @csrf
                                                 <input type="hidden" name="round_id" value="{{ $round->id }}">
-                                                <button type="submit" class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition text-xs font-medium">
+                                                <button type="submit"
+                                                    class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition text-xs font-medium">
                                                     Auto Draw
                                                 </button>
                                             </form>
-                                            
+
                                             <!-- Manual -->
                                             <a href="{{ route('admin.matches.create') }}?tournament_id={{ $tournament->id }}&round_id={{ $round->id }}"
                                                 class="px-2 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition text-xs font-medium">
@@ -387,7 +406,8 @@
                                         class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
                                         <div class="flex-1">
                                             <div class="text-sm font-medium text-gray-500 mb-1">{{ $match->room->name ?? 'Room TBA' }} •
-                                                {{ $match->adjudicator->name ?? 'Adj TBA' }}</div>
+                                                {{ $match->adjudicator->name ?? 'Adj TBA' }}
+                                            </div>
                                             <div class="flex items-center gap-4">
                                                 <div class="flex-1 text-right">
                                                     <span class="font-bold text-blue-700">{{ $match->govTeam->name }}</span>
@@ -492,12 +512,12 @@
 
         // AJAX Handler untuk Toggle Motion
         document.querySelectorAll('form[action*="toggle-motion"]').forEach(form => {
-            form.addEventListener('submit', async function(e) {
+            form.addEventListener('submit', async function (e) {
                 e.preventDefault();
-                
+
                 const formData = new FormData(this);
                 const url = this.action;
-                
+
                 try {
                     const response = await fetch(url, {
                         method: 'POST',
@@ -507,9 +527,9 @@
                             'Accept': 'application/json',
                         }
                     });
-                    
+
                     const data = await response.json();
-                    
+
                     if (data.success) {
                         // Show SweetAlert with cute animation
                         Swal.fire({
@@ -542,12 +562,12 @@
 
         // AJAX Handler untuk Toggle Draw
         document.querySelectorAll('form[action*="toggle-draw"]').forEach(form => {
-            form.addEventListener('submit', async function(e) {
+            form.addEventListener('submit', async function (e) {
                 e.preventDefault();
-                
+
                 const formData = new FormData(this);
                 const url = this.action;
-                
+
                 try {
                     const response = await fetch(url, {
                         method: 'POST',
@@ -557,9 +577,9 @@
                             'Accept': 'application/json',
                         }
                     });
-                    
+
                     const data = await response.json();
-                    
+
                     if (data.success) {
                         // Show SweetAlert with cute animation
                         Swal.fire({
@@ -592,9 +612,9 @@
 
         // AJAX Handler untuk Auto Generate Matches
         document.querySelectorAll('form[action*="auto-generate"]').forEach(form => {
-            form.addEventListener('submit', async function(e) {
+            form.addEventListener('submit', async function (e) {
                 e.preventDefault();
-                
+
                 // Show confirmation with SweetAlert
                 const result = await Swal.fire({
                     title: 'Auto Generate Draw?',
@@ -606,9 +626,9 @@
                     confirmButtonColor: '#10B981',
                     cancelButtonColor: '#6B7280'
                 });
-                
+
                 if (!result.isConfirmed) return;
-                
+
                 // Show loading
                 Swal.fire({
                     title: 'Generating...',
@@ -618,10 +638,10 @@
                         Swal.showLoading();
                     }
                 });
-                
+
                 const formData = new FormData(this);
                 const url = this.action;
-                
+
                 try {
                     const response = await fetch(url, {
                         method: 'POST',
@@ -631,20 +651,20 @@
                             'Accept': 'application/json',
                         }
                     });
-                    
+
                     const data = await response.json();
-                    
+
                     if (data.success) {
                         Swal.fire({
                             title: 'Berhasil! 🎉',
                             html: `
-                                <div style="font-size: 1.1em; line-height: 1.6;">
-                                    ${data.message}<br>
-                                    <strong style="color: #10B981; font-size: 1.5em; display: block; margin-top: 10px;">
-                                        ${data.matches_created} Matches Created!
-                                    </strong>
-                                </div>
-                            `,
+                                    <div style="font-size: 1.1em; line-height: 1.6;">
+                                        ${data.message}<br>
+                                        <strong style="color: #10B981; font-size: 1.5em; display: block; margin-top: 10px;">
+                                            ${data.matches_created} Matches Created!
+                                        </strong>
+                                    </div>
+                                `,
                             icon: 'success',
                             confirmButtonText: 'Cek Draw! 🔥',
                             confirmButtonColor: '#10B981',
@@ -668,9 +688,9 @@
 
         // AJAX Handler untuk Auto Add Round
         document.querySelectorAll('form[action*="rounds/auto"]').forEach(form => {
-            form.addEventListener('submit', async function(e) {
+            form.addEventListener('submit', async function (e) {
                 e.preventDefault();
-                
+
                 // Show loading
                 Swal.fire({
                     title: 'Creating Round...',
@@ -680,10 +700,10 @@
                         Swal.showLoading();
                     }
                 });
-                
+
                 const formData = new FormData(this);
                 const url = this.action;
-                
+
                 try {
                     const response = await fetch(url, {
                         method: 'POST',
@@ -693,27 +713,27 @@
                             'Accept': 'application/json',
                         }
                     });
-                    
+
                     const data = await response.json();
-                    
+
                     if (data.success) {
                         Swal.fire({
                             title: 'Round Berhasil Dibuat! 🎊',
                             html: `
-                                <div style="font-size: 1.2em; line-height: 1.8;">
-                                    ${data.message}<br>
-                                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                                                color: white; 
-                                                padding: 15px 20px; 
-                                                border-radius: 12px; 
-                                                margin-top: 15px;
-                                                font-weight: bold;
-                                                font-size: 1.3em;
-                                                box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
-                                        📋 ${data.round.name}
+                                    <div style="font-size: 1.2em; line-height: 1.8;">
+                                        ${data.message}<br>
+                                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                                                    color: white; 
+                                                    padding: 15px 20px; 
+                                                    border-radius: 12px; 
+                                                    margin-top: 15px;
+                                                    font-weight: bold;
+                                                    font-size: 1.3em;
+                                                    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+                                            📋 ${data.round.name}
+                                        </div>
                                     </div>
-                                </div>
-                            `,
+                                `,
                             icon: 'success',
                             confirmButtonText: 'Yeay! 🎉',
                             confirmButtonColor: '#8B5CF6',
@@ -737,5 +757,5 @@
     </script>
 
     <!-- Add Animate.css for animations -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 @endpush

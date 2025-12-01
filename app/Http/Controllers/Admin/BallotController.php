@@ -42,10 +42,22 @@ class BallotController extends Controller
         $match = DebateMatch::with('round.tournament')->findOrFail($match_id);
         $format = $match->round->tournament->format;
 
+        if ($format === 'asian') {
+            $request->validate([
+                'scores.*' => 'required|numeric|min:69|max:85',       // Range Speaker Score
+                'reply_scores.*' => 'nullable|numeric|min:32|max:42', // Range Reply Score
+            ], [
+                'scores.*.min' => 'Speaker score cannot be lower than 69.',
+                'scores.*.max' => 'Speaker score cannot be higher than 85.',
+                'reply_scores.*.min' => 'Reply score cannot be lower than 32.',
+                'reply_scores.*.max' => 'Reply score cannot be higher than 42.',
+            ]);
+        }
+
         DB::transaction(function () use ($request, $match, $format) {
             if ($format === 'british') {
-                // Handle BP Ranks
-                $ranks = $request->input('ranks'); // Array [team_id => rank]
+                // ... (Kode BP Format biarkan seperti sebelumnya) ...
+                $ranks = $request->input('ranks');
 
                 $updateData = [
                     'status' => 'finished',
@@ -73,7 +85,8 @@ class BallotController extends Controller
                 $match->update($updateData);
 
             } else {
-                // Handle Asian Parliamentary Scores
+                // --- PERBAIKAN DI SINI (ASIAN FORMAT) ---
+
                 $scores = $request->input('scores'); // Array [speaker_id => score]
                 $replyScores = $request->input('reply_scores', []); // Array [team_id => score]
 
@@ -81,33 +94,49 @@ class BallotController extends Controller
                 $oppTotal = 0;
 
                 foreach ($scores as $speakerId => $score) {
+                    // 1. Cari data speaker untuk tau tim mana
+                    $speaker = \App\Models\Speaker::find($speakerId);
+
+                    // 2. Tentukan Role (Gov / Opp)
+                    $teamRole = ($speaker->team_id == $match->gov_team_id) ? 'gov' : 'opp';
+
+                    // 3. Simpan ke Ballot
                     Ballot::updateOrCreate(
                         [
                             'match_id' => $match->id,
                             'speaker_id' => $speakerId,
-                            'adjudicator_id' => auth()->id() ?? $match->adjudicator_id,
+
+                            // PERBAIKAN DI SINI:
+                            // Hapus 'auth()->id() ??'
+                            // Gunakan ID Adjudicator yang tertaut di match, bukan User ID Admin.
+                            'adjudicator_id' => $match->adjudicator_id,
                         ],
-                        ['score' => $score]
+                        [
+                            'score' => $score,
+                            'team_role' => $teamRole,
+                            'position' => 'Debater',
+                            'is_reply' => false
+                        ]
                     );
 
-                    // Calculate totals
-                    $speaker = \App\Models\Speaker::find($speakerId);
-                    if ($speaker->team_id == $match->gov_team_id) {
+                    // Hitung Total
+                    if ($teamRole == 'gov') {
                         $govTotal += $score;
-                    } elseif ($speaker->team_id == $match->opp_team_id) {
+                    } else {
                         $oppTotal += $score;
                     }
                 }
 
-                // Add reply scores to totals
+                // Tambahkan Reply Scores ke Total (Jika ada)
                 if (isset($replyScores[$match->gov_team_id])) {
                     $govTotal += $replyScores[$match->gov_team_id];
+                    // Opsional: Simpan record ballot khusus reply speech jika diperlukan sistem
                 }
                 if (isset($replyScores[$match->opp_team_id])) {
                     $oppTotal += $replyScores[$match->opp_team_id];
                 }
 
-                // Determine winner: Manual override or Score-based
+                // Tentukan Pemenang
                 if ($request->filled('winner_id')) {
                     $winnerId = $request->input('winner_id');
                 } else {
@@ -124,8 +153,6 @@ class BallotController extends Controller
             }
         });
 
-        // If request came from iframe (modal), we might want to close it or redirect parent
-        // For now, standard redirect
         return redirect()->route('admin.matches.index')->with('success', 'Ballot submitted successfully.');
     }
 }
