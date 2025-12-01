@@ -16,8 +16,13 @@ Route::controller(App\Http\Controllers\TournamentController::class)->group(funct
     Route::get('/tournaments/{id}/motions', 'motions')->name('tournaments.motions');
     Route::get('/tournaments/{id}/results', 'results')->name('tournaments.results');
     Route::get('/tournaments/{id}/speakers', 'speakers')->name('tournaments.speakers');
+    Route::get('/tournaments/{id}/adjudicators', 'adjudicators')->name('tournaments.adjudicators');
     Route::get('/tournaments/{id}/participants', 'participants')->name('tournaments.participants');
 });
+
+// Public adjudicator review submission (from public results page)
+Route::post('/matches/{match}/reviews', [App\Http\Controllers\Public\AdjudicatorReviewController::class, 'store'])
+    ->name('public.adjudicator-reviews.store');
 
 Route::controller(App\Http\Controllers\ArticleController::class)->group(function () {
     Route::get('/articles', 'index')->name('articles.index');
@@ -49,6 +54,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
 
     // Teams Management
     Route::resource('teams', App\Http\Controllers\Admin\TeamController::class);
+
+    // Speakers Management
+    Route::get('/speakers', [App\Http\Controllers\Admin\SpeakerController::class, 'index'])->name('speakers.index');
 
     // Rounds Management
     Route::post('/rounds/auto-create', [App\Http\Controllers\Admin\RoundController::class, 'autoStore'])->name('rounds.auto-store');
@@ -110,7 +118,15 @@ Route::prefix('api')->middleware(['auth'])->group(function () {
     Route::get('/tournaments/{tournament}/ballot-status/{round?}', [App\Http\Controllers\Api\MatchManagementController::class, 'getBallotStatus']);
     Route::post('/verify-ballot-password', [App\Http\Controllers\Api\MatchManagementController::class, 'verifyBallotPassword']);
     Route::get('/matches/{match}/details', [App\Http\Controllers\Admin\MatchScoringController::class, 'getMatchDetails']);
+
+    // Team Match History (Public API - no auth needed)
+    Route::get('/teams/{team}/match-history', [App\Http\Controllers\Api\TeamController::class, 'getMatchHistory'])->withoutMiddleware(['auth']);
 });
+
+// Ballot deletion route
+Route::delete('/admin/ballots/{ballot}', [App\Http\Controllers\Admin\BallotController::class, 'destroy'])
+    ->middleware(['auth'])
+    ->name('admin.ballots.destroy');
 
 
 

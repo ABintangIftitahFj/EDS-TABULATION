@@ -142,7 +142,8 @@
             <h3 class="text-2xl font-pixel text-black">All Tournaments</h3>
         </div>
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y-2 divide-slate-200">
+            <div class="overflow-x-auto" style="-webkit-overflow-scrolling: touch;">
+                <table class="min-w-full divide-y-2 divide-slate-200">
                 <thead class="bg-slate-50">
                     <tr>
                         <th
@@ -204,7 +205,8 @@
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
+                </table>
+            </div>
         </div>
         <div class="px-6 py-4 border-t-2 border-black bg-slate-50">
             <a href="{{ route('admin.tournaments.index') }}"

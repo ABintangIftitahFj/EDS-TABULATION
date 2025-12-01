@@ -34,6 +34,12 @@
                 <a href="/tournaments/{{ $tournament->id }}/speakers" class="pixel-tab text-slate-600 hover:text-black">
                     🎤 SPEAKERS
                 </a>
+                <a href="/tournaments/{{ $tournament->id }}/adjudicators" class="pixel-tab text-slate-600 hover:text-black">
+                    ⚖️ ADJUDICATORS
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/participants" class="pixel-tab text-slate-600 hover:text-black">
+                    👥 PARTICIPANTS
+                </a>
             </nav>
         </div>
 

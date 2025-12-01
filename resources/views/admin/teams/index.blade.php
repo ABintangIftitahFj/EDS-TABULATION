@@ -52,34 +52,72 @@
         </div>
     @endif
 
-    <div class="bg-white overflow-hidden rounded-xl shadow-sm ring-1 ring-slate-200">
+    <!-- Mobile Card View -->
+    <div class="md:hidden space-y-4">
+        @forelse($teams as $team)
+            <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-4">
+                <div class="flex items-start justify-between mb-3">
+                    <div>
+                        <div class="font-semibold text-black text-lg">{{ $team->name }}</div>
+                        <div class="text-sm text-gray-500">{{ $team->institution }}</div>
+                    </div>
+                    <span class="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs font-semibold rounded-full">
+                        {{ $team->total_points ?? 0 }} pts
+                    </span>
+                </div>
+                <div class="text-xs text-gray-500 mb-2">
+                    🏆 {{ $team->tournament->name ?? 'N/A' }}
+                </div>
+                <div class="bg-slate-50 rounded-lg p-3 mb-3">
+                    <div class="text-xs font-medium text-gray-500 mb-1">Speakers:</div>
+                    <div class="text-sm text-black">
+                        @forelse ($team->speakers as $speaker)
+                            <span class="inline-block bg-white px-2 py-1 rounded text-xs mr-1 mb-1 border">{{ $speaker->name }}</span>
+                        @empty
+                            <span class="text-gray-400">No speakers</span>
+                        @endforelse
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <a href="{{ route('admin.teams.edit', $team) }}"
+                        class="flex-1 px-3 py-2 bg-indigo-600 text-white text-center text-sm font-medium rounded-lg hover:bg-indigo-700">
+                        ✏️ Edit
+                    </a>
+                    <form action="{{ route('admin.teams.destroy', $team) }}" method="POST" class="flex-1"
+                        onsubmit="return confirm('Are you sure you want to delete this team?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="w-full px-3 py-2 bg-red-100 text-red-700 text-sm font-medium rounded-lg hover:bg-red-200">
+                            🗑️ Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        @empty
+            <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-8 text-center">
+                <div class="text-4xl mb-2">👥</div>
+                <p class="text-gray-500">No teams found.</p>
+                <a href="{{ route('admin.teams.create') }}" class="text-indigo-600 hover:text-indigo-500 text-sm">Create one</a>
+            </div>
+        @endforelse
+        
+        @if ($teams->hasPages())
+            <div class="mt-4">{{ $teams->links() }}</div>
+        @endif
+    </div>
+
+    <!-- Desktop Table View -->
+    <div class="hidden md:block bg-white overflow-hidden rounded-xl shadow-sm ring-1 ring-slate-200">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50">
                     <tr>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Team Name
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Institution
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Tournament
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Speakers
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Points
-                        </th>
-                        <th scope="col" class="relative px-6 py-3">
-                            <span class="sr-only">Actions</span>
-                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Team Name</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Institution</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Tournament</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Speakers</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Points</th>
+                        <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-slate-200">
@@ -105,8 +143,7 @@
                                 <div class="text-sm font-semibold text-black">{{ $team->total_points ?? 0 }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('admin.teams.edit', $team) }}"
-                                    class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+                                <a href="{{ route('admin.teams.edit', $team) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
                                 <form action="{{ route('admin.teams.destroy', $team) }}" method="POST" class="inline-block"
                                     onsubmit="return confirm('Are you sure you want to delete this team?');">
                                     @csrf
@@ -118,8 +155,7 @@
                     @empty
                         <tr>
                             <td colspan="6" class="px-6 py-12 text-center text-black">
-                                No teams found. <a href="{{ route('admin.teams.create') }}"
-                                    class="text-indigo-600 hover:text-indigo-500">Create one</a>
+                                No teams found. <a href="{{ route('admin.teams.create') }}" class="text-indigo-600 hover:text-indigo-500">Create one</a>
                             </td>
                         </tr>
                     @endforelse

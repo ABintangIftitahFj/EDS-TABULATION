@@ -27,13 +27,37 @@ class TournamentController extends Controller
             'teams' => function ($query) {
                 $query->orderBy('total_vp', 'desc')->orderBy('total_speaker_score', 'desc');
             },
-            'teams.speakers' // Eager load speakers through teams
+            'teams.speakers.ballots.match.round', // Eager load ballots with match and round
+            'rounds' // Load rounds so we can check results_published
         ])->findOrFail($id);
 
-        // Flatten speakers and sort them
-        $speakers = $tournament->teams->flatMap->speakers->sortByDesc('total_score');
+        // Determine if any round has published results (use filter to handle both boolean and integer values)
+        $hasPublishedResults = $tournament->rounds->filter(function ($round) {
+            return $round->results_published == true;
+        })->count() > 0;
 
-        return view('tournaments.standings', compact('tournament', 'speakers'));
+        // Get IDs of rounds with published results
+        $publishedRoundIds = $tournament->rounds->filter(function ($round) {
+            return $round->results_published == true;
+        })->pluck('id')->toArray();
+
+        // Flatten speakers and calculate total_score dynamically from ballots
+        $speakers = $tournament->teams->flatMap->speakers->map(function ($speaker) use ($publishedRoundIds) {
+            // Only count ballots from rounds with published results
+            $validBallots = $speaker->ballots->filter(function ($ballot) use ($publishedRoundIds) {
+                return $ballot->match && in_array($ballot->match->round_id, $publishedRoundIds);
+            });
+            
+            $speaker->total_score = $validBallots->sum('score');
+            $speaker->ballots_count = $validBallots->count();
+            $speaker->average_score = $speaker->ballots_count > 0 
+                ? round($speaker->total_score / $speaker->ballots_count, 2) 
+                : 0;
+            
+            return $speaker;
+        })->sortByDesc('total_score')->values();
+
+        return view('tournaments.standings', compact('tournament', 'speakers', 'hasPublishedResults'));
     }
 
     public function matches($id)
@@ -108,6 +132,11 @@ class TournamentController extends Controller
     {
         $tournament = Tournament::with(['rounds.matches', 'teams.speakers.ballots.match'])->findOrFail($id);
 
+        // Check if any round has results_published = true (use filter to handle both boolean and integer values)
+        $hasPublishedResults = $tournament->rounds->filter(function ($round) {
+            return $round->results_published == true;
+        })->count() > 0;
+
         // Identify completed rounds
         $completedRoundIds = $tournament->rounds->filter(function ($round) {
             return $round->matches->count() > 0 && $round->matches->every(function ($match) {
@@ -136,12 +165,21 @@ class TournamentController extends Controller
                 return $speaker;
             });
 
-        return view('tournaments.speakers', compact('tournament', 'speakers'));
+        return view('tournaments.speakers', compact('tournament', 'speakers', 'hasPublishedResults'));
     }
 
     public function participants($id)
     {
         $tournament = Tournament::with(['teams.speakers', 'adjudicators'])->findOrFail($id);
         return view('tournaments.participants', compact('tournament'));
+    }
+
+    public function adjudicators($id)
+    {
+        $tournament = Tournament::with(['adjudicators' => function($query) {
+            $query->orderBy('rating', 'desc');
+        }])->findOrFail($id);
+
+        return view('tournaments.adjudicators', compact('tournament'));
     }
 }

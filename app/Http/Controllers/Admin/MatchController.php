@@ -27,7 +27,7 @@ class MatchController extends Controller
             $query->where('round_id', $request->round_id);
         }
 
-        $matches = $query->paginate(15);
+        $matches = $query->paginate(15)->withQueryString();
         $rounds = Round::with('tournament')->orderBy('created_at', 'desc')->get();
         return view('admin.matches.index', compact('matches', 'rounds'));
     }

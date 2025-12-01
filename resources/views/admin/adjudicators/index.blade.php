@@ -43,26 +43,61 @@
         </div>
     @endif
 
-    <div class="bg-white overflow-hidden rounded-xl shadow-sm ring-1 ring-slate-200">
+    <!-- Mobile Card View -->
+    <div class="md:hidden space-y-4">
+        @forelse($adjudicators as $adjudicator)
+            <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-4">
+                <div class="flex items-start justify-between mb-3">
+                    <div>
+                        <div class="font-semibold text-black text-lg">{{ $adjudicator->name }}</div>
+                        <div class="text-sm text-gray-500">{{ $adjudicator->institution ?? 'N/A' }}</div>
+                    </div>
+                    <span class="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded-full">
+                        ⭐ {{ $adjudicator->rating ? number_format($adjudicator->rating, 1) : 'N/A' }}
+                    </span>
+                </div>
+                <div class="text-xs text-gray-500 mb-3">
+                    🏆 {{ $adjudicator->tournament->name ?? 'N/A' }}
+                </div>
+                <div class="flex gap-2">
+                    <a href="{{ route('admin.adjudicators.edit', $adjudicator) }}"
+                        class="flex-1 px-3 py-2 bg-indigo-600 text-white text-center text-sm font-medium rounded-lg hover:bg-indigo-700">
+                        ✏️ Edit
+                    </a>
+                    <form action="{{ route('admin.adjudicators.destroy', $adjudicator) }}" method="POST" class="flex-1"
+                        onsubmit="return confirm('Are you sure you want to delete this adjudicator?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="w-full px-3 py-2 bg-red-100 text-red-700 text-sm font-medium rounded-lg hover:bg-red-200">
+                            🗑️ Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        @empty
+            <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-8 text-center">
+                <div class="text-4xl mb-2">👨‍⚖️</div>
+                <p class="text-gray-500">No adjudicators found.</p>
+                <a href="{{ route('admin.adjudicators.create') }}" class="text-indigo-600 hover:text-indigo-500 text-sm">Add one</a>
+            </div>
+        @endforelse
+        
+        @if ($adjudicators->hasPages())
+            <div class="mt-4">{{ $adjudicators->links() }}</div>
+        @endif
+    </div>
+
+    <!-- Desktop Table View -->
+    <div class="hidden md:block bg-white overflow-hidden rounded-xl shadow-sm ring-1 ring-slate-200">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Name
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Institution
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Tournament
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Rating
-                        </th>
-                        <th class="relative px-6 py-3">
-                            <span class="sr-only">Actions</span>
-                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Name</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Institution</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Tournament</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Rating</th>
+                        <th class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-slate-200">
@@ -83,10 +118,8 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('admin.adjudicators.edit', $adjudicator) }}"
-                                    class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
-                                <form action="{{ route('admin.adjudicators.destroy', $adjudicator) }}" method="POST"
-                                    class="inline-block"
+                                <a href="{{ route('admin.adjudicators.edit', $adjudicator) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+                                <form action="{{ route('admin.adjudicators.destroy', $adjudicator) }}" method="POST" class="inline-block"
                                     onsubmit="return confirm('Are you sure you want to delete this adjudicator?');">
                                     @csrf
                                     @method('DELETE')
@@ -97,8 +130,7 @@
                     @empty
                         <tr>
                             <td colspan="5" class="px-6 py-12 text-center text-black">
-                                No adjudicators found. <a href="{{ route('admin.adjudicators.create') }}"
-                                    class="text-indigo-600 hover:text-indigo-500">Add one</a>
+                                No adjudicators found. <a href="{{ route('admin.adjudicators.create') }}" class="text-indigo-600 hover:text-indigo-500">Add one</a>
                             </td>
                         </tr>
                     @endforelse

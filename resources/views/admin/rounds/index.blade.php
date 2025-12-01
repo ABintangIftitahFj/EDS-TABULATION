@@ -44,23 +44,68 @@
         </div>
     @endif
 
-    <div class="bg-white overflow-hidden rounded-xl shadow-sm ring-1 ring-slate-200">
+    <!-- Mobile Card View -->
+    <div class="md:hidden space-y-4">
+        @forelse($rounds as $round)
+            <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-4">
+                <div class="flex items-start justify-between mb-2">
+                    <div>
+                        <div class="font-semibold text-black text-lg">{{ $round->name }}</div>
+                        <div class="text-xs text-gray-500">Round {{ $round->round_number }}</div>
+                    </div>
+                </div>
+                <div class="text-xs text-gray-500 mb-2">
+                    🏆 {{ $round->tournament->name ?? 'N/A' }}
+                </div>
+                <div class="bg-slate-50 rounded-lg p-3 mb-3">
+                    <div class="text-xs font-medium text-gray-500 mb-1">Motion:</div>
+                    <div class="text-sm text-black">{{ $round->motion ?? 'Not set' }}</div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mb-3">
+                    <form action="{{ route('admin.rounds.toggle-results', $round->id) }}" method="POST">
+                        @csrf
+                        <button type="submit"
+                            class="w-full px-2 py-2 rounded-lg text-xs font-bold border {{ $round->results_published ? 'bg-green-100 text-green-800 border-green-300' : 'bg-gray-100 text-gray-600 border-gray-300' }}">
+                            {{ $round->results_published ? '✅ Scores Visible' : '🔒 Scores Hidden' }}
+                        </button>
+                    </form>
+                    <a href="{{ route('admin.rounds.edit', $round) }}"
+                        class="px-3 py-2 bg-indigo-600 text-white text-center text-xs font-medium rounded-lg hover:bg-indigo-700">
+                        ✏️ Edit
+                    </a>
+                </div>
+                <form action="{{ route('admin.rounds.destroy', $round) }}" method="POST"
+                    onsubmit="return confirm('Are you sure you want to delete this round?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="w-full px-3 py-2 bg-red-100 text-red-700 text-sm font-medium rounded-lg hover:bg-red-200">
+                        🗑️ Delete
+                    </button>
+                </form>
+            </div>
+        @empty
+            <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-8 text-center">
+                <div class="text-4xl mb-2">📋</div>
+                <p class="text-gray-500">No rounds found.</p>
+                <a href="{{ route('admin.rounds.create') }}" class="text-indigo-600 hover:text-indigo-500 text-sm">Create one</a>
+            </div>
+        @endforelse
+        
+        @if ($rounds->hasPages())
+            <div class="mt-4">{{ $rounds->links() }}</div>
+        @endif
+    </div>
+
+    <!-- Desktop Table View -->
+    <div class="hidden md:block bg-white overflow-hidden rounded-xl shadow-sm ring-1 ring-slate-200">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Round
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Tournament
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Motion
-                        </th>
-                        <th class="relative px-6 py-3">
-                            <span class="sr-only">Actions</span>
-                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Round</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Tournament</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Motion</th>
+                        <th class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-slate-200">
@@ -77,18 +122,14 @@
                                 <div class="text-sm text-black">{{ $round->motion ?? 'Not set' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                {{-- Toggle Results Button --}}
-                                <form action="{{ route('admin.rounds.toggle-results', $round->id) }}" method="POST"
-                                    class="inline-block mr-3">
+                                <form action="{{ route('admin.rounds.toggle-results', $round->id) }}" method="POST" class="inline-block mr-3">
                                     @csrf
                                     <button type="submit"
                                         class="px-2 py-1 rounded text-xs font-bold border {{ $round->results_published ? 'bg-green-100 text-green-800 border-green-300' : 'bg-gray-100 text-gray-600 border-gray-300' }}">
                                         {{ $round->results_published ? 'Hide Speaker Score' : 'Show Speaker Score' }}
                                     </button>
                                 </form>
-
-                                <a href="{{ route('admin.rounds.edit', $round) }}"
-                                    class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+                                <a href="{{ route('admin.rounds.edit', $round) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
                                 <form action="{{ route('admin.rounds.destroy', $round) }}" method="POST" class="inline-block"
                                     onsubmit="return confirm('Are you sure you want to delete this round?');">
                                     @csrf
@@ -100,8 +141,7 @@
                     @empty
                         <tr>
                             <td colspan="4" class="px-6 py-12 text-center text-black">
-                                No rounds found. <a href="{{ route('admin.rounds.create') }}"
-                                    class="text-indigo-600 hover:text-indigo-500">Create one</a>
+                                No rounds found. <a href="{{ route('admin.rounds.create') }}" class="text-indigo-600 hover:text-indigo-500">Create one</a>
                             </td>
                         </tr>
                     @endforelse

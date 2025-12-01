@@ -43,6 +43,14 @@
                     class="pixel-tab text-slate-600 hover:text-black">
                     🎤 SPEAKERS
                 </a>
+                <a href="/tournaments/{{ $tournament->id }}/adjudicators"
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    ⚖️ ADJUDICATORS
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/participants"
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    👥 PARTICIPANTS
+                </a>
             </nav>
         </div>
 
@@ -137,21 +145,27 @@
                                                 $govBallots = $match->ballots->where('team_role', 'gov');
                                                 $govTotal = $govBallots->sum('score');
                                             @endphp
-                                            @foreach($govBallots as $ballot)
-                                                <div class="flex justify-between items-center p-3 bg-white border-2 border-slate-200 shadow-sm">
-                                                    <span class="text-sm font-bold text-black font-sans">
-                                                        {{ $ballot->speaker->name ?? 'Speaker' }}
-                                                    </span>
-                                                    <span class="text-lg font-pixel text-england-blue">
-                                                        {{ $ballot->score }} pts
-                                                    </span>
-                                                </div>
-                                            @endforeach
+                                            @if($round->results_published)
+                                                @foreach($govBallots as $ballot)
+                                                    <div class="flex justify-between items-center p-3 bg-white border-2 border-slate-200 shadow-sm">
+                                                        <span class="text-sm font-bold text-black font-sans">
+                                                            {{ $ballot->speaker->name ?? 'Speaker' }}
+                                                        </span>
+                                                        <span class="text-lg font-pixel text-england-blue">
+                                                            {{ $ballot->score }} pts
+                                                        </span>
+                                                    </div>
+                                                @endforeach
 
-                                            <div class="mt-4 pt-4 border-t-2 border-slate-900 border-dashed flex justify-between items-center">
-                                                <span class="text-sm font-pixel text-slate-500 uppercase">Total Score</span>
-                                                <span class="text-2xl font-pixel text-black">{{ $govTotal }}</span>
-                                            </div>
+                                                <div class="mt-4 pt-4 border-t-2 border-slate-900 border-dashed flex justify-between items-center">
+                                                    <span class="text-sm font-pixel text-slate-500 uppercase">Total Score</span>
+                                                    <span class="text-2xl font-pixel text-black">{{ $govTotal }}</span>
+                                                </div>
+                                            @else
+                                                <div class="p-6 text-center bg-slate-50 border-2 border-slate-200 border-dashed">
+                                                    <p class="text-sm font-pixel text-slate-400">🔒 Speaker scores hidden</p>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
 
@@ -171,21 +185,27 @@
                                                 $oppBallots = $match->ballots->where('team_role', 'opp');
                                                 $oppTotal = $oppBallots->sum('score');
                                             @endphp
-                                            @foreach($oppBallots as $ballot)
-                                                <div class="flex justify-between items-center p-3 bg-white border-2 border-slate-200 shadow-sm">
-                                                    <span class="text-sm font-bold text-black font-sans">
-                                                        {{ $ballot->speaker->name ?? 'Speaker' }}
-                                                    </span>
-                                                    <span class="text-lg font-pixel text-england-red">
-                                                        {{ $ballot->score }} pts
-                                                    </span>
-                                                </div>
-                                            @endforeach
+                                            @if($round->results_published)
+                                                @foreach($oppBallots as $ballot)
+                                                    <div class="flex justify-between items-center p-3 bg-white border-2 border-slate-200 shadow-sm">
+                                                        <span class="text-sm font-bold text-black font-sans">
+                                                            {{ $ballot->speaker->name ?? 'Speaker' }}
+                                                        </span>
+                                                        <span class="text-lg font-pixel text-england-red">
+                                                            {{ $ballot->score }} pts
+                                                        </span>
+                                                    </div>
+                                                @endforeach
 
-                                            <div class="mt-4 pt-4 border-t-2 border-slate-900 border-dashed flex justify-between items-center">
-                                                <span class="text-sm font-pixel text-slate-500 uppercase">Total Score</span>
-                                                <span class="text-2xl font-pixel text-black">{{ $oppTotal }}</span>
-                                            </div>
+                                                <div class="mt-4 pt-4 border-t-2 border-slate-900 border-dashed flex justify-between items-center">
+                                                    <span class="text-sm font-pixel text-slate-500 uppercase">Total Score</span>
+                                                    <span class="text-2xl font-pixel text-black">{{ $oppTotal }}</span>
+                                                </div>
+                                            @else
+                                                <div class="p-6 text-center bg-slate-50 border-2 border-slate-200 border-dashed">
+                                                    <p class="text-sm font-pixel text-slate-400">🔒 Speaker scores hidden</p>
+                                                </div>
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -224,8 +244,9 @@
 
                                     <h3 class="text-2xl font-pixel text-black mb-6 border-b-4 border-soft-pink inline-block">RATE ADJUDICATOR</h3>
 
-                                    <form action="{{ route('admin.adjudicator-reviews.store', $match) }}" method="POST">
+                                    <form action="{{ route('public.adjudicator-reviews.store', $match) }}" method="POST">
                                         @csrf
+                                        <input type="hidden" name="adjudicator_id" value="{{ $match->adjudicator->id ?? '' }}">
                                         <div class="space-y-6">
                                             <div>
                                                 <label class="block text-sm font-pixel text-slate-500 uppercase mb-2">Adjudicator</label>

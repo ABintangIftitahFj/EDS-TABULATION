@@ -33,7 +33,7 @@
             </div>
         </div>
 
-        <form action="{{ route('admin.ballots.store', $match->id) }}" method="POST" class="space-y-8">
+        <form id="ballotForm" action="{{ route('admin.ballots.store', $match->id) }}" method="POST" class="space-y-8">
             @csrf
 
             @if($match->round->tournament->format === 'british')
@@ -50,10 +50,10 @@
                     <div class="bg-white shadow-sm ring-1 ring-gray-200 rounded-xl p-6">
                         <h3 class="text-lg font-bold text-indigo-600 mb-4 border-b pb-2 flex justify-between">
                             <span>Government</span>
-                            <span class="text-sm text-gray-500 font-normal">{{ $match->teamGov->name }}</span>
+                            <span class="text-sm text-gray-500 font-normal">{{ $match->govTeam->name }}</span>
                         </h3>
                         <div class="space-y-5">
-                            @foreach($match->teamGov->speakers as $speaker)
+                            @foreach($match->govTeam->speakers as $speaker)
                                 <div>
                                     <label class="block text-sm font-medium text-gray-900">{{ $speaker->name }}</label>
                                     <div class="mt-1 relative rounded-md shadow-sm">
@@ -79,7 +79,7 @@
                             </div>
                             <div id="gov_reply_input" class="hidden pl-6 border-l-2 border-indigo-200">
                                 <label class="block text-sm font-medium text-gray-700">Score</label>
-                                <input type="number" name="reply_scores[{{ $match->teamGov->id }}]" value="36" min="32" max="42"
+                                <input type="number" name="reply_scores[{{ $match->govTeam->id }}]" value="36" min="32" max="42"
                                     step="0.5"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                 <p class="mt-1 text-xs text-gray-500">Range: 32-42</p>
@@ -91,10 +91,10 @@
                     <div class="bg-white shadow-sm ring-1 ring-gray-200 rounded-xl p-6">
                         <h3 class="text-lg font-bold text-rose-600 mb-4 border-b pb-2 flex justify-between">
                             <span>Opposition</span>
-                            <span class="text-sm text-gray-500 font-normal">{{ $match->teamOpp->name }}</span>
+                            <span class="text-sm text-gray-500 font-normal">{{ $match->oppTeam->name }}</span>
                         </h3>
                         <div class="space-y-5">
-                            @foreach($match->teamOpp->speakers as $speaker)
+                            @foreach($match->oppTeam->speakers as $speaker)
                                 <div>
                                     <label class="block text-sm font-medium text-gray-900">{{ $speaker->name }}</label>
                                     <div class="mt-1 relative rounded-md shadow-sm">
@@ -117,7 +117,7 @@
                             </div>
                             <div id="opp_reply_input" class="hidden pl-6 border-l-2 border-rose-200">
                                 <label class="block text-sm font-medium text-gray-700">Score</label>
-                                <input type="number" name="reply_scores[{{ $match->teamOpp->id }}]" value="36" min="32" max="42"
+                                <input type="number" name="reply_scores[{{ $match->oppTeam->id }}]" value="36" min="32" max="42"
                                     step="0.5"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-rose-500 focus:ring-rose-500 sm:text-sm">
                                 <p class="mt-1 text-xs text-gray-500">Range: 32-42</p>
@@ -132,12 +132,12 @@
                     <p class="text-sm text-gray-500 mb-4">If left unselected, winner is calculated by total score.</p>
                     <div class="flex gap-6">
                         <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="radio" name="winner_id" value="{{ $match->teamGov->id }}"
+                            <input type="radio" name="winner_id" value="{{ $match->govTeam->id }}"
                                 class="h-5 w-5 text-indigo-600 focus:ring-indigo-500">
                             <span class="text-gray-900 font-medium">Government Win</span>
                         </label>
                         <label class="flex items-center gap-3 cursor-pointer">
-                            <input type="radio" name="winner_id" value="{{ $match->teamOpp->id }}"
+                            <input type="radio" name="winner_id" value="{{ $match->oppTeam->id }}"
                                 class="h-5 w-5 text-rose-600 focus:ring-rose-500">
                             <span class="text-gray-900 font-medium">Opposition Win</span>
                         </label>
@@ -148,7 +148,7 @@
             <div class="mt-6 flex items-center justify-end gap-x-6 pb-10">
                 <a href="{{ route('admin.matches.index') }}"
                     class="text-sm font-semibold leading-6 text-gray-900">Cancel</a>
-                <button type="submit"
+                <button type="submit" id="submitBtn"
                     class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                     Submit Ballot
                 </button>
@@ -156,6 +156,7 @@
         </form>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         function toggleReply(side) {
             const checkbox = document.getElementById(`${side}_reply_check`);
@@ -167,5 +168,128 @@
                 inputDiv.classList.add('hidden');
             }
         }
+
+        // AJAX Form Submission with Instant UI Update
+        document.addEventListener('DOMContentLoaded', function () {
+            const ballotForm = document.getElementById('ballotForm');
+
+            if (!ballotForm) {
+                console.error('Ballot form not found!');
+                return;
+            }
+
+            console.log('Ballot form AJAX handler attached');
+
+            ballotForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                console.log('Form submit intercepted by AJAX');
+
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+
+                // Disable button and show loading
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<svg class="animate-spin h-5 w-5 inline mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Submitting...';
+
+                const formData = new FormData(this);
+                const url = this.action;
+
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.success) {
+                        // INSTANT UPDATE: Update parent window button BEFORE showing success message
+                        if (window.parent && window.parent.document) {
+                            try {
+                                // Find the match ID from URL
+                                const matchId = '{{ $match->id }}';
+
+                                // Find the button in parent window and update it immediately
+                                const parentButtons = window.parent.document.querySelectorAll(`button[onclick*="openScoreModal"][onclick*="${matchId}"]`);
+                                parentButtons.forEach(btn => {
+                                    // Change to green background and "Edit Score" text
+                                    btn.className = btn.className.replace('bg-indigo-600', 'bg-amber-600');
+                                    btn.className = btn.className.replace('hover:bg-indigo-700', 'hover:bg-amber-700');
+                                    btn.className = btn.className.replace('bg-green-600', 'bg-amber-600');
+                                    btn.className = btn.className.replace('hover:bg-green-700', 'hover:bg-amber-700');
+                                    btn.innerHTML = '✏️ Edit Score';
+
+                                    // Add pulsing green indicator
+                                    if (!btn.querySelector('.animate-ping')) {
+                                        const indicator = document.createElement('span');
+                                        indicator.className = 'absolute -top-1 -right-1 flex h-3 w-3';
+                                        indicator.innerHTML = '<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>';
+                                        btn.parentElement.style.position = 'relative';
+                                        btn.parentElement.appendChild(indicator);
+                                    }
+                                });
+                            } catch (e) {
+                                console.log('Could not update parent button immediately:', e);
+                            }
+                        }
+
+                        // Show success message
+                        await Swal.fire({
+                            title: 'Berhasil! 🎉',
+                            text: data.message || 'Ballot berhasil disimpan!',
+                            icon: 'success',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#4F46E5',
+                            timer: 2000
+                        });
+
+                        // Redirect to Manage Tournament Draw Tab
+                        const tournamentId = '{{ $match->round->tournament_id }}';
+                        const redirectUrl = `/admin/tournaments/${tournamentId}#draw-tab`;
+
+                        if (window.parent && window.parent !== window) {
+                            // Close modal first
+                            if (window.parent.closeScoreModal) {
+                                window.parent.closeScoreModal();
+                            }
+                            // Redirect parent window to Draw tab
+                            window.parent.location.href = redirectUrl;
+                        } else {
+                            // If not in iframe, just redirect
+                            window.location.href = redirectUrl;
+                        }
+                    } else {
+                        // Show error message
+                        Swal.fire({
+                            title: 'Error!',
+                            text: data.message || 'Terjadi kesalahan saat menyimpan ballot.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+
+                        // Re-enable button
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalText;
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Terjadi kesalahan saat menyimpan ballot.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+
+                    // Re-enable button
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
+            });
+        }); // End DOMContentLoaded
     </script>
 @endsection

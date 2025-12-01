@@ -83,6 +83,7 @@ class TournamentController extends Controller
                 return $team->speakers->count(); }),
             'adjudicators' => $tournament->adjudicators()->count(),
             'rooms' => \App\Models\Room::where('tournament_id', $tournament->id)->count(),
+            'rounds' => $tournament->rounds()->count(),
         ];
 
         // Get recent import logs
@@ -97,9 +98,11 @@ class TournamentController extends Controller
 
     public function processImport(Request $request, Tournament $tournament)
     {
+        $isAjax = $request->ajax() || $request->wantsJson();
+        
         try {
             $request->validate([
-                'type' => 'required|in:teams,adjudicators,rooms',
+                'type' => 'required|in:teams,adjudicators,rooms,rounds',
                 'file' => 'required|file|mimes:csv,txt|max:2048'
             ]);
 
@@ -118,6 +121,9 @@ class TournamentController extends Controller
             }
 
             if (empty($data)) {
+                if ($isAjax) {
+                    return response()->json(['success' => false, 'message' => 'CSV file is empty.']);
+                }
                 return redirect()->back()->withErrors(['file' => 'CSV file is empty.']);
             }
 
@@ -138,6 +144,8 @@ class TournamentController extends Controller
                         $result = $this->importAdjudicatorRow($tournament, $row, $lineNumber);
                     } elseif ($type === 'rooms') {
                         $result = $this->importRoomRow($tournament, $row, $lineNumber);
+                    } elseif ($type === 'rounds') {
+                        $result = $this->importRoundRow($tournament, $row, $lineNumber);
                     }
 
                     $success = $result['success'];
@@ -167,15 +175,81 @@ class TournamentController extends Controller
                 ]);
             }
 
+            // Get updated counts
+            $counts = [
+                'teams' => $tournament->teams()->count(),
+                'speakers' => \App\Models\Speaker::whereIn('team_id', $tournament->teams()->pluck('id'))->count(),
+                'adjudicators' => $tournament->adjudicators()->count(),
+                'rooms' => $tournament->rooms()->count(),
+                'rounds' => $tournament->rounds()->count(),
+            ];
+
             if (!empty($errors)) {
-                $errorMessage = "Import selesai: {$imported} sukses, " . count($errors) . " gagal. Klik 'Download errors' untuk detail.";
+                $errorMessage = "Import completed: {$imported} success, " . count($errors) . " failed.";
+                if ($isAjax) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => $errorMessage,
+                        'counts' => $counts,
+                        'errors' => $errors
+                    ]);
+                }
                 return redirect()->back()->with('warning', $errorMessage);
             }
 
-            return redirect()->back()->with('success', "Successfully imported {$imported} {$type}.");
+            $successMessage = "Successfully imported {$imported} {$type}.";
+            if ($isAjax) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $successMessage,
+                    'counts' => $counts
+                ]);
+            }
+            return redirect()->back()->with('success', $successMessage);
 
         } catch (\Exception $e) {
+            if ($isAjax) {
+                return response()->json(['success' => false, 'message' => 'Error processing file: ' . $e->getMessage()]);
+            }
             return redirect()->back()->withErrors(['file' => 'Error processing file: ' . $e->getMessage()]);
+        }
+    }
+
+    private function importRoundRow(Tournament $tournament, array $row, int $lineNumber): array
+    {
+        if (count($row) < 2) {
+            return ['success' => false, 'message' => 'Missing required columns (Name, Round Number)'];
+        }
+
+        if (empty(trim($row[0]))) {
+            return ['success' => false, 'message' => 'Round name cannot be empty'];
+        }
+
+        $roundNumber = intval(trim($row[1] ?? 1));
+        if ($roundNumber < 1) {
+            return ['success' => false, 'message' => 'Round number must be a positive number'];
+        }
+
+        try {
+            $round = \App\Models\Round::create([
+                'tournament_id' => $tournament->id,
+                'name' => trim($row[0]),
+                'round_number' => $roundNumber,
+                'type' => 'preliminary',
+                'motion' => isset($row[2]) && !empty(trim($row[2])) ? trim($row[2]) : null,
+                'info_slide' => isset($row[3]) && !empty(trim($row[3])) ? trim($row[3]) : null,
+                'is_published' => false,
+                'is_motion_published' => false,
+                'is_draw_published' => false,
+                'is_locked' => false,
+                'results_published' => false,
+                'status' => 'draft',
+            ]);
+            
+            return ['success' => true, 'message' => "Round '{$round->name}' imported successfully"];
+        } catch (\Exception $e) {
+            \Log::error('Round import error: ' . $e->getMessage());
+            return ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
         }
     }
 

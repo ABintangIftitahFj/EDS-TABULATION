@@ -33,7 +33,12 @@ class Team extends Model
 
     public function matches()
     {
-        return $this->hasMany('App\\Models\\DebateMatch', 'gov_team_id')->orWhere('opp_team_id', $this->id);
+        return \App\Models\DebateMatch::where(function ($query) {
+            $query->where('gov_team_id', $this->id)
+                ->orWhere('opp_team_id', $this->id)
+                ->orWhere('cg_team_id', $this->id)
+                ->orWhere('co_team_id', $this->id);
+        });
     }
 
     public function getEmojiAttribute()

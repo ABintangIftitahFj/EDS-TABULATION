@@ -3,6 +3,7 @@
 @section('title', 'Edit Match')
 
 @section('content')
+<div class="max-w-5xl mx-auto">
     <div class="mb-8">
         <h1 class="text-2xl font-bold text-black">Edit Match</h1>
         <p class="text-black">Update debate match pairing</p>
@@ -138,40 +139,42 @@
                     Cancel
                 </a>
                 <button type="submit"
-                    class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-black shadow-sm hover:bg-indigo-500">
+                    class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">
                     Update Match
                 </button>
             </div>
         </form>
     </div>
+</div>
 
-    @push('scripts')
-    <script>
-        function updateFormFormat() {
-            const select = document.getElementById('round_id');
-            const option = select.options[select.selectedIndex];
-            const format = option.dataset.format;
-            const bpFields = document.getElementById('bp_fields');
-            const govLabel = document.getElementById('gov_label');
-            const oppLabel = document.getElementById('opp_label');
+@push('scripts')
+<script>
+    function updateFormFormat() {
+        const select = document.getElementById('round_id');
+        const option = select.options[select.selectedIndex];
+        const format = option.dataset.format;
+        const bpFields = document.getElementById('bp_fields');
+        const govLabel = document.getElementById('gov_label');
+        const oppLabel = document.getElementById('opp_label');
 
-            if (format === 'british') {
-                bpFields.classList.remove('hidden');
-                govLabel.textContent = 'Opening Government (OG)';
-                oppLabel.textContent = 'Opening Opposition (OO)';
-            } else {
-                bpFields.classList.add('hidden');
-                govLabel.textContent = 'Government';
-                oppLabel.textContent = 'Opposition';
-                // Clear BP fields
-                document.getElementById('cg_team_id').value = '';
-                document.getElementById('co_team_id').value = '';
-            }
+        if (format === 'british') {
+            bpFields.classList.remove('hidden');
+            govLabel.textContent = 'Opening Government (OG)';
+            oppLabel.textContent = 'Opening Opposition (OO)';
+        } else {
+            bpFields.classList.add('hidden');
+            govLabel.textContent = 'Government';
+            oppLabel.textContent = 'Opposition';
+            // Clear BP fields
+            document.getElementById('cg_team_id').value = '';
+            document.getElementById('co_team_id').value = '';
         }
-        
-        // Initialize on load
-        document.addEventListener('DOMContentLoaded', function() {
-            updateFormFormat();
-        });
-    </script>
-    @endpush
+    }
+    
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateFormFormat();
+    });
+</script>
+@endpush
+@endsection

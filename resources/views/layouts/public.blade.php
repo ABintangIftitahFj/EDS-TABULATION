@@ -157,17 +157,6 @@
                         class="font-pixel text-xl text-white hover:text-soft-pink hover:underline decoration-4 decoration-soft-pink underline-offset-4 transition-all">NEWS</a>
                     <a href="/about"
                         class="font-pixel text-xl text-white hover:text-soft-pink hover:underline decoration-4 decoration-soft-pink underline-offset-4 transition-all">ABOUT</a>
-                    @guest
-                        <a href="/login"
-                            class="font-pixel text-xl text-white hover:text-soft-pink transition-colors">LOGIN</a>
-                        <a href="/register"
-                            class="pixel-btn bg-soft-pink text-england-blue hover:bg-white hover:text-england-red transform hover:-translate-y-1 transition-all">
-                            REGISTER
-                        </a>
-                    @else
-                        <a href="/admin/dashboard"
-                            class="font-pixel text-xl text-soft-pink hover:text-white transition-colors">ADMIN PANEL</a>
-                    @endguest
                 </div>
 
                 <!-- Mobile Menu Button -->
@@ -193,15 +182,6 @@
                     class="block px-3 py-2 font-pixel text-xl text-white hover:bg-white/10 rounded-md">NEWS</a>
                 <a href="/about"
                     class="block px-3 py-2 font-pixel text-xl text-white hover:bg-white/10 rounded-md">ABOUT</a>
-                @guest
-                    <a href="/login"
-                        class="block px-3 py-2 font-pixel text-xl text-white hover:bg-white/10 rounded-md">LOGIN</a>
-                    <a href="/register"
-                        class="block px-3 py-2 font-pixel text-xl text-soft-pink hover:bg-white/10 rounded-md">REGISTER</a>
-                @else
-                    <a href="/admin/dashboard"
-                        class="block px-3 py-2 font-pixel text-xl text-soft-pink hover:bg-white/10 rounded-md">ADMIN DASHBOARD</a>
-                @endguest
             </div>
         </div>
     </nav>

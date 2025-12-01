@@ -42,7 +42,7 @@
                 </a>
                 <span
                     class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-                            {{ $tournament->status === 'ongoing' ? 'bg-green-100 text-green-800' : ($tournament->status === 'upcoming' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-black') }}">
+                                                    {{ $tournament->status === 'ongoing' ? 'bg-green-100 text-green-800' : ($tournament->status === 'upcoming' ? 'bg-blue-100 text-blue-800' : 'bg-slate-100 text-black') }}">
                     {{ ucfirst($tournament->status) }}
                 </span>
             </div>
@@ -51,7 +51,8 @@
 
     <!-- Stats Grid -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div class="bg-blue-600 rounded-xl shadow-lg p-6 text-black border-2 border-blue-700">
+        <a href="{{ route('admin.teams.index', ['tournament_id' => $tournament->id]) }}"
+            class="bg-blue-600 rounded-xl shadow-lg p-6 text-black border-2 border-blue-700 hover:bg-blue-700 hover:scale-105 transition-all cursor-pointer">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-blue-50 text-sm font-medium uppercase tracking-wide">Teams</p>
@@ -64,9 +65,10 @@
                     </svg>
                 </div>
             </div>
-        </div>
+        </a>
 
-        <div class="bg-purple-600 rounded-xl shadow-lg p-6 text-black border-2 border-purple-700">
+        <a href="{{ route('admin.adjudicators.index', ['tournament_id' => $tournament->id]) }}"
+            class="bg-purple-600 rounded-xl shadow-lg p-6 text-black border-2 border-purple-700 hover:bg-purple-700 hover:scale-105 transition-all cursor-pointer">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-purple-50 text-sm font-medium uppercase tracking-wide">Adjudicators</p>
@@ -79,9 +81,10 @@
                     </svg>
                 </div>
             </div>
-        </div>
+        </a>
 
-        <div class="bg-green-600 rounded-xl shadow-lg p-6 text-black border-2 border-green-700">
+        <a href="{{ route('admin.rounds.index', ['tournament_id' => $tournament->id]) }}"
+            class="bg-green-600 rounded-xl shadow-lg p-6 text-black border-2 border-green-700 hover:bg-green-700 hover:scale-105 transition-all cursor-pointer">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-green-50 text-sm font-medium uppercase tracking-wide">Rounds</p>
@@ -94,9 +97,10 @@
                     </svg>
                 </div>
             </div>
-        </div>
+        </a>
 
-        <div class="bg-orange-600 rounded-xl shadow-lg p-6 text-black border-2 border-orange-700">
+        <a href="{{ route('admin.speakers.index', ['tournament_id' => $tournament->id]) }}"
+            class="bg-orange-600 rounded-xl shadow-lg p-6 text-black border-2 border-orange-700 hover:bg-orange-700 hover:scale-105 transition-all cursor-pointer">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-orange-50 text-sm font-medium uppercase tracking-wide">Speakers</p>
@@ -109,7 +113,7 @@
                     </svg>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 
     <!-- Quick Actions -->
@@ -159,9 +163,8 @@
             </div>
         </div>
 
-        <a href="{{ route('admin.matches.create') }}?tournament_id={{ $tournament->id }}"
-            class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-6 hover:shadow-md transition-shadow">
-            <div class="flex items-center gap-4">
+        <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-4 mb-4">
                 <div class="bg-purple-100 rounded-lg p-3">
                     <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -173,7 +176,35 @@
                     <p class="text-sm text-black">Generate pairings</p>
                 </div>
             </div>
-        </a>
+            @if($tournament->rounds->count() > 0)
+                <div class="mb-3">
+                    <label for="match_round_select" class="block text-xs font-medium text-gray-700 mb-1">Select Round:</label>
+                    <select id="match_round_select"
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500">
+                        @foreach($tournament->rounds->sortByDesc('id') as $round)
+                            <option value="{{ $round->id }}" {{ $loop->first ? 'selected' : '' }}>
+                                {{ $round->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" onclick="autoGenerateMatch()"
+                        class="flex-1 px-3 py-2 text-sm font-medium text-center text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:ring-4 focus:outline-none focus:ring-purple-300">
+                        Auto Draw
+                    </button>
+                    <a href="{{ route('admin.matches.create') }}?tournament_id={{ $tournament->id }}"
+                        class="flex-1 px-3 py-2 text-sm font-medium text-center text-purple-700 bg-purple-100 border border-purple-300 rounded-lg hover:bg-purple-200 focus:ring-4 focus:outline-none focus:ring-purple-300">
+                        Manual
+                    </a>
+                </div>
+            @else
+                <div class="text-center py-3">
+                    <p class="text-sm text-gray-500 mb-2">No rounds available</p>
+                    <p class="text-xs text-gray-400">Please create a round first</p>
+                </div>
+            @endif
+        </div>
 
         <a href="{{ route('admin.teams.create') }}?tournament_id={{ $tournament->id }}"
             class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-6 hover:shadow-md transition-shadow">
@@ -222,6 +253,87 @@
                 </div>
             </div>
         </a>
+
+        <!-- Add Motion Card -->
+        <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="bg-yellow-100 rounded-lg p-3">
+                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-black">Add Motion</h3>
+                    <p class="text-sm text-black">Set motion for round</p>
+                </div>
+            </div>
+            @if($tournament->rounds->count() > 0)
+                <div class="mb-3">
+                    <label for="motion_round_select" class="block text-xs font-medium text-gray-700 mb-1">Select Round:</label>
+                    <select id="motion_round_select" 
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500">
+                        @foreach($tournament->rounds->sortByDesc('id') as $round)
+                            <option value="{{ $round->id }}" data-motion="{{ $round->motion ?? '' }}">
+                                {{ $round->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <button type="button" onclick="openMotionModal()"
+                    class="w-full px-3 py-2 text-sm font-medium text-center text-white bg-yellow-600 rounded-lg hover:bg-yellow-700 focus:ring-4 focus:outline-none focus:ring-yellow-300">
+                    💡 Add/Edit Motion
+                </button>
+            @else
+                <div class="text-center py-3">
+                    <p class="text-sm text-gray-500 mb-2">No rounds available</p>
+                    <p class="text-xs text-gray-400">Please create a round first</p>
+                </div>
+            @endif
+        </div>
+
+        <!-- Quick Input Score Card -->
+        <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-6 hover:shadow-md transition-shadow">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="bg-teal-100 rounded-lg p-3">
+                    <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-black">Quick Input Score</h3>
+                    <p class="text-sm text-black">Enter ballot quickly</p>
+                </div>
+            </div>
+            @php
+                $allMatches = $tournament->rounds->flatMap->matches;
+            @endphp
+            @if($allMatches->count() > 0)
+                <div class="mb-3">
+                    <label for="quick_score_match_select" class="block text-xs font-medium text-gray-700 mb-1">Select Match:</label>
+                    <select id="quick_score_match_select" 
+                        class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500">
+                        @foreach($tournament->rounds->sortByDesc('id') as $round)
+                            @foreach($round->matches as $match)
+                                <option value="{{ $match->id }}">
+                                    {{ $round->name }} - {{ $match->govTeam->name ?? 'TBA' }} vs {{ $match->oppTeam->name ?? 'TBA' }}
+                                </option>
+                            @endforeach
+                        @endforeach
+                    </select>
+                </div>
+                <button type="button" onclick="openQuickScoreModal()"
+                    class="w-full px-3 py-2 text-sm font-medium text-center text-white bg-teal-600 rounded-lg hover:bg-teal-700 focus:ring-4 focus:outline-none focus:ring-teal-300">
+                    📝 Input Score Now
+                </button>
+            @else
+                <div class="text-center py-3">
+                    <p class="text-sm text-gray-500 mb-2">No matches available</p>
+                    <p class="text-xs text-gray-400">Please create matches first</p>
+                </div>
+            @endif
+        </div>
     </div>
 
     <!-- Tabs Content -->
@@ -247,16 +359,36 @@
             </nav>
         </div>
 
-        <div class="p-6">
+        <div class="p-4 md:p-6">
             <!-- Teams Tab -->
             <div id="teams-tab" class="tab-content">
-                <div class="overflow-x-auto">
+                <!-- Mobile View: Cards -->
+                <div class="md:hidden space-y-3">
+                    @forelse($tournament->teams as $team)
+                        <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                            <div class="flex items-start justify-between mb-2">
+                                <div class="font-semibold text-black text-lg">{{ $team->name }}</div>
+                            </div>
+                            <div class="text-sm text-gray-600 mb-2">
+                                <span class="font-medium">Institution:</span> {{ $team->institution ?? '-' }}
+                            </div>
+                            <div class="text-sm text-gray-600">
+                                <span class="font-medium">Speakers:</span>
+                                {{ $team->speakers->pluck('name')->join(', ') ?: '-' }}
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-8 text-gray-500">No teams yet</div>
+                    @endforelse
+                </div>
+
+                <!-- Desktop View: Table -->
+                <div class="hidden md:block overflow-x-auto">
                     <table class="min-w-full divide-y divide-slate-200">
                         <thead>
                             <tr>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Team</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Institution
-                                </th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Institution</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Speakers</th>
                             </tr>
                         </thead>
@@ -281,13 +413,32 @@
 
             <!-- Adjudicators Tab -->
             <div id="adjudicators-tab" class="tab-content hidden">
-                <div class="overflow-x-auto">
+                <!-- Mobile View: Cards -->
+                <div class="md:hidden space-y-3">
+                    @forelse($tournament->adjudicators as $adj)
+                        <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                            <div class="flex items-start justify-between mb-2">
+                                <div class="font-semibold text-black text-lg">{{ $adj->name }}</div>
+                                <span class="px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-700">
+                                    {{ $adj->rating ?? 'N/A' }}
+                                </span>
+                            </div>
+                            <div class="text-sm text-gray-600">
+                                <span class="font-medium">Institution:</span> {{ $adj->institution ?? '-' }}
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-8 text-gray-500">No adjudicators yet</div>
+                    @endforelse
+                </div>
+
+                <!-- Desktop View: Table -->
+                <div class="hidden md:block overflow-x-auto">
                     <table class="min-w-full divide-y divide-slate-200">
                         <thead>
                             <tr>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Name</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Institution
-                                </th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Institution</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Rating</th>
                             </tr>
                         </thead>
@@ -300,8 +451,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="px-4 py-8 text-center text-black">No adjudicators yet
-                                    </td>
+                                    <td colspan="3" class="px-4 py-8 text-center text-black">No adjudicators yet</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -311,145 +461,273 @@
 
             <!-- Rounds Tab -->
             <div id="rounds-tab" class="tab-content hidden">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-slate-200">
-                        <thead>
-                            <tr>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Round</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Motion</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase">Status</th>
-                                <th class="px-4 py-3 text-right text-xs font-medium text-black uppercase">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-200">
-                            @forelse($tournament->rounds as $round)
+                <!-- Mobile View: Cards -->
+                <div class="md:hidden space-y-4">
+                    @forelse($tournament->rounds as $round)
+                        <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                            <div class="flex items-start justify-between mb-3">
+                                <div class="font-semibold text-black text-lg">{{ $round->name }}</div>
+                            </div>
+                            <div class="text-sm text-gray-600 mb-3">
+                                <span class="font-medium">Motion:</span> {{ $round->motion ?? 'TBA' }}
+                            </div>
+                            <div class="flex flex-wrap gap-2 mb-3">
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $round->is_motion_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                    {{ $round->is_motion_published ? '👁️ Motion Public' : '🔒 Motion Hidden' }}
+                                </span>
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $round->is_draw_published ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800' }}">
+                                    {{ $round->is_draw_published ? '🔓 Draw Public' : '🔐 Draw Locked' }}
+                                </span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <form action="{{ route('admin.rounds.toggle-motion', $round) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit"
+                                        class="w-full px-3 py-2 rounded text-xs font-medium transition {{ $round->is_motion_published ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-500 hover:bg-gray-600' }} text-white">
+                                        {{ $round->is_motion_published ? '👁️' : '🔒' }} Motion
+                                    </button>
+                                </form>
+                                <form action="{{ route('admin.rounds.toggle-draw', $round) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit"
+                                        class="w-full px-3 py-2 rounded text-xs font-medium transition {{ $round->is_draw_published ? 'bg-blue-500 hover:bg-blue-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white">
+                                        {{ $round->is_draw_published ? '🔓' : '🔐' }} Draw
+                                    </button>
+                                </form>
+                                <form action="{{ route('admin.matches.auto-generate') }}" method="POST" class="inline"
+                                    onsubmit="return confirm('Auto-generate draw for {{ $round->name }}?');">
+                                    @csrf
+                                    <input type="hidden" name="round_id" value="{{ $round->id }}">
+                                    <button type="submit"
+                                        class="w-full px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition text-xs font-medium">
+                                        ⚡ Auto Draw
+                                    </button>
+                                </form>
+                                <a href="{{ route('admin.matches.create') }}?tournament_id={{ $tournament->id }}&round_id={{ $round->id }}"
+                                    class="w-full px-3 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition text-xs font-medium text-center">
+                                    ➕ Manual
+                                </a>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-8 text-gray-500">No rounds yet</div>
+                    @endforelse
+                </div>
+
+                <!-- Desktop View: Table with Horizontal Scroll -->
+                <div class="hidden md:block">
+                    <!-- Swipe Indicator -->
+                    <div class="mb-2 text-xs text-gray-500 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 5l7 7-7 7M5 5l7 7-7 7"></path>
+                        </svg>
+                        <span>👉 Geser ke kanan untuk melihat tombol aksi</span>
+                    </div>
+
+                    <!-- Scrollable Container with Shadow Indicators -->
+                    <div class="overflow-x-auto border border-slate-200 rounded-lg shadow-sm" style="max-width: 100%;">
+                        <table class="w-full divide-y divide-slate-200" style="min-width: 900px;">
+                            <thead class="bg-slate-50">
                                 <tr>
-                                    <td class="px-4 py-3 text-sm font-medium text-black">{{ $round->name }}</td>
-                                    <td class="px-4 py-3 text-sm text-black">{{ $round->motion ?? 'TBA' }}</td>
-                                    <td class="px-4 py-3 text-sm">
-                                        <div class="flex flex-col gap-1">
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $round->is_motion_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
-                                                {{ $round->is_motion_published ? '👁️ Motion Public' : '🔒 Motion Hidden' }}
-                                            </span>
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $round->is_draw_published ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800' }}">
-                                                {{ $round->is_draw_published ? '🔓 Draw Public' : '🔐 Draw Locked' }}
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3 text-sm text-right">
-                                        <div class="flex justify-end gap-2 flex-wrap">
-                                            <!-- Toggle Motion -->
-                                            <form action="{{ route('admin.rounds.toggle-motion', $round) }}" method="POST"
-                                                class="inline">
-                                                @csrf
-                                                <button type="submit"
-                                                    class="px-2 py-1 rounded text-xs font-medium transition {{ $round->is_motion_published ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-500 hover:bg-gray-600' }} text-white"
-                                                    title="{{ $round->is_motion_published ? 'Hide Motion' : 'Publish Motion' }}">
-                                                    {{ $round->is_motion_published ? '👁️' : '🔒' }} Motion
-                                                </button>
-                                            </form>
-
-                                            <!-- Toggle Draw -->
-                                            <form action="{{ route('admin.rounds.toggle-draw', $round) }}" method="POST"
-                                                class="inline">
-                                                @csrf
-                                                <button type="submit"
-                                                    class="px-2 py-1 rounded text-xs font-medium transition {{ $round->is_draw_published ? 'bg-blue-500 hover:bg-blue-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white"
-                                                    title="{{ $round->is_draw_published ? 'Lock Draw' : 'Unlock Draw' }}">
-                                                    {{ $round->is_draw_published ? '🔓' : '🔐' }} Draw
-                                                </button>
-                                            </form>
-
-                                            <!-- Auto Draw -->
-                                            <form action="{{ route('admin.matches.auto-generate') }}" method="POST"
-                                                onsubmit="return confirm('Auto-generate draw for {{ $round->name }}?');">
-                                                @csrf
-                                                <input type="hidden" name="round_id" value="{{ $round->id }}">
-                                                <button type="submit"
-                                                    class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition text-xs font-medium">
-                                                    Auto Draw
-                                                </button>
-                                            </form>
-
-                                            <!-- Manual -->
-                                            <a href="{{ route('admin.matches.create') }}?tournament_id={{ $tournament->id }}&round_id={{ $round->id }}"
-                                                class="px-2 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition text-xs font-medium">
-                                                Manual
-                                            </a>
-                                        </div>
-                                    </td>
+                                    <th
+                                        class="px-4 py-3 text-left text-xs font-medium text-black uppercase sticky left-0 bg-slate-50 z-10 border-r border-slate-200">
+                                        Round</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase"
+                                        style="min-width: 200px;">Motion</th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-black uppercase"
+                                        style="min-width: 150px;">Status</th>
+                                    <th class="px-4 py-3 text-right text-xs font-medium text-black uppercase whitespace-nowrap"
+                                        style="min-width: 400px;">Actions</th>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="4" class="px-4 py-8 text-center text-black">No rounds yet</td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 bg-white">
+                                @forelse($tournament->rounds as $round)
+                                    <tr class="hover:bg-slate-50">
+                                        <td
+                                            class="px-4 py-3 text-sm font-medium text-black sticky left-0 bg-white z-10 border-r border-slate-200">
+                                            {{ $round->name }}
+                                        </td>
+                                        <td class="px-4 py-3 text-sm text-black">{{ $round->motion ?? 'TBA' }}</td>
+                                        <td class="px-4 py-3 text-sm">
+                                            <div class="flex flex-col gap-1">
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $round->is_motion_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                                                    {{ $round->is_motion_published ? '👁️ Motion Public' : '🔒 Motion Hidden' }}
+                                                </span>
+                                                <span
+                                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium {{ $round->is_draw_published ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800' }}">
+                                                    {{ $round->is_draw_published ? '🔓 Draw Public' : '🔐 Draw Locked' }}
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3 text-sm text-right">
+                                            <div class="flex justify-end gap-2 flex-nowrap whitespace-nowrap">
+                                                <form action="{{ route('admin.rounds.toggle-motion', $round) }}" method="POST"
+                                                    class="inline">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="px-2 py-1 rounded text-xs font-medium transition {{ $round->is_motion_published ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-500 hover:bg-gray-600' }} text-white"
+                                                        title="{{ $round->is_motion_published ? 'Hide Motion' : 'Publish Motion' }}">
+                                                        {{ $round->is_motion_published ? '👁️' : '🔒' }} Motion
+                                                    </button>
+                                                </form>
+                                                <form action="{{ route('admin.rounds.toggle-draw', $round) }}" method="POST"
+                                                    class="inline">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="px-2 py-1 rounded text-xs font-medium transition {{ $round->is_draw_published ? 'bg-blue-500 hover:bg-blue-600' : 'bg-orange-500 hover:bg-orange-600' }} text-white"
+                                                        title="{{ $round->is_draw_published ? 'Lock Draw' : 'Unlock Draw' }}">
+                                                        {{ $round->is_draw_published ? '🔓' : '🔐' }} Draw
+                                                    </button>
+                                                </form>
+                                                <form action="{{ route('admin.matches.auto-generate') }}" method="POST"
+                                                    onsubmit="return confirm('Auto-generate draw for {{ $round->name }}?');">
+                                                    @csrf
+                                                    <input type="hidden" name="round_id" value="{{ $round->id }}">
+                                                    <button type="submit"
+                                                        class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition text-xs font-medium">
+                                                        Auto Draw
+                                                    </button>
+                                                </form>
+                                                <a href="{{ route('admin.matches.create') }}?tournament_id={{ $tournament->id }}&round_id={{ $round->id }}"
+                                                    class="px-2 py-1 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition text-xs font-medium">
+                                                    Manual
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="px-4 py-8 text-center text-black">No rounds yet</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Draw Tab -->
+            <div id="draw-tab" class="tab-content hidden">
+                <div class="space-y-6">
+                    @forelse($tournament->rounds as $round)
+                        <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                            <h3 class="text-lg font-bold text-black mb-4">{{ $round->name }}</h3>
+
+                            @if($round->matches->count() > 0)
+                                <div class="space-y-3">
+                                    @foreach($round->matches as $match)
+                                        <div class="bg-white p-4 rounded-lg shadow-sm border border-slate-200">
+                                            <!-- Match Info -->
+                                            <div class="mb-3">
+                                                <div class="text-xs font-medium text-gray-500 mb-2">
+                                                    📍 {{ $match->room->name ?? 'Room TBA' }} • 👨‍⚖️
+                                                    {{ $match->adjudicator->name ?? 'Adj TBA' }}
+                                                </div>
+
+                                                <!-- Teams Display -->
+                                                <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+                                                    <div class="flex-1 text-center sm:text-right">
+                                                        <span
+                                                            class="font-bold text-blue-700 text-sm sm:text-base">{{ $match->govTeam->name ?? 'TBA' }}</span>
+                                                        <span class="block text-xs text-gray-500">Gov</span>
+                                                    </div>
+                                                    <div class="font-bold text-gray-400 text-sm">VS</div>
+                                                    <div class="flex-1 text-center sm:text-left">
+                                                        <span
+                                                            class="font-bold text-red-700 text-sm sm:text-base">{{ $match->oppTeam->name ?? 'TBA' }}</span>
+                                                        <span class="block text-xs text-gray-500">Opp</span>
+                                                    </div>
+                                                </div>
+
+                                                @if($match->cgTeam || $match->coTeam)
+                                                    <div
+                                                        class="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 mt-2 pt-2 border-t border-gray-100">
+                                                        @if($match->cgTeam)
+                                                            <div class="flex-1 text-center sm:text-right">
+                                                                <span
+                                                                    class="font-bold text-green-700 text-sm">{{ $match->cgTeam->name ?? 'TBA' }}</span>
+                                                                <span class="block text-xs text-gray-500">CG</span>
+                                                            </div>
+                                                        @endif
+                                                        @if($match->coTeam)
+                                                            <div class="flex-1 text-center sm:text-left">
+                                                                <span
+                                                                    class="font-bold text-orange-700 text-sm">{{ $match->coTeam->name ?? 'TBA' }}</span>
+                                                                <span class="block text-xs text-gray-500">CO</span>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @endif
+                                            </div>
+
+                                            <!-- Action Buttons - Mobile Friendly -->
+                                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 border-t border-gray-100">
+                                                <!-- Input/Edit Score Button -->
+                                                <div class="relative">
+                                                    <button onclick="openScoreModal('{{ route('admin.ballots.create', $match) }}')"
+                                                        class="w-full px-3 py-2.5 {{ $match->ballots()->exists() ? 'bg-amber-600 hover:bg-amber-700' : 'bg-indigo-600 hover:bg-indigo-700' }} text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2">
+                                                        {{ $match->ballots()->exists() ? '✏️ Edit Score' : '📝 Input Score' }}
+                                                    </button>
+                                                    @if($match->ballots()->exists())
+                                                        <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                                                            <span
+                                                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                                            <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                                
+                                                <!-- Edit Match Button -->
+                                                <a href="{{ route('admin.matches.edit', $match) }}"
+                                                    class="w-full px-3 py-2.5 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50 transition-colors text-center flex items-center justify-center gap-2">
+                                                    ⚙️ Edit Match
+                                                </a>
+                                                
+                                                <!-- Delete Score Button (only if score exists) -->
+                                                @if($match->ballots()->exists())
+                                                    <form action="{{ route('admin.ballots.destroy', $match->ballots()->first()) }}" method="POST" class="w-full"
+                                                        onsubmit="return confirm('Delete score for this match?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            class="w-full px-3 py-2.5 bg-orange-100 text-orange-700 text-sm font-medium rounded-lg hover:bg-orange-200 transition-colors flex items-center justify-center gap-2">
+                                                            🗑️ Delete Score
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <div class="w-full px-3 py-2.5 bg-gray-100 text-gray-400 text-sm font-medium rounded-lg text-center flex items-center justify-center gap-2 cursor-not-allowed">
+                                                        🚫 No Score
+                                                    </div>
+                                                @endif
+                                                
+                                                <!-- Delete Match Button -->
+                                                <form action="{{ route('admin.matches.destroy', $match) }}\" method="POST" class="w-full"
+                                                    onsubmit="return confirm('Delete this match?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="w-full px-3 py-2.5 bg-red-100 text-red-700 text-sm font-medium rounded-lg hover:bg-red-200 transition-colors flex items-center justify-center gap-2">
+                                                        ❌ Delete Match
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="text-gray-500 text-sm italic">No matches generated for this round yet.</p>
+                            @endif
+                        </div>
+                    @empty
+                        <p class="text-center text-gray-500 py-8">No rounds found.</p>
+                    @endforelse
                 </div>
             </div>
         </div>
-
-        <!-- Draw Tab -->
-        <div id="draw-tab" class="tab-content hidden">
-            <div class="space-y-8">
-                @forelse($tournament->rounds as $round)
-                    <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
-                        <h3 class="text-lg font-bold text-black mb-4">{{ $round->name }}</h3>
-
-                        @if($round->matches->count() > 0)
-                            <div class="grid grid-cols-1 gap-4">
-                                @foreach($round->matches as $match)
-                                    <div
-                                        class="bg-white p-4 rounded-lg shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
-                                        <div class="flex-1">
-                                            <div class="text-sm font-medium text-gray-500 mb-1">{{ $match->room->name ?? 'Room TBA' }} •
-                                                {{ $match->adjudicator->name ?? 'Adj TBA' }}
-                                            </div>
-                                            <div class="flex items-center gap-4">
-                                                <div class="flex-1 text-right">
-                                                    <span class="font-bold text-blue-700">{{ $match->govTeam->name }}</span>
-                                                </div>
-                                                <div class="font-bold text-gray-400">VS</div>
-                                                <div class="flex-1 text-left">
-                                                    <span class="font-bold text-red-700">{{ $match->oppTeam->name }}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <button onclick="openScoreModal('{{ route('admin.ballots.create', $match) }}')"
-                                                class="px-3 py-1.5 bg-indigo-600 text-white text-sm font-medium rounded hover:bg-indigo-700 transition-colors">
-                                                Input Score
-                                            </button>
-                                            <a href="{{ route('admin.matches.edit', $match) }}"
-                                                class="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded hover:bg-gray-50 transition-colors">
-                                                Edit Score
-                                            </a>
-                                            <form action="{{ route('admin.matches.destroy', $match) }}" method="POST"
-                                                onsubmit="return confirm('Delete this match?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                    class="px-3 py-1.5 bg-red-100 text-red-700 text-sm font-medium rounded hover:bg-red-200 transition-colors">
-                                                    Delete Match
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        @else
-                            <p class="text-gray-500 text-sm italic">No matches generated for this round yet.</p>
-                        @endif
-                    </div>
-                @empty
-                    <p class="text-center text-gray-500 py-8">No rounds found.</p>
-                @endforelse
-            </div>
-        </div>
-    </div>
     </div>
 
     <!-- Score Modal -->
@@ -460,8 +738,8 @@
                 onclick="closeScoreModal()"></div>
             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
             <div
-                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full h-[80vh]">
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 h-full flex flex-col">
+                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4 max-h-[80vh] w-full flex flex-col overflow-hidden">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg leading-6 font-medium text-gray-900">Enter Ballot</h3>
                         <button onclick="closeScoreModal()" class="text-gray-400 hover:text-gray-500">
@@ -471,7 +749,51 @@
                             </svg>
                         </button>
                     </div>
-                    <iframe id="scoreFrame" src="" class="w-full flex-1 border-0"></iframe>
+                    <iframe id="scoreFrame" src="" class="w-full h-[50vh] sm:h-[60vh] md:h-[70vh] border-0"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Motion Modal -->
+    <div id="motionModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"
+                onclick="closeMotionModal()"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div
+                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full w-full">
+                <div class="bg-white px-6 pt-5 pb-4 sm:p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">Add/Edit Motion</h3>
+                        <button onclick="closeMotionModal()" class="text-gray-400 hover:text-gray-500">
+                            <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    <form id="motionForm">
+                        @csrf
+                        <input type="hidden" id="motion_round_id" name="round_id">
+                        <div class="mb-4">
+                            <label for="motion_text" class="block text-sm font-medium text-gray-700 mb-2">Motion Text</label>
+                            <textarea id="motion_text" name="motion" rows="4"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500"
+                                placeholder="Enter the motion for this round..." required></textarea>
+                        </div>
+                        <div class="flex justify-end gap-3">
+                            <button type="button" onclick="closeMotionModal()"
+                                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50">
+                                Cancel
+                            </button>
+                            <button type="submit"
+                                class="px-4 py-2 text-sm font-medium text-white bg-yellow-600 rounded-lg hover:bg-yellow-700">
+                                Save Motion
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -500,15 +822,133 @@
             });
         });
 
+        // Handle URL hash to auto-open specific tab on page load
+        function openTabFromHash() {
+            const hash = window.location.hash;
+            if (hash) {
+                const tabName = hash.replace('#', '').replace('-tab', '');
+                const tabButton = document.querySelector(`[data-tab="${tabName}"]`);
+                
+                if (tabButton) {
+                    // Trigger click on the tab button
+                    tabButton.click();
+                    
+                    // Scroll to tabs section
+                    setTimeout(() => {
+                        const tabsSection = document.querySelector('.tab-content');
+                        if (tabsSection) {
+                            tabsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }, 100);
+                }
+            }
+        }
+
+        // Run on page load
+        openTabFromHash();
+
+        // Also run when hash changes (browser back/forward)
+        window.addEventListener('hashchange', openTabFromHash);
+
         function openScoreModal(url) {
             document.getElementById('scoreFrame').src = url;
             document.getElementById('scoreModal').classList.remove('hidden');
         }
 
         function closeScoreModal() {
-            document.getElementById('scoreModal').classList.add('hidden');
-            document.getElementById('scoreFrame').src = '';
+            const modal = document.getElementById('scoreModal');
+            const iframe = document.getElementById('scoreFrame');
+            modal.classList.add('hidden');
+            // Clear iframe src completely to fix reload issue
+            iframe.src = 'about:blank';
+            setTimeout(() => {
+                iframe.src = '';
+            }, 100);
         }
+
+        // Motion Modal Functions
+        function openMotionModal() {
+            const roundSelect = document.getElementById('motion_round_select');
+            const roundId = roundSelect.value;
+            const selectedOption = roundSelect.options[roundSelect.selectedIndex];
+            const currentMotion = selectedOption.dataset.motion;
+
+            document.getElementById('motion_round_id').value = roundId;
+            document.getElementById('motion_text').value = currentMotion || '';
+            document.getElementById('motionModal').classList.remove('hidden');
+        }
+
+        function closeMotionModal() {
+            document.getElementById('motionModal').classList.add('hidden');
+            document.getElementById('motionForm').reset();
+        }
+
+        // Quick Score Modal Function
+        function openQuickScoreModal() {
+            const matchSelect = document.getElementById('quick_score_match_select');
+            const matchId = matchSelect.value;
+            const url = `/admin/ballots/${matchId}/create`;
+            
+            // Use the existing openScoreModal function but ensure it's fresh
+            document.getElementById('scoreFrame').src = '';
+            setTimeout(() => {
+                openScoreModal(url);
+            }, 100);
+        }
+
+        // Motion Form Submission
+        document.getElementById('motionForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const roundId = document.getElementById('motion_round_id').value;
+            const motion = document.getElementById('motion_text').value;
+            const formData = new FormData();
+            formData.append('motion', motion);
+            formData.append('_token', '{{ csrf_token() }}');
+            formData.append('_method', 'PATCH');
+
+            try {
+                const response = await fetch(`/admin/rounds/${roundId}`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    await Swal.fire({
+                        title: 'Success! 🎉',
+                        text: 'Motion has been saved!',
+                        icon: 'success',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#D97706',
+                        timer: 2000
+                    });
+
+                    closeMotionModal();
+                    window.location.reload();
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: data.message || 'Failed to save motion.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'An error occurred while saving the motion.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
 
         // AJAX Handler untuk Toggle Motion
         document.querySelectorAll('form[action*="toggle-motion"]').forEach(form => {
@@ -658,13 +1098,13 @@
                         Swal.fire({
                             title: 'Berhasil! 🎉',
                             html: `
-                                    <div style="font-size: 1.1em; line-height: 1.6;">
-                                        ${data.message}<br>
-                                        <strong style="color: #10B981; font-size: 1.5em; display: block; margin-top: 10px;">
-                                            ${data.matches_created} Matches Created!
-                                        </strong>
-                                    </div>
-                                `,
+                                                            <div style="font-size: 1.1em; line-height: 1.6;">
+                                                                ${data.message}<br>
+                                                                <strong style="color: #10B981; font-size: 1.5em; display: block; margin-top: 10px;">
+                                                                    ${data.matches_created} Matches Created!
+                                                                </strong>
+                                                            </div>
+                                                        `,
                             icon: 'success',
                             confirmButtonText: 'Cek Draw! 🔥',
                             confirmButtonColor: '#10B981',
@@ -720,20 +1160,20 @@
                         Swal.fire({
                             title: 'Round Berhasil Dibuat! 🎊',
                             html: `
-                                    <div style="font-size: 1.2em; line-height: 1.8;">
-                                        ${data.message}<br>
-                                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                                                    color: white; 
-                                                    padding: 15px 20px; 
-                                                    border-radius: 12px; 
-                                                    margin-top: 15px;
-                                                    font-weight: bold;
-                                                    font-size: 1.3em;
-                                                    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
-                                            📋 ${data.round.name}
-                                        </div>
-                                    </div>
-                                `,
+                                                            <div style="font-size: 1.2em; line-height: 1.8;">
+                                                                ${data.message}<br>
+                                                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                                                                            color: white; 
+                                                                            padding: 15px 20px; 
+                                                                            border-radius: 12px; 
+                                                                            margin-top: 15px;
+                                                                            font-weight: bold;
+                                                                            font-size: 1.3em;
+                                                                            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);">
+                                                                    📋 ${data.round.name}
+                                                                </div>
+                                                            </div>
+                                                        `,
                             icon: 'success',
                             confirmButtonText: 'Yeay! 🎉',
                             confirmButtonColor: '#8B5CF6',
@@ -754,6 +1194,90 @@
                 }
             });
         });
+
+        // Auto Generate Match from Quick Action Card
+        async function autoGenerateMatch() {
+            const roundSelect = document.getElementById('match_round_select');
+            const roundId = roundSelect.value;
+            const roundName = roundSelect.options[roundSelect.selectedIndex].text;
+
+            // Show confirmation with SweetAlert
+            const result = await Swal.fire({
+                title: 'Auto Generate Draw?',
+                html: `Apakah Anda yakin ingin membuat draw otomatis untuk <strong>${roundName}</strong>?`,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Generate! 🎲',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#9333EA',
+                cancelButtonColor: '#6B7280'
+            });
+
+            if (!result.isConfirmed) return;
+
+            // Show loading
+            Swal.fire({
+                title: 'Generating...',
+                html: 'Sedang membuat matches... ⚡',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            const formData = new FormData();
+            formData.append('round_id', roundId);
+            formData.append('_token', '{{ csrf_token() }}');
+
+            try {
+                const response = await fetch('{{ route("admin.matches.auto-generate") }}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    Swal.fire({
+                        title: 'Berhasil! 🎉',
+                        html: `
+                                <div style="font-size: 1.1em; line-height: 1.6;">
+                                    ${data.message}<br>
+                                    <strong style="color: #9333EA; font-size: 1.5em; display: block; margin-top: 10px;">
+                                        ${data.matches_created} Matches Created!
+                                    </strong>
+                                </div>
+                            `,
+                        icon: 'success',
+                        confirmButtonText: 'Cek Draw! 🔥',
+                        confirmButtonColor: '#9333EA',
+                        showClass: {
+                            popup: 'animate__animated animate__tada'
+                        }
+                    }).then(() => {
+                        window.location.reload();
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error!',
+                        text: data.message || 'Terjadi kesalahan saat generate matches.',
+                        icon: 'error',
+                        confirmButtonText: 'OK'
+                    });
+                }
+            } catch (error) {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Terjadi kesalahan saat generate matches.',
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
     </script>
 
     <!-- Add Animate.css for animations -->

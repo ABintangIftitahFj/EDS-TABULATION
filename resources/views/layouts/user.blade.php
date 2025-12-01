@@ -150,22 +150,6 @@
                         class="font-pixel text-xl text-white hover:text-soft-pink hover:underline decoration-4 decoration-soft-pink underline-offset-4 transition-all">HOME</a>
                     <a href="/tournaments"
                         class="font-pixel text-xl text-white hover:text-soft-pink hover:underline decoration-4 decoration-soft-pink underline-offset-4 transition-all">TOURNAMENTS</a>
-                    @guest
-                        <a href="/login"
-                            class="font-pixel text-xl text-white hover:text-soft-pink transition-colors">LOGIN</a>
-                        <a href="/register"
-                            class="pixel-btn bg-soft-pink text-england-blue hover:bg-white hover:text-england-red transform hover:-translate-y-1 transition-all">
-                            REGISTER
-                        </a>
-                    @else
-                        <a href="/admin/dashboard"
-                            class="font-pixel text-xl text-soft-pink hover:text-white transition-colors">ADMIN PANEL</a>
-                        <form method="POST" action="{{ route('logout') }}" class="inline">
-                            @csrf
-                            <button type="submit"
-                                class="font-pixel text-xl text-white hover:text-england-red bg-white/10 px-4 py-1 rounded border-2 border-transparent hover:border-white transition-all">LOGOUT</button>
-                        </form>
-                    @endguest
                 </div>
 
                 <!-- Mobile Menu Button -->
@@ -188,21 +172,6 @@
                 <a href="/" class="block px-3 py-2 font-pixel text-xl text-white hover:bg-white/10 rounded-md">HOME</a>
                 <a href="/tournaments"
                     class="block px-3 py-2 font-pixel text-xl text-white hover:bg-white/10 rounded-md">TOURNAMENTS</a>
-                @guest
-                    <a href="/login"
-                        class="block px-3 py-2 font-pixel text-xl text-white hover:bg-white/10 rounded-md">LOGIN</a>
-                    <a href="/register"
-                        class="block px-3 py-2 font-pixel text-xl text-soft-pink hover:bg-white/10 rounded-md">REGISTER</a>
-                @else
-                    <a href="/admin/dashboard"
-                        class="block px-3 py-2 font-pixel text-xl text-soft-pink hover:bg-white/10 rounded-md">ADMIN
-                        DASHBOARD</a>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit"
-                            class="w-full text-left block px-3 py-2 font-pixel text-xl text-white hover:bg-white/10 rounded-md">LOGOUT</button>
-                    </form>
-                @endguest
             </div>
         </div>
     </nav>

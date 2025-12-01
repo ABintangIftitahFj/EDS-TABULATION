@@ -143,6 +143,33 @@
                                 </button>
                             </div>
                         </div>
+                        {{-- Draw list for this round --}}
+                        <div class="mt-4 overflow-x-auto">
+                            @if($round->matches && $round->matches->count() > 0)
+                                <table class="min-w-full divide-y divide-gray-200 text-sm">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-3 py-2 text-left">Room</th>
+                                            <th class="px-3 py-2 text-left">Government</th>
+                                            <th class="px-3 py-2 text-left">Opposition</th>
+                                            <th class="px-3 py-2 text-left">Winner</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-100">
+                                        @foreach($round->matches as $m)
+                                            <tr>
+                                                <td class="px-3 py-2">{{ $m->room->name ?? 'TBA' }}</td>
+                                                <td class="px-3 py-2">{{ $m->govTeam->name ?? 'TBA' }}</td>
+                                                <td class="px-3 py-2">{{ $m->oppTeam->name ?? 'TBA' }}</td>
+                                                <td class="px-3 py-2">{{ $m->winner->name ?? '-' }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @else
+                                <p class="text-sm text-gray-500">No matches generated for this round yet.</p>
+                            @endif
+                        </div>
                     </div>
                     @endforeach
                 </div>
@@ -614,7 +641,8 @@ function renderBallotStatus(matches) {
     
     const html = `
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
+            <div class="overflow-x-auto" style="-webkit-overflow-scrolling: touch;">
+                <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Round</th>
@@ -641,7 +669,8 @@ function renderBallotStatus(matches) {
                         </tr>
                     `).join('')}
                 </tbody>
-            </table>
+                </table>
+            </div>
         </div>
     `;
     

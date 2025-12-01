@@ -43,6 +43,14 @@
                     class="pixel-tab pixel-tab-active">
                     🎤 SPEAKERS
                 </a>
+                <a href="/tournaments/{{ $tournament->id }}/adjudicators"
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    ⚖️ ADJUDICATORS
+                </a>
+                <a href="/tournaments/{{ $tournament->id }}/participants"
+                    class="pixel-tab text-slate-600 hover:text-black">
+                    👥 PARTICIPANTS
+                </a>
             </nav>
         </div>
 
@@ -63,36 +71,45 @@
                                 <th class="px-6 py-3 text-left text-lg font-pixel text-black tracking-wider border-r-2 border-slate-300">Rank</th>
                                 <th class="px-6 py-3 text-left text-lg font-pixel text-black tracking-wider border-r-2 border-slate-300">Speaker</th>
                                 <th class="px-6 py-3 text-left text-lg font-pixel text-black tracking-wider border-r-2 border-slate-300">Team & Institution</th>
-                                <th class="px-6 py-3 text-center text-lg font-pixel text-black tracking-wider border-r-2 border-slate-300">Total Points</th>
-                                <th class="px-6 py-3 text-center text-lg font-pixel text-black tracking-wider border-r-2 border-slate-300">Speeches</th>
-                                <th class="px-6 py-3 text-center text-lg font-pixel text-black tracking-wider border-r-2 border-slate-300">Avg</th>
-                                <th class="px-6 py-3 text-center text-lg font-pixel text-black tracking-wider">Highest</th>
+                                @if($hasPublishedResults)
+                                    <th class="px-6 py-3 text-center text-lg font-pixel text-black tracking-wider border-r-2 border-slate-300">Total Points</th>
+                                    <th class="px-6 py-3 text-center text-lg font-pixel text-black tracking-wider border-r-2 border-slate-300">Speeches</th>
+                                    <th class="px-6 py-3 text-center text-lg font-pixel text-black tracking-wider border-r-2 border-slate-300">Avg</th>
+                                    <th class="px-6 py-3 text-center text-lg font-pixel text-black tracking-wider">Highest</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y-2 divide-slate-100">
                             @foreach($speakers as $speaker)
-                                <tr class="hover:bg-soft-pink/10 transition-colors {{ $speaker->rank <= 3 ? 'bg-yellow-50' : '' }}">
+                                <tr class="hover:bg-soft-pink/10 transition-colors {{ $hasPublishedResults && $speaker->rank <= 3 ? 'bg-yellow-50' : '' }}">
                                     {{-- Rank --}}
                                     <td class="px-6 py-4 whitespace-nowrap border-r border-slate-100">
                                         <div class="flex items-center">
-                                            @if($speaker->rank == 1)
-                                                <div class="w-10 h-10 bg-yellow-400 border-2 border-black shadow-pixel-sm flex items-center justify-center transform -rotate-3">
-                                                    <span class="text-2xl">🥇</span>
-                                                </div>
-                                            @elseif($speaker->rank == 2)
-                                                <div class="w-10 h-10 bg-slate-300 border-2 border-black shadow-pixel-sm flex items-center justify-center transform rotate-2">
-                                                    <span class="text-2xl">🥈</span>
-                                                </div>
-                                            @elseif($speaker->rank == 3)
-                                                <div class="w-10 h-10 bg-amber-600 border-2 border-black shadow-pixel-sm flex items-center justify-center transform -rotate-1">
-                                                    <span class="text-2xl">🥉</span>
-                                                </div>
+                                            @if($hasPublishedResults)
+                                                @if($speaker->rank == 1)
+                                                    <div class="w-10 h-10 bg-yellow-400 border-2 border-black shadow-pixel-sm flex items-center justify-center transform -rotate-3">
+                                                        <span class="text-2xl">🥇</span>
+                                                    </div>
+                                                @elseif($speaker->rank == 2)
+                                                    <div class="w-10 h-10 bg-slate-300 border-2 border-black shadow-pixel-sm flex items-center justify-center transform rotate-2">
+                                                        <span class="text-2xl">🥈</span>
+                                                    </div>
+                                                @elseif($speaker->rank == 3)
+                                                    <div class="w-10 h-10 bg-amber-600 border-2 border-black shadow-pixel-sm flex items-center justify-center transform -rotate-1">
+                                                        <span class="text-2xl">🥉</span>
+                                                    </div>
+                                                @else
+                                                    <div class="w-8 h-8 bg-slate-100 border-2 border-slate-300 flex items-center justify-center rounded">
+                                                        <span class="text-slate-600 font-pixel text-lg">{{ $speaker->rank }}</span>
+                                                    </div>
+                                                @endif
+                                                <span class="ml-4 text-lg font-pixel text-black">#{{ $speaker->rank }}</span>
                                             @else
                                                 <div class="w-8 h-8 bg-slate-100 border-2 border-slate-300 flex items-center justify-center rounded">
-                                                    <span class="text-slate-600 font-pixel text-lg">{{ $speaker->rank }}</span>
+                                                    <span class="text-slate-400 font-pixel text-lg">-</span>
                                                 </div>
+                                                <span class="ml-4 text-lg font-pixel text-slate-400">Hidden</span>
                                             @endif
-                                            <span class="ml-4 text-lg font-pixel text-black">#{{ $speaker->rank }}</span>
                                         </div>
                                     </td>
 
@@ -100,7 +117,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap border-r border-slate-100">
                                         <div class="flex flex-col">
                                             <div class="text-base font-bold font-sans text-black">{{ $speaker->name }}</div>
-                                            @if($speaker->rank <= 3)
+                                            @if($hasPublishedResults && $speaker->rank <= 3)
                                                 <span class="inline-block mt-1 px-2 py-0.5 text-xs font-pixel bg-purple-100 text-purple-800 border border-purple-300 w-max">
                                                     {{ $speaker->rank == 1 ? 'BEST SPEAKER' : ($speaker->rank == 2 ? '2ND BEST' : '3RD BEST') }}
                                                 </span>
@@ -114,38 +131,40 @@
                                         <div class="text-xs text-slate-500 font-mono mt-1">{{ $speaker->team->institution ?? 'Unknown Institution' }}</div>
                                     </td>
 
-                                    {{-- Total Points --}}
-                                    <td class="px-6 py-4 whitespace-nowrap text-center border-r border-slate-100">
-                                        <span class="inline-block px-3 py-1 bg-england-blue text-white font-pixel text-lg border-2 border-black shadow-sm">
-                                            {{ $speaker->total_score ?? 0 }}
-                                        </span>
-                                    </td>
+                                    @if($hasPublishedResults)
+                                        {{-- Total Points --}}
+                                        <td class="px-6 py-4 whitespace-nowrap text-center border-r border-slate-100">
+                                            <span class="inline-block px-3 py-1 bg-england-blue text-white font-pixel text-lg border-2 border-black shadow-sm">
+                                                {{ $speaker->total_score ?? 0 }}
+                                            </span>
+                                        </td>
 
-                                    {{-- Speeches --}}
-                                    <td class="px-6 py-4 whitespace-nowrap text-center border-r border-slate-100">
-                                        <div class="text-base font-bold font-mono text-black">{{ $speaker->ballots_count ?? 0 }}</div>
-                                    </td>
+                                        {{-- Speeches --}}
+                                        <td class="px-6 py-4 whitespace-nowrap text-center border-r border-slate-100">
+                                            <div class="text-base font-bold font-mono text-black">{{ $speaker->ballots_count ?? 0 }}</div>
+                                        </td>
 
-                                    {{-- Average Score --}}
-                                    <td class="px-6 py-4 whitespace-nowrap text-center border-r border-slate-100">
-                                        <div class="text-base font-bold font-mono text-black">
-                                            {{ $speaker->ballots_count > 0 ? number_format(($speaker->total_score ?? 0) / $speaker->ballots_count, 1) : '0.0' }}
-                                        </div>
-                                    </td>
+                                        {{-- Average Score --}}
+                                        <td class="px-6 py-4 whitespace-nowrap text-center border-r border-slate-100">
+                                            <div class="text-base font-bold font-mono text-black">
+                                                {{ $speaker->ballots_count > 0 ? number_format(($speaker->total_score ?? 0) / $speaker->ballots_count, 1) : '0.0' }}
+                                            </div>
+                                        </td>
 
-                                    {{-- Highest Score --}}
-                                    <td class="px-6 py-4 whitespace-nowrap text-center">
-                                        <div class="text-base font-bold font-mono text-england-red">
-                                            @php
-                                                $scores = [];
-                                                if ($speaker->ballots ?? false) {
-                                                    $scores = $speaker->ballots->pluck('score')->toArray();
-                                                }
-                                                $highest = $scores ? max($scores) : 0;
-                                            @endphp
-                                            {{ $highest }}
-                                        </div>
-                                    </td>
+                                        {{-- Highest Score --}}
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            <div class="text-base font-bold font-mono text-england-red">
+                                                @php
+                                                    $scores = [];
+                                                    if ($speaker->ballots ?? false) {
+                                                        $scores = $speaker->ballots->pluck('score')->toArray();
+                                                    }
+                                                    $highest = $scores ? max($scores) : 0;
+                                                @endphp
+                                                {{ $highest }}
+                                            </div>
+                                        </td>
+                                    @endif
                                 </tr>
                             @endforeach
                         </tbody>
@@ -165,7 +184,7 @@
         </div>
 
         {{-- Summary Stats --}}
-        @if($speakers->count() > 0)
+        @if($speakers->count() > 0 && $hasPublishedResults)
             <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="pixel-card p-6 bg-yellow-50 relative overflow-hidden group hover:-translate-y-1 transition-transform">
                     <div class="flex items-center gap-4 relative z-10">
@@ -205,6 +224,14 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        @elseif($speakers->count() > 0 && !$hasPublishedResults)
+            <div class="mt-8 pixel-card p-8 bg-slate-50 text-center border-dashed">
+                <div class="inline-block p-4 bg-slate-100 rounded-full border-4 border-slate-200 mb-4">
+                    🔒
+                </div>
+                <h3 class="text-xl font-pixel text-slate-600 mb-2">SPEAKER SCORES HIDDEN</h3>
+                <p class="text-sm font-sans text-slate-500">Administrator has hidden speaker scores for this tournament.</p>
             </div>
         @endif
 

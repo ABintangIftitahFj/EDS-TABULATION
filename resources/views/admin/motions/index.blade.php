@@ -43,26 +43,58 @@
         </div>
     @endif
 
-    <div class="bg-white overflow-hidden rounded-xl shadow-sm ring-1 ring-slate-200">
+    <!-- Mobile Card View -->
+    <div class="md:hidden space-y-4">
+        @forelse($rounds as $round)
+            <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-4">
+                <div class="flex items-start justify-between mb-2">
+                    <div>
+                        <div class="font-semibold text-black text-lg">{{ $round->name }}</div>
+                        <div class="text-xs text-gray-500">🏆 {{ $round->tournament->name ?? 'N/A' }}</div>
+                    </div>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                        {{ $round->is_motion_published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                        {{ $round->is_motion_published ? '✅ Published' : '📝 Draft' }}
+                    </span>
+                </div>
+                <div class="bg-slate-50 rounded-lg p-3 mb-3">
+                    <div class="text-xs font-medium text-gray-500 mb-1">💡 Motion:</div>
+                    <div class="text-sm text-black">{{ $round->motion }}</div>
+                    @if($round->info_slide)
+                        <div class="text-xs text-gray-500 mt-2 pt-2 border-t border-slate-200">
+                            {{ Str::limit($round->info_slide, 100) }}
+                        </div>
+                    @endif
+                </div>
+                <a href="{{ route('admin.rounds.edit', $round) }}"
+                    class="block w-full px-3 py-2 bg-indigo-600 text-white text-center text-sm font-medium rounded-lg hover:bg-indigo-700">
+                    ✏️ Edit
+                </a>
+            </div>
+        @empty
+            <div class="bg-white rounded-xl shadow-sm ring-1 ring-slate-200 p-8 text-center">
+                <div class="text-4xl mb-2">💡</div>
+                <p class="text-gray-500">No motions found.</p>
+                <a href="{{ route('admin.rounds.create') }}" class="text-indigo-600 hover:text-indigo-500 text-sm">Create a round with motion</a>
+            </div>
+        @endforelse
+        
+        @if ($rounds->hasPages())
+            <div class="mt-4">{{ $rounds->links() }}</div>
+        @endif
+    </div>
+
+    <!-- Desktop Table View -->
+    <div class="hidden md:block bg-white overflow-hidden rounded-xl shadow-sm ring-1 ring-slate-200">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Tournament
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Round
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Motion
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                            Info Slide
-                        </th>
-                        <th class="relative px-6 py-3">
-                            <span class="sr-only">Actions</span>
-                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Tournament</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Round</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Motion</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Info Slide</th>
+                        <th class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-slate-200">
@@ -81,22 +113,19 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <span
-                                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
-                                            {{ $round->is_motion_published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    {{ $round->is_motion_published ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
                                     {{ $round->is_motion_published ? 'Published' : 'Draft' }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <a href="{{ route('admin.rounds.edit', $round) }}"
-                                    class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                                <a href="{{ route('admin.rounds.edit', $round) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
                             </td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="5" class="px-6 py-12 text-center text-black">
-                                No motions found. <a href="{{ route('admin.rounds.create') }}"
-                                    class="text-indigo-600 hover:text-indigo-500">Create a round with motion</a>
+                                No motions found. <a href="{{ route('admin.rounds.create') }}" class="text-indigo-600 hover:text-indigo-500">Create a round with motion</a>
                             </td>
                         </tr>
                     @endforelse

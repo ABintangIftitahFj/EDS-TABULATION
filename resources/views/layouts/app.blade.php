@@ -14,6 +14,9 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <!-- For inline scripts, use @nonce directive for CSP compliance -->
+    {{-- Example: <script @nonce>console.log('Hello');</script> --}}
 </head>
 
 <body class="font-sans antialiased">

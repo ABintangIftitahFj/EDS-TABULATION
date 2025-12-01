@@ -153,6 +153,39 @@ class BallotController extends Controller
             }
         });
 
+        // Check if AJAX request
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Ballot submitted successfully!',
+            ]);
+        }
+
         return redirect()->route('admin.matches.index')->with('success', 'Ballot submitted successfully.');
+    }
+
+    public function destroy(Ballot $ballot)
+    {
+        DB::transaction(function () use ($ballot) {
+            $match = $ballot->match;
+
+            // Delete all ballots for this match
+            $match->ballots()->delete();
+
+            // Reset match status
+            $match->update([
+                'status' => 'scheduled',
+                'is_completed' => false,
+                'winner_id' => null,
+                'gov_rank' => null,
+                'opp_rank' => null,
+                'cg_rank' => null,
+                'co_rank' => null,
+                'gov_reply_score' => null,
+                'opp_reply_score' => null,
+            ]);
+        });
+
+        return redirect()->back()->with('success', 'Ballot deleted successfully and match status reset.');
     }
 }

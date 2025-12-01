@@ -85,10 +85,91 @@
         </div>
     @endif
 
+    <!-- Mobile View (Cards) -->
+    <div class="md:hidden space-y-4 mb-6">
+        @forelse($matches as $match)
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
+                <!-- Match Header -->
+                <div class="flex items-start justify-between mb-3">
+                    <div>
+                        <div class="font-semibold text-black">{{ $match->round->tournament->name ?? 'N/A' }}</div>
+                        <div class="text-sm text-gray-500">{{ $match->round->name ?? 'N/A' }}</div>
+                    </div>
+                    <span class="px-2 py-1 text-xs font-semibold rounded-full {{ ($match->result_status ?? '') === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">
+                        {{ ucfirst($match->result_status ?? 'Scheduled') }}
+                    </span>
+                </div>
+                
+                <!-- Match Info -->
+                <div class="bg-slate-50 rounded-lg p-3 mb-3">
+                    <div class="text-xs font-medium text-gray-500 mb-2">
+                        📍 {{ $match->room->name ?? 'Room TBA' }} • 👨‍⚖️ {{ $match->adjudicator->name ?? 'Adj TBA' }}
+                    </div>
+                    
+                    <!-- Teams Display -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-blue-600">Gov</span>
+                            <span class="font-semibold text-black text-sm">{{ $match->govTeam->emoji ?? '' }} {{ $match->govTeam->name ?? 'N/A' }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-medium text-purple-600">Opp</span>
+                            <span class="font-semibold text-black text-sm">{{ $match->oppTeam->emoji ?? '' }} {{ $match->oppTeam->name ?? 'N/A' }}</span>
+                        </div>
+                        @if($match->cgTeam)
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-medium text-green-600">CG</span>
+                                <span class="font-semibold text-black text-sm">{{ $match->cgTeam->emoji ?? '' }} {{ $match->cgTeam->name ?? 'N/A' }}</span>
+                            </div>
+                        @endif
+                        @if($match->coTeam)
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-medium text-orange-600">CO</span>
+                                <span class="font-semibold text-black text-sm">{{ $match->coTeam->emoji ?? '' }} {{ $match->coTeam->name ?? 'N/A' }}</span>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="openScoreModal('{{ route('admin.ballots.create', $match->id) }}')"
+                        class="w-full px-3 py-2.5 bg-indigo-600 text-white text-xs font-medium rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center gap-1">
+                        📝 Score
+                    </button>
+                    <a href="{{ route('admin.matches.edit', $match->id) }}"
+                        class="w-full px-3 py-2.5 bg-white border border-gray-300 text-gray-700 text-xs font-medium rounded-lg hover:bg-gray-50 transition-colors text-center flex items-center justify-center gap-1">
+                        ✏️ Edit
+                    </a>
+                    <form action="{{ route('admin.matches.destroy', $match->id) }}" method="POST" class="w-full"
+                        onsubmit="return confirm('Delete this match?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="w-full px-3 py-2.5 bg-red-100 text-red-700 text-xs font-medium rounded-lg hover:bg-red-200 transition-colors flex items-center justify-center gap-1">
+                            🗑️ Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        @empty
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center text-gray-500">
+                No matches found. Try selecting a tournament and round.
+            </div>
+        @endforelse
+        
+        <!-- Mobile Pagination -->
+        @if($matches->hasPages())
+            <div class="mt-4">
+                {{ $matches->links() }}
+            </div>
+        @endif
+    </div>
+
     <!-- Desktop View (Table) -->
     <div class="hidden md:block bg-white overflow-hidden rounded-xl shadow-sm ring-1 ring-slate-200">
         <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-slate-200">
+            <div class="overflow-x-auto" style="-webkit-overflow-scrolling: touch;">
+                <table class="min-w-full divide-y divide-slate-200">
                 <thead class="bg-slate-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
@@ -172,14 +253,24 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                                No matches found.
+                            <td colspan="6" class="px-6 py-8 text-center text-gray-500">
+                                <div class="text-4xl mb-2">🎯</div>
+                                <div class="font-medium">No matches found</div>
+                                <div class="text-sm">Try selecting a tournament and round to see matches.</div>
                             </td>
                         </tr>
                     @endforelse
                 </tbody>
-            </table>
+                </table>
+            </div>
         </div>
+        
+        <!-- Desktop Pagination -->
+        @if($matches->hasPages())
+            <div class="px-6 py-4 border-t border-slate-200">
+                {{ $matches->links() }}
+            </div>
+        @endif
     </div>
 
     <!-- Auto Generate Modal -->

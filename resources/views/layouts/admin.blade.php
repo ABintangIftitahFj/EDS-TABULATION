@@ -13,6 +13,43 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Custom Scrollbar Styles -->
+    <style>
+        /* Custom Scrollbar for Webkit Browsers (Chrome, Safari, Edge) */
+        .overflow-x-auto::-webkit-scrollbar {
+            height: 12px;
+        }
+
+        .overflow-x-auto::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+            margin: 0 10px;
+        }
+
+        .overflow-x-auto::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 10px;
+            border: 2px solid #f1f5f9;
+        }
+
+        .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Firefox Scrollbar */
+        .overflow-x-auto {
+            scrollbar-width: thin;
+            scrollbar-color: #94a3b8 #f1f5f9;
+        }
+
+        /* Smooth scrolling */
+        .overflow-x-auto {
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
+
     @stack('head')
 </head>
 
@@ -106,10 +143,10 @@
         class="fixed inset-0 bg-black/50 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
 
     <!-- Main Content -->
-    <div class="md:pl-64 flex flex-col flex-1 min-h-screen transition-all duration-300">
+    <div class="md:pl-64 flex flex-col flex-1 min-h-screen transition-all duration-300 min-w-0">
         <main class="flex-1 pt-20 md:pt-6">
             <div class="py-6">
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+                <div class="max-w-full w-full mx-auto px-4 sm:px-6 md:px-8">
                     @yield('content')
                 </div>
             </div>
@@ -131,6 +168,5 @@
             }
         }
     </script>
-    dy>
 
 </html>
